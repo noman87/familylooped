@@ -1,0 +1,98 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+        <!-- Customize your theme here. -->
+
+
+    </style>
+
+    <!-- the theme applied to the application or activity -->
+    <style name="CustomActionBarTheme"
+        parent="@style/Theme.AppCompat.Light.DarkActionBar">
+        <item name="android:actionBarStyle">@style/MyActionBar</item>
+
+        <!-- Support library compatibility -->
+        <item name="actionBarStyle">@style/MyActionBar</item>
+    </style>
+
+    <!-- ActionBar styles -->
+    <style name="MyActionBar"
+        parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@color/top_bar</item>
+
+        <!-- Support library compatibility -->
+        <item name="background">@color/top_bar</item>
+    </style>
+
+
+    <style name="TransparentProgressDialog" parent="android:Theme.Dialog">
+        <item name="android:windowFrame">@null</item>
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowIsFloating">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowTitleStyle">@null</item>
+        <item name="android:windowAnimationStyle">@android:style/Animation.Dialog</item>
+        <item name="android:windowSoftInputMode">stateUnspecified|adjustPan</item>
+        <item name="android:backgroundDimEnabled">true</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+
+    <style name="edit_text">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/small_margin</item>
+        <item name="android:textSize">@dimen/signup_textbox_size</item>
+        <item name="android:textColor">@color/common_text</item>
+        <item name="android:drawablePadding">@dimen/small_margin</item>
+        <item name="android:textColorHint">@color/common_text</item>
+        <item name="android:layout_marginTop">@dimen/small_margin</item>
+
+    </style>
+
+
+
+    <style name="spiner" >
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:paddingTop">@dimen/small_margin</item>
+        <item name="android:paddingBottom">@dimen/small_margin</item>
+        <item name="android:background">@drawable/textbox</item>
+        <item name="android:textColor">@color/common_text</item>
+
+        <item name="android:layout_marginTop">@dimen/small_margin</item>
+    </style>
+
+    <style name="text_box">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@drawable/textbox</item>
+        <item name="android:padding">@dimen/small_margin</item>
+        <item name="android:textColor">@color/common_text</item>
+    </style>
+
+    <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">
+        <item name="android:padding">@dimen/small_margin</item>
+        <item name="android:background">@android:color/transparent</item>
+    </style>
+
+    <style name="spinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
+
+    </style>
+
+
+    <style name="settins_radio">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@color/common_text</item>
+        <item name="android:button">@null</item>
+        <item name="android:drawablePadding">@dimen/small_margin</item>
+        <item name="android:drawableLeft">@drawable/selector_rem</item>
+        <item name="android:layout_marginTop">@dimen/small_margin</item>
+    </style>
+
+
+
+
+</resources>

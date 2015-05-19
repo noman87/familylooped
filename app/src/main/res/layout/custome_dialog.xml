@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:ProgressWheel="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+    <com.familylooped.common.async.ProgressWheel
+        android:id="@+id/progress"
+        android:layout_width="130dp"
+        android:layout_height="130dp"
+        ProgressWheel:barColor="#3AB029"
+        ProgressWheel:barLength="60dp"
+        ProgressWheel:barWidth="12dp"
+        ProgressWheel:rimColor="#44000000"
+        ProgressWheel:rimWidth="12dp"
+        ProgressWheel:spinSpeed="1dp"
+        ProgressWheel:progress_text="Loading"
+        ProgressWheel:textColor="@android:color/white"
+        ProgressWheel:textSize="16sp" />
+
+</LinearLayout>

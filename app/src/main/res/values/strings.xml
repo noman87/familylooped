@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">FamilyLooped</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_activity_auth">AuthActivity</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <array name="secret_question">
+        <item>Secret Question 1</item>
+        <item>Secret Question 1</item>
+        <item>Secret Question 1</item>
+        <item>Secret Question 1</item>
+        <item>Secret Question 1</item>
+    </array>
+    <array name="secret_question_2">
+        <item>Secret Question 2</item>
+        <item>Secret Question 1</item>
+        <item>Secret Question 1</item>
+        <item>Secret Question 1</item>
+        <item>Secret Question 1</item>
+    </array>
+    <array name="secret_question_3">
+        <item>Secret Question 3</item>
+        <item>Secret Question 1</item>
+        <item>Secret Question 1</item>
+        <item>Secret Question 1</item>
+        <item>Secret Question 1</item>
+    </array>
+
+    <string name="title_activity_splash">Splash</string>
+    <string name="title_activity_activity_slide_show">ActivitySlideShow</string>
+    <string name="title_activity_download">DownloadActivity</string>
+
+</resources>

@@ -1,0 +1,38 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:orientation="vertical"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:padding="@dimen/medium_margin"
+    android:gravity="center_horizontal"
+    tools:context="com.familylooped.auth.InvitePeople">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Invite users to send pictures to your Family Looped!"
+        android:textAppearance="?android:textAppearanceLarge"/>
+    <Button
+        android:id="@+id/btn_invite"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/small_margin"
+        android:text="Invite people manually"/>
+
+    <ListView
+        android:id="@+id/list_view"
+        android:layout_width="match_parent"
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_weight=".8"
+        android:layout_height="0dp">
+
+    </ListView>
+
+    <ImageButton
+        android:id="@+id/btn_submit"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/selector_submit"
+        android:layout_marginTop="@dimen/medium_margin" />
+</LinearLayout>
