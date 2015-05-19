@@ -39,26 +39,29 @@
             android:inputType="text"
             android:imeOptions="actionNext"
             android:drawableLeft="@drawable/lastname" />
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/txt_email"
-            style="@style/edit_text"
-            android:hint="Username"
-            android:layout_width="0dp"
-            android:layout_weight=".5"
-            android:inputType="text"
-            android:tag="userName"
-            android:drawableLeft="@drawable/userid" />
-                <TextView
+
+            <EditText
+                android:id="@+id/txt_email"
+                style="@style/edit_text"
+                android:hint="Username"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
                 android:layout_weight=".5"
-                android:textAppearance="?android:textAppearanceLarge"
+                android:inputType="text"
+                android:tag="userName"
+                android:drawableLeft="@drawable/userid" />
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight=".5"
+                android:textSize="@dimen/domin_name"
                 android:gravity="center_vertical"
                 android:layout_gravity="center"
-                android:text="@string/familylooped"/>
+                android:text="@string/familylooped" />
         </LinearLayout>
 
         <EditText
@@ -92,13 +95,29 @@
             android:drawableLeft="@drawable/mail" />
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/small_margin"
+            android:gravity="center">
+
+
+
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/btn_back"
+                android:layout_marginRight="@dimen/small_margin"
+                android:layout_marginTop="@dimen/small_margin" />
         <ImageButton
             android:id="@+id/btn_next"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/selector_next"
-
-            android:layout_marginTop="@dimen/small_margin"/>
+            android:background="@drawable/btn_next"
+            android:layout_marginTop="@dimen/small_margin" />
+        </LinearLayout>
     </LinearLayout>
 </ScrollView>

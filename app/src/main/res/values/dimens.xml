@@ -33,4 +33,8 @@
     <dimen name="txt_or_size">20sp</dimen>
     <dimen name="remember_me_size">15sp</dimen>
 
+
+    <dimen name="signup_textbox_size">15sp</dimen>
+    <dimen name="domin_name">15sp</dimen>
+
 </resources>
