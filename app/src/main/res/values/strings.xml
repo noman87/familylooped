@@ -32,5 +32,6 @@
     <string name="title_activity_splash">Splash</string>
     <string name="title_activity_activity_slide_show">ActivitySlideShow</string>
     <string name="title_activity_download">DownloadActivity</string>
+    <string name="familylooped">\@familylooped.com</string>
 
 </resources>
