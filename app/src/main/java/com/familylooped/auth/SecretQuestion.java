@@ -18,6 +18,7 @@ import com.android.volley.VolleyError;
 import com.familylooped.R;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
+import com.familylooped.common.activities.BaseActionBarActivity;
 import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
@@ -40,12 +41,14 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String HIDE_NEXT_BUTTON = "hide_next_button";
     private String[] mQuestions;
     private EditText txt_alternate_email;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private boolean hide_next_button;
     private ArrayList<ModelSecretQuestion> mQuestionList;
     public static final String TAG = "secret_question";
     private Spinner spinner, spinner2, spinner3;
@@ -72,6 +75,15 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
         return fragment;
     }
 
+
+    public static SecretQuestion newInstance(boolean is_hid_next_button) {
+        SecretQuestion fragment = new SecretQuestion();
+        Bundle args = new Bundle();
+        args.putBoolean(HIDE_NEXT_BUTTON, is_hid_next_button);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public static SecretQuestion newInstance() {
         SecretQuestion fragment = new SecretQuestion();
 
@@ -86,8 +98,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            hide_next_button = getArguments().getBoolean(HIDE_NEXT_BUTTON);
         }
     }
 
@@ -107,6 +118,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
     private void init(View view) {
         ((ImageButton) view.findViewById(R.id.btn_next)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_save)).setOnClickListener(this);
         txt_alternate_email = (EditText) view.findViewById(R.id.txt_alternate_email);
         spinner = (Spinner) view.findViewById(R.id.spinner1);
         spinner2 = (Spinner) view.findViewById(R.id.spinner2);
@@ -115,6 +127,10 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
         txt_ans2 = (EditText) view.findViewById(R.id.txt_ans2);
         txt_ans3 = (EditText) view.findViewById(R.id.txt_ans3);
         getSecretQuestions();
+        if (hide_next_button) {
+            ((ImageButton) view.findViewById(R.id.btn_next)).setVisibility(View.GONE);
+            ((ImageButton) view.findViewById(R.id.btn_save)).setVisibility(View.VISIBLE);
+        }
 
     }
 
@@ -170,7 +186,10 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
                 validation();
                 break;
             case R.id.btn_back:
-                ((AuthActivity)getActivity()).popFragmentIfStackExist();
+                ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
+                break;
+            case R.id.btn_save:
+
                 break;
         }
     }

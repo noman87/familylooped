@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.familylooped.MainActivity;
 import com.familylooped.R;
+import com.familylooped.auth.SecretQuestion;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.settings.personalData.changePassword.ChangePassword;
@@ -82,11 +83,11 @@ public class PersonalData extends BaseFragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        ((TextView) view.findViewById(R.id.txt_name)).setText(Utilities.USER_FIRST_NAME);
+        ((TextView) view.findViewById(R.id.txt_name)).setText(Utilities.getSaveData(getActivity(),Utilities.USER_FIRST_NAME));
 
-        ((TextView) view.findViewById(R.id.txt_last_name)).setText(Utilities.USER_LAST_NAME);
+        ((TextView) view.findViewById(R.id.txt_last_name)).setText(Utilities.getSaveData(getActivity(),Utilities.USER_LAST_NAME));
 
-        ((TextView) view.findViewById(R.id.txt_email)).setText(Utilities.USER_EMAIL);
+        ((TextView) view.findViewById(R.id.txt_email)).setText(Utilities.getSaveData(getActivity(),Utilities.USER_EMAIL));
 
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_next)).setOnClickListener(this);
@@ -102,6 +103,7 @@ public class PersonalData extends BaseFragment implements View.OnClickListener {
                 ((MainActivity) getActivity()).popFragmentIfStackExist();
                 break;
             case R.id.btn_next:
+                changeFragment(SecretQuestion.newInstance(true),SecretQuestion.TAG);
                 break;
             case R.id.btn_change_password:
                 changeFragment(ChangePassword.newInstance(),ChangePassword.TAG);
