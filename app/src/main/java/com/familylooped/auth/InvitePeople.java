@@ -29,6 +29,9 @@ import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
 import com.familylooped.common.logger.Log;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.google.gson.JsonArray;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -45,19 +48,25 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private static final String FIRST_NAME = "first_name";
+    private static final String LAST_NAME = "last_name";
+    private static final String EMAIL = "email";
     public static String TAG = "invite_people";
     private ListView mListView;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private String mFirstName, mLastName, mEmail;
     private static final String[] PROJECTION = new String[]{
             ContactsContract.CommonDataKinds.Email.CONTACT_ID,
             ContactsContract.Contacts.DISPLAY_NAME,
             ContactsContract.CommonDataKinds.Email.DATA
     };
     private ArrayList<ModelInvitePeople> mContactList;
-    private String mEmailAddress="";
+    private String mEmailAddress = "";
+    private AdapterInvitePeople mAdapter;
+    private ArrayList<ModelInvitePeople> mCheckedList;
 
 
     /**
@@ -78,6 +87,16 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
         return fragment;
     }
 
+    public static InvitePeople newInstance(String name, String lastName, String email) {
+        InvitePeople fragment = new InvitePeople();
+        Bundle args = new Bundle();
+        args.putString(FIRST_NAME, name);
+        args.putString(LAST_NAME, lastName);
+        args.putString(EMAIL, email);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public static InvitePeople newInstance() {
         InvitePeople fragment = new InvitePeople();
 
@@ -91,9 +110,12 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContactList = new ArrayList<ModelInvitePeople>();
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mFirstName = getArguments().getString(FIRST_NAME);
+            mLastName = getArguments().getString(LAST_NAME);
+            mEmailAddress = getArguments().getString(EMAIL);
+            mContactList.add(new ModelInvitePeople(mFirstName + " " + mLastName, mEmailAddress));
         }
     }
 
@@ -113,30 +135,31 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     private void init(View view) {
         ((ImageButton) view.findViewById(R.id.btn_submit)).setOnClickListener(this);
         mListView = (ListView) view.findViewById(R.id.list_view);
-        ((ImageButton)view.findViewById(R.id.btn_invite)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_invite)).setOnClickListener(this);
         getContacts();
 
     }
 
-    private void showPopup(){
+    private void showPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle("Invite people");
         LayoutInflater inflater = getActivity().getLayoutInflater();
         View view = inflater.inflate(R.layout.invite_popup_view, null);
-        final TextView textView = (TextView)view.findViewById(R.id.txt_email);
+        final TextView textView = (TextView) view.findViewById(R.id.txt_email);
         builder.setView(view);
-        builder.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 mEmailAddress = textView.getText().toString();
             }
         });
-        builder.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
             }
-        });builder.create().show();
+        });
+        builder.create().show();
 
     }
 
@@ -144,28 +167,25 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_submit:
-
                 proceedToSignUp();
-
-
                 break;
             case R.id.btn_invite:
-              changeFragment(FragmentManuallyAddContact.newInstance(),"");
+                changeFragment(FragmentManuallyAddContact.newInstance(), "");
                 break;
         }
     }
 
     private void proceedToSignUp() {
-
-        for (int i = 0; i < mContactList.size(); i++) {
-            if (mContactList.get(i).check)
-                mEmailAddress = mEmailAddress + mContactList.get(i).getEmail() + ",";
+        mCheckedList = new ArrayList<ModelInvitePeople>();
+        Gson gson = new GsonBuilder().create();
+        for (ModelInvitePeople item : mContactList) {
+            if (item.isCheck())
+                mCheckedList.add(item);
         }
-
-        if(mEmailAddress.length()>0)
-        Signup.urlParams.put("invitedEmails", mEmailAddress.substring(0, mEmailAddress.length() - 1));
-
-
+        JsonArray jsonArray = gson.toJsonTree(mCheckedList).getAsJsonArray();
+        Log.d(TAG, "LIST " + jsonArray);
+        if (mEmailAddress.length() > 0)
+            Signup.urlParams.put("invitedEmails", mEmailAddress.substring(0, mEmailAddress.length() - 1));
         AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "signUp", Utilities.BASE_URL + "signUp", Signup.urlParams, new AsyncHttpRequest.HttpResponseListener() {
             @Override
             public void onResponse(String response) {
@@ -204,7 +224,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     }
 
     private void getContacts() {
-        mContactList = new ArrayList<ModelInvitePeople>();
+
         ContentResolver cr = getActivity().getContentResolver();
         Cursor cursor = cr.query(ContactsContract.CommonDataKinds.Email.CONTENT_URI, PROJECTION, null, null, null);
         if (cursor != null) {
@@ -226,7 +246,8 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
                 cursor.close();
             }
         }
-        mListView.setAdapter(new AdapterInvitePeople(getActivity(), mContactList));
+        mAdapter = new AdapterInvitePeople(getActivity(), mContactList);
+        mListView.setAdapter(mAdapter);
 
     }
 }

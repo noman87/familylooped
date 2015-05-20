@@ -82,14 +82,30 @@
     </style>
 
 
-    <style name="settins_radio">
-        <item name="android:layout_width">wrap_content</item>
+    <style name="play_settings_radio">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_weight">.2</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/common_text</item>
         <item name="android:button">@null</item>
+        <item name="android:textSize">@dimen/domin_name</item>
+        <item name="android:gravity">center_horizontal</item>
         <item name="android:drawablePadding">@dimen/small_margin</item>
-        <item name="android:drawableLeft">@drawable/selector_rem</item>
+        <item name="android:drawableBottom">@drawable/selector_rem</item>
         <item name="android:layout_marginTop">@dimen/small_margin</item>
+    </style>
+
+    <style name="common_text_view" parent="android:Widget.TextView">
+        <item name="android:textColor">@color/common_text</item>
+        <item name="android:textSize">@dimen/common_text_size</item>
+
+    </style>
+
+    <style name="common_edit_text">
+        <item name="android:textColor">@color/common_text</item>
+        <item name="android:textColorHint">@color/common_text</item>
+        <item name="android:textSize">@dimen/common_text_size</item>
+        <item name="android:padding">@dimen/small_margin</item>
     </style>
 
 

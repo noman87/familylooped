@@ -3,64 +3,74 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    android:gravity="center"
     android:orientation="vertical"
-
+    android:padding="@dimen/medium_margin"
     tools:context="com.familylooped.settings.Settings">
 
-    <TextView
-        android:layout_width="match_parent"
+
+    <ImageView
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textColor="@color/common_text"
-        android:gravity="center"
+        android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/medium_margin"
-        android:textAppearance="?android:textAppearanceLarge"
-        android:text="Slide Show" />
 
-    <RadioGroup
-        android:id="@+id/radio_group"
+        android:background="@drawable/logo" />
+
+    <LinearLayout
         android:layout_width="match_parent"
-        android:gravity="center"
-        android:layout_marginTop="@dimen/small_margin"
-        android:layout_height="wrap_content">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <RadioButton
-            android:id="@+id/radio_3_sec"
-            style="@style/settins_radio"
-            android:text="03 Seconds" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/btn_personal_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/personal_data" />
+
+            <ImageButton
+                android:id="@+id/btn_contacts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/medium_margin"
+                android:background="@drawable/contacts" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/btn_play_settings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/play_setting" />
+
+            <ImageButton
+                android:id="@+id/btn_photos"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/medium_margin"
+                android:background="@drawable/photos" />
+        </LinearLayout>
 
 
-        <RadioButton
-            android:id="@+id/radio_5_sec"
-            style="@style/settins_radio"
-            android:text="05 Seconds" />
-
-        <RadioButton
-            android:id="@+id/radio_10_sec"
-            style="@style/settins_radio"
-            android:text="10 Seconds" />
-
-        <RadioButton
-            android:id="@+id/radio_15_sec"
-            style="@style/settins_radio"
-            android:text="15 Seconds" />
 
 
-    </RadioGroup>
-
+    </LinearLayout>
     <ImageButton
-        android:id="@+id/btn_myphoto"
+        android:id="@id/btn_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/btn_myphoto"
-        android:layout_marginTop="@dimen/small_margin" />
-
-
-    <ImageButton
-        android:id="@+id/btn_restart_pass"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@drawable/btn_restart_password"
-        android:layout_marginTop="@dimen/small_margin" />
-
+        android:layout_gravity="bottom|center_horizontal"
+        android:layout_marginLeft="@dimen/medium_margin"
+        android:background="@drawable/btn_back" />
 </LinearLayout>

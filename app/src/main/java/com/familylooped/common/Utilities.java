@@ -120,6 +120,10 @@ public class Utilities {
     public static final String FAIL_OVER_RESPONSE = "fail_over_response";
     public static final String FAIL_OVER_VERSION = "fail_over_version";
     public static final String FAIL_OVER_VERSION_TIME = "fail_over_version_time";
+    public static final String USER_FIRST_NAME = "first_name";
+    public static final String USER_LAST_NAME = "last_name";
+    public static final String USER_EMAIL = "email";
+    public static final String USER_PASSWORD = "password";
     public static String DATE_FORMAT = "dd/M/yyyy hh:mm:ss";
 
 

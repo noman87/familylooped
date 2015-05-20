@@ -21,13 +21,14 @@ import java.util.ArrayList;
  */
 public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
     Activity activity;
-    ArrayList<ModelInvitePeople> list;
+    ArrayList<ModelInvitePeople> list, checkedList;
 
 
     public AdapterInvitePeople(Activity activity, ArrayList<ModelInvitePeople> list) {
         super(activity, R.layout.item_invite, list);
         this.activity = activity;
         this.list = list;
+        checkedList = new ArrayList<>();
 
     }
 
@@ -49,7 +50,7 @@ public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
         }
         viewHolder = (ViewHolder) convertView.getTag();
         final ViewHolder finalViewHolder = viewHolder;
-        finalViewHolder.checkBox.setText(list.get(position).getName()+"\n"+list.get(position).getEmail());
+        finalViewHolder.checkBox.setText(list.get(position).getName() + "\n" + list.get(position).getEmail());
 
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -59,8 +60,10 @@ public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
         });
         if (list.get(position).check) {
             viewHolder.checkBox.setChecked(true);
+
         } else {
             viewHolder.checkBox.setChecked(false);
+
         }
 
 
@@ -68,9 +71,11 @@ public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
 
     }
 
+    public ArrayList<ModelInvitePeople> getCheckedList() {
+        return checkedList;
+    }
+
     class ViewHolder {
-
-
         CheckBox checkBox;
     }
 }

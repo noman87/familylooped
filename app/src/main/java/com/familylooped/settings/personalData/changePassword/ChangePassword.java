@@ -1,41 +1,33 @@
-package com.familylooped.auth.invitePeople;
+package com.familylooped.settings.personalData.changePassword;
 
 
 import android.os.Bundle;
 import android.app.Fragment;
+import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListView;
 
+import com.familylooped.MainActivity;
 import com.familylooped.R;
-import com.familylooped.auth.InvitePeople;
 import com.familylooped.common.fragments.BaseFragment;
-
-import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link FragmentManuallyAddContact#newInstance} factory method to
+ * Use the {@link ChangePassword#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FragmentManuallyAddContact extends BaseFragment implements View.OnClickListener {
+public class ChangePassword extends BaseFragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static final String TAG = "Change Password";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private ListView mListView;
-    private ArrayList<ModelManuallyContact> mDataList;
-    private AdapterContactManually mAdapter;
-    private EditText mTxtFirstName,mTxtLastName,mTxtEmail;
-    private String name="",lastName="",email="";
 
 
     /**
@@ -44,11 +36,11 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment FragmentManuallyAddContact.
+     * @return A new instance of fragment ChnagePassword.
      */
     // TODO: Rename and change types and number of parameters
-    public static FragmentManuallyAddContact newInstance(String param1, String param2) {
-        FragmentManuallyAddContact fragment = new FragmentManuallyAddContact();
+    public static ChangePassword newInstance(String param1, String param2) {
+        ChangePassword fragment = new ChangePassword();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -56,9 +48,13 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
         return fragment;
     }
 
-    public static FragmentManuallyAddContact newInstance() {
-        FragmentManuallyAddContact fragment = new FragmentManuallyAddContact();
+    public static ChangePassword newInstance() {
+        ChangePassword fragment = new ChangePassword();
         return fragment;
+    }
+
+    public ChangePassword() {
+        // Required empty public constructor
     }
 
     @Override
@@ -74,38 +70,21 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_manually_add_contact, container, false);
+        return inflater.inflate(R.layout.fragment_chnage_password, container, false);
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState) {
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        init(view);
+        ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
     }
-
-    private void init(View view) {
-        ((ImageButton) view.findViewById(R.id.btn_add)).setOnClickListener(this);
-        mTxtFirstName = (EditText)view.findViewById(R.id.txt_first_name);
-        mTxtLastName = (EditText)view.findViewById(R.id.txt_last_name);
-        mTxtEmail = (EditText)view.findViewById(R.id.txt_email);
-
-    }
-
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_add:
-                add();
+            case R.id.btn_back:
+                ((MainActivity) getActivity()).popFragmentIfStackExist();
                 break;
         }
-    }
-
-    private void add() {
-        name = mTxtFirstName.getText().toString();
-        lastName = mTxtLastName.getText().toString();
-        email = mTxtEmail.getText().toString();
-
-        changeFragment(InvitePeople.newInstance(name,lastName,email),InvitePeople.TAG);
     }
 }

@@ -11,17 +11,20 @@ import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.familylooped.MainActivity;
 import com.familylooped.R;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.photos.MyPhotos;
+import com.familylooped.settings.personalData.PersonalData;
+import com.familylooped.settings.playSettings.PlaySettings;
 
 /**
  * A simple {@link Fragment} subclass.
  * Use the {@link Settings#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class Settings extends BaseFragment implements View.OnClickListener, RadioGroup.OnCheckedChangeListener {
+public class Settings extends BaseFragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -84,29 +87,11 @@ public class Settings extends BaseFragment implements View.OnClickListener, Radi
     }
 
     private void init(View view) {
-        ((ImageButton) view.findViewById(R.id.btn_myphoto)).setOnClickListener(this);
-        ((ImageButton) view.findViewById(R.id.btn_restart_pass)).setOnClickListener(this);
-        mRadionGroup = (RadioGroup) view.findViewById(R.id.radio_group);
-        mRadionGroup.setOnCheckedChangeListener(this);
-        int sliderTime = Utilities.getSavedInt(getActivity(), Utilities.SLIDER_TIME);
-        if (sliderTime < 0) {
-            Utilities.saveInt(getActivity(), Utilities.SLIDER_TIME, 3000);
-        }
-        switch (sliderTime) {
-            case 3000:
-                ((RadioButton) view.findViewById(R.id.radio_3_sec)).setChecked(true);
-                break;
-
-            case 5000:
-                ((RadioButton) view.findViewById(R.id.radio_5_sec)).setChecked(true);
-                break;
-            case 10000:
-                ((RadioButton) view.findViewById(R.id.radio_10_sec)).setChecked(true);
-                break;
-            case 15000:
-                ((RadioButton) view.findViewById(R.id.radio_15_sec)).setChecked(true);
-                break;
-        }
+        ((ImageButton) view.findViewById(R.id.btn_personal_data)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_contacts)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_play_settings)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_photos)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
 
 
     }
@@ -115,36 +100,25 @@ public class Settings extends BaseFragment implements View.OnClickListener, Radi
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
-            case R.id.btn_myphoto:
-                changeFragment(MyPhotos.newInstance(), MyPhotos.TAG);
+            case R.id.btn_personal_data:
+                changeFragment(PersonalData.newInstance(), PersonalData.TAG);
                 break;
 
-            case R.id.btn_restart_pass:
+            case R.id.btn_contacts:
+                break;
+
+            case R.id.btn_play_settings:
+                changeFragment(PlaySettings.newInstance(), PlaySettings.TAG);
+                break;
+
+            case R.id.btn_photos:
+                break;
+
+            case R.id.btn_back:
+                ((MainActivity) getActivity()).popFragmentIfStackExist();
                 break;
         }
     }
 
-    @Override
-    public void onCheckedChanged(RadioGroup group, int checkedId) {
-        int value = 0;
-        switch (checkedId) {
-            case R.id.radio_3_sec:
-                value = 3;
-                break;
 
-            case R.id.radio_5_sec:
-                value = 5;
-                break;
-
-            case R.id.radio_10_sec:
-                value = 10;
-                break;
-
-            case R.id.radio_15_sec:
-                value = 15;
-                break;
-        }
-
-        Utilities.saveInt(getActivity(), Utilities.SLIDER_TIME, value * 1000);
-    }
 }

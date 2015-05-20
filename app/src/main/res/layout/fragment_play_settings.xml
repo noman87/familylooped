@@ -1,0 +1,125 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/bg"
+    android:padding="@dimen/medium_margin"
+    android:orientation="vertical"
+    tools:context="com.familylooped.settings.playSettings.PlaySettings">
+
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/signup_textbox_size"
+        android:textColor="@color/common_text"
+        android:text="Text" />
+
+
+    <RadioGroup
+        android:id="@+id/radio_group"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_height="wrap_content">
+
+        <RadioButton
+            android:id="@+id/radio_3_sec"
+            style="@style/play_settings_radio"
+            android:text="03 Sec" />
+
+
+        <RadioButton
+            android:id="@+id/radio_5_sec"
+            style="@style/play_settings_radio"
+            android:text="05 Sec" />
+
+
+        <RadioButton
+            android:id="@+id/radio_7_sec"
+            style="@style/play_settings_radio"
+            android:text="07 Sec" />
+
+        <RadioButton
+            android:id="@+id/radio_10_sec"
+            style="@style/play_settings_radio"
+            android:text="10 Sec" />
+
+        <RadioButton
+            android:id="@+id/radio_15_sec"
+            style="@style/play_settings_radio"
+            android:text="15 Sec" />
+
+
+    </RadioGroup>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="@dimen/signup_textbox_size"
+        android:layout_marginTop="@dimen/large_margin"
+        android:textColor="@color/common_text"
+        android:text="Text" />
+
+    <RadioGroup
+        android:id="@+id/photo_radio_group"
+        android:layout_width="match_parent"
+        android:gravity="center"
+        android:orientation="horizontal"
+
+        android:layout_marginTop="@dimen/small_margin"
+        android:layout_height="wrap_content">
+
+
+        <RadioButton
+            android:id="@+id/radio_day"
+            style="@style/play_settings_radio"
+            android:text="Day" />
+
+
+        <RadioButton
+            android:id="@+id/radio_week"
+            style="@style/play_settings_radio"
+            android:text="Week" />
+
+
+        <RadioButton
+            android:id="@+id/radio_month"
+            style="@style/play_settings_radio"
+            android:text="Month" />
+
+        <RadioButton
+            android:id="@+id/radio_evey_thing"
+            style="@style/play_settings_radio"
+            android:text="Evey Thing" />
+
+
+    </RadioGroup>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/large_margin"
+        android:gravity="center">
+
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/btn_back"
+            android:layout_marginRight="@dimen/small_margin"
+            android:layout_marginTop="@dimen/small_margin" />
+
+        <ImageButton
+            android:id="@+id/btn_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/save"
+            android:layout_marginTop="@dimen/small_margin" />
+    </LinearLayout>
+
+</LinearLayout>
