@@ -22,6 +22,7 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.familylooped.MainActivity;
 import com.familylooped.R;
+import com.familylooped.auth.invitePeople.FragmentManuallyAddContact;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.async.AsyncHttpRequest;
@@ -149,7 +150,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
 
                 break;
             case R.id.btn_invite:
-                showPopup();
+              changeFragment(FragmentManuallyAddContact.newInstance(),"");
                 break;
         }
     }
