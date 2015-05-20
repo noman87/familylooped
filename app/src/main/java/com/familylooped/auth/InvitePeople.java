@@ -25,6 +25,7 @@ import com.familylooped.R;
 import com.familylooped.auth.invitePeople.FragmentManuallyAddContact;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
+import com.familylooped.common.activities.BaseActionBarActivity;
 import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
@@ -37,6 +38,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -51,8 +54,10 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     private static final String FIRST_NAME = "first_name";
     private static final String LAST_NAME = "last_name";
     private static final String EMAIL = "email";
+    private static final String IS_UPDATE = "is_update";
     public static String TAG = "invite_people";
     private ListView mListView;
+    private boolean mIsUpdate;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -97,9 +102,17 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
         return fragment;
     }
 
+
+    public static InvitePeople newInstance(boolean isUpdate) {
+        InvitePeople fragment = new InvitePeople();
+        Bundle args = new Bundle();
+        args.putBoolean(IS_UPDATE, isUpdate);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public static InvitePeople newInstance() {
         InvitePeople fragment = new InvitePeople();
-
         return fragment;
     }
 
@@ -116,6 +129,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
             mLastName = getArguments().getString(LAST_NAME);
             mEmailAddress = getArguments().getString(EMAIL);
             mContactList.add(new ModelInvitePeople(mFirstName + " " + mLastName, mEmailAddress));
+            mIsUpdate = getArguments().getBoolean(IS_UPDATE);
         }
     }
 
@@ -133,10 +147,53 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     }
 
     private void init(View view) {
-        ((ImageButton) view.findViewById(R.id.btn_submit)).setOnClickListener(this);
         mListView = (ListView) view.findViewById(R.id.list_view);
+        ((ImageButton) view.findViewById(R.id.btn_submit)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_invite)).setOnClickListener(this);
-        getContacts();
+        ((ImageButton) view.findViewById(R.id.btn_save)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
+        if (mIsUpdate) {
+            ((ImageButton) view.findViewById(R.id.btn_submit)).setVisibility(View.GONE);
+            ((ImageButton) view.findViewById(R.id.btn_save)).setVisibility(View.VISIBLE);
+            //  getContactsFromServer();
+        } else {
+            getContacts();
+        }
+    }
+
+    private void getContactsFromServer() {
+        Map<String, String> params = new HashMap();
+        params.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
+
+        AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "getContacts", Utilities.BASE_URL + "login", params, new AsyncHttpRequest.HttpResponseListener() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject object = new JSONObject(response);
+                    if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
+                        JSONObject data = object.getJSONObject("data");
+                    } else {
+                        showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
+                            @Override
+                            public void onPositiveButtonClick() {
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.getMessage() != null) {
+
+                }
+            }
+        });
+
+        AppController.getInstance().addToRequestQueue(request, "getContacts");
 
     }
 
@@ -171,6 +228,9 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.btn_invite:
                 changeFragment(FragmentManuallyAddContact.newInstance(), "");
+                break;
+            case R.id.btn_back:
+                ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
                 break;
         }
     }
@@ -246,7 +306,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
                 cursor.close();
             }
         }
-        mAdapter = new AdapterInvitePeople(getActivity(), mContactList);
+        mAdapter = new AdapterInvitePeople(getActivity(), mContactList, mIsUpdate);
         mListView.setAdapter(mAdapter);
 
     }

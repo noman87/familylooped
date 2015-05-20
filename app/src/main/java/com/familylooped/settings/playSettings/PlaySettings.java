@@ -31,7 +31,7 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private RadioGroup mRadionGroup;
+    private RadioGroup mRadionGroup, mPhotoRadioGroup;
 
 
     /**
@@ -85,6 +85,10 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
         ((ImageButton) view.findViewById(R.id.btn_save)).setOnClickListener(this);
         mRadionGroup = (RadioGroup) view.findViewById(R.id.radio_group);
         mRadionGroup.setOnCheckedChangeListener(this);
+
+        mPhotoRadioGroup = (RadioGroup) view.findViewById(R.id.photo_radio_group);
+        mPhotoRadioGroup.setOnCheckedChangeListener(this);
+
         int sliderTime = Utilities.getSavedInt(getActivity(), Utilities.SLIDER_TIME);
         if (sliderTime < 0) {
             Utilities.saveInt(getActivity(), Utilities.SLIDER_TIME, 3000);
@@ -107,18 +111,37 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
                 ((RadioButton) view.findViewById(R.id.radio_15_sec)).setChecked(true);
                 break;
         }
+        int photoPeriod = Utilities.getSavedInt(getActivity(), Utilities.PHOTO_PERIOD);
+        if (photoPeriod < 0) {
+            Utilities.saveInt(getActivity(), Utilities.PHOTO_PERIOD, 1);
+        }
+        switch (photoPeriod) {
+            case 1:
+                ((RadioButton) view.findViewById(R.id.radio_day)).setChecked(true);
+                break;
+            case 2:
+                ((RadioButton) view.findViewById(R.id.radio_week)).setChecked(true);
+                break;
+            case 3:
+                ((RadioButton) view.findViewById(R.id.radio_month)).setChecked(true);
+                break;
+            case 4:
+                ((RadioButton) view.findViewById(R.id.radio_evey_thing)).setChecked(true);
+                break;
+        }
     }
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
         int value = 0;
+        int photo_period = 0;
         switch (checkedId) {
             case R.id.radio_3_sec:
                 value = 3;
                 break;
 
             case R.id.radio_7_sec:
-                value = 3;
+                value = 7;
                 break;
             case R.id.radio_5_sec:
                 value = 5;
@@ -131,9 +154,30 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
             case R.id.radio_15_sec:
                 value = 15;
                 break;
-        }
 
-        Utilities.saveInt(getActivity(), Utilities.SLIDER_TIME, value * 1000);
+
+            case R.id.radio_day:
+                photo_period = 1;
+                break;
+
+
+            case R.id.radio_week:
+                photo_period = 2;
+                break;
+
+
+            case R.id.radio_month:
+                photo_period = 3;
+                break;
+
+            case R.id.radio_evey_thing:
+                photo_period = 4;
+                break;
+        }
+        if (group.getId() == R.id.radio_group)
+            Utilities.saveInt(getActivity(), Utilities.SLIDER_TIME, value * 1000);
+        else
+            Utilities.saveInt(getActivity(), Utilities.PHOTO_PERIOD, photo_period);
 
     }
 
@@ -144,7 +188,7 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
                 ((MainActivity) getActivity()).popFragmentIfStackExist();
                 break;
             case R.id.btn_save:
-
+                Utilities.toast(getActivity(), "You settings has been saved");
                 break;
         }
     }

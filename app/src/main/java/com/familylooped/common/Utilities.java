@@ -134,8 +134,15 @@ public class Utilities {
     public static CharSequence SUCCESS = "SUCCESS";
     public static String IS_REMEMBER = "is_remember";
     public static String SLIDER_TIME = "slider_time";
-    public static String REG_ID= "reg_id";
+    public static String REG_ID = "reg_id";
     public static String PHOTO_TIME = "photo_time";
+
+
+    public static final String PHOTO_PERIOD = "photo_period";
+    public static final int PHOTO_DAY = 1;
+    public static final int PHOTO_WEEK = 2;
+    public static final int PHOTO_MONTH = 3;
+    public static final int PHOTO_EVERY_THING = 4;
 
     public static <T> void printJSON(String TAG, Object object, Class<T> classOfT) {
         Gson gson = new Gson();
@@ -332,7 +339,6 @@ public class Utilities {
         String formattedDate = sdf.format(date);
         return formattedDate;
     }
-
 
 
 }

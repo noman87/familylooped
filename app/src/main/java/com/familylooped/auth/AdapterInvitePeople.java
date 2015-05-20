@@ -8,6 +8,7 @@ import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import com.android.volley.toolbox.NetworkImageView;
@@ -22,12 +23,14 @@ import java.util.ArrayList;
 public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
     Activity activity;
     ArrayList<ModelInvitePeople> list, checkedList;
+    boolean mIsUpdate;
 
 
-    public AdapterInvitePeople(Activity activity, ArrayList<ModelInvitePeople> list) {
+    public AdapterInvitePeople(Activity activity, ArrayList<ModelInvitePeople> list, boolean isUpdate) {
         super(activity, R.layout.item_invite, list);
         this.activity = activity;
         this.list = list;
+        mIsUpdate = isUpdate;
         checkedList = new ArrayList<>();
 
     }
@@ -42,16 +45,23 @@ public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
             LayoutInflater inflater = activity.getLayoutInflater();
             convertView = inflater.inflate(R.layout.item_invite, null);
             viewHolder = new ViewHolder();
-
-
             viewHolder.checkBox = (CheckBox) convertView.findViewById(R.id.checkbox);
-
+            viewHolder.btn_delete = (ImageButton) convertView.findViewById(R.id.btn_delete);
             convertView.setTag(viewHolder);
         }
         viewHolder = (ViewHolder) convertView.getTag();
         final ViewHolder finalViewHolder = viewHolder;
-        finalViewHolder.checkBox.setText(list.get(position).getName() + "\n" + list.get(position).getEmail());
 
+        finalViewHolder.checkBox.setText(list.get(position).getName() + "\n" + list.get(position).getEmail());
+        if (mIsUpdate) {
+            finalViewHolder.btn_delete.setVisibility(View.VISIBLE);
+        }
+        finalViewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -77,5 +87,6 @@ public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
 
     class ViewHolder {
         CheckBox checkBox;
+        ImageButton btn_delete;
     }
 }
