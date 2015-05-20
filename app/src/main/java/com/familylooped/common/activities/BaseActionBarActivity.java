@@ -59,7 +59,7 @@ public class BaseActionBarActivity extends ActionBarActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    private void popFragmentIfStackExist() {
+    public void popFragmentIfStackExist() {
         int backStackEntryCount =
                 getSupportFragmentManager().getBackStackEntryCount();
         if (backStackEntryCount > 0)

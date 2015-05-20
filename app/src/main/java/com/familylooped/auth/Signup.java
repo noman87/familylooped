@@ -100,6 +100,7 @@ public class Signup extends BaseFragment implements View.OnClickListener {
 
     private void init(View view) {
         ((ImageButton) view.findViewById(R.id.btn_next)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
 
         txt_email = (EditText) view.findViewById(R.id.txt_email);
 
@@ -107,8 +108,15 @@ public class Signup extends BaseFragment implements View.OnClickListener {
         LinearLayout mainLayout = (LinearLayout) view.findViewById(R.id.main_layout);
         for (int i = 0; i < mainLayout.getChildCount(); i++) {
             if (mainLayout.getChildAt(i) instanceof EditText) {
+
                 editTextMap.put(mainLayout.getChildAt(i).getTag().toString(),
                         (EditText) mainLayout.getChildAt(i));
+            } else if (mainLayout.getChildAt(i) instanceof LinearLayout) {
+                LinearLayout layout = (LinearLayout) mainLayout.getChildAt(i);
+                if (layout.getChildAt(0) instanceof EditText) {
+                    editTextMap.put(layout.getChildAt(0).getTag().toString(),
+                            (EditText) layout.getChildAt(0));
+                }
             }
         }
 
@@ -144,7 +152,7 @@ public class Signup extends BaseFragment implements View.OnClickListener {
 
     private void ProceedToRegistration() {
         urlParams = new HashMap<>();
-        urlParams.put("deviceToken",Utilities.getSaveData(getActivity(),Utilities.REG_ID));
+        urlParams.put("deviceToken", Utilities.getSaveData(getActivity(), Utilities.REG_ID));
         for (int i = 0; i < postStrings.length; i++) {
             urlParams.put(postStrings[i], editTextMap
                     .get(postStrings[i]).getText().toString());
@@ -180,6 +188,10 @@ public class Signup extends BaseFragment implements View.OnClickListener {
             case R.id.btn_next:
                 validate();
                 break;
+            case R.id.btn_back:
+                ((AuthActivity) getActivity()).popFragmentIfStackExist();
+                break;
+
         }
     }
 

@@ -106,6 +106,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
 
     private void init(View view) {
         ((ImageButton) view.findViewById(R.id.btn_next)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
         txt_alternate_email = (EditText) view.findViewById(R.id.txt_alternate_email);
         spinner = (Spinner) view.findViewById(R.id.spinner1);
         spinner2 = (Spinner) view.findViewById(R.id.spinner2);
@@ -167,6 +168,9 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
             case R.id.btn_next:
 
                 validation();
+                break;
+            case R.id.btn_back:
+                ((AuthActivity)getActivity()).popFragmentIfStackExist();
                 break;
         }
     }

@@ -112,7 +112,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     private void init(View view) {
         ((ImageButton) view.findViewById(R.id.btn_submit)).setOnClickListener(this);
         mListView = (ListView) view.findViewById(R.id.list_view);
-        ((Button)view.findViewById(R.id.btn_invite)).setOnClickListener(this);
+        ((ImageButton)view.findViewById(R.id.btn_invite)).setOnClickListener(this);
         getContacts();
 
     }
