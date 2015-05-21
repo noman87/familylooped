@@ -29,23 +29,23 @@ public class Splash extends SampleActivityBase {
     private final static int PLAY_SERVICES_RESOLUTION_REQUEST = 9000;
     private GoogleCloudMessaging gcm;
     String regid;
-    private String SENDER_ID= "1077724934121";
+    private String SENDER_ID = "1077724934121";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
         createFolder();
+        setUpUsersDefault();
 
 
         if (checkPlayServices()) {
             gcm = GoogleCloudMessaging.getInstance(this);
             regid = getRegistrationId(this);
-            Log.d(TAG, "REG_ID--"+regid);
+            Log.d(TAG, "REG_ID--" + regid);
             if (regid.isEmpty()) {
                 registerInBackground();
-            }
-            else{
+            } else {
                 splashThread();
             }
         } else {
@@ -56,16 +56,24 @@ public class Splash extends SampleActivityBase {
 
     }
 
+    private void setUpUsersDefault() {
+        if (Utilities.getSavedInt(this, Utilities.SLIDER_TIME) < 0)
+            Utilities.saveInt(this, Utilities.SLIDER_TIME, 3000);
+        if (Utilities.getSavedInt(this, Utilities.PHOTO_PERIOD) < 0)
+            Utilities.saveInt(this, Utilities.PHOTO_PERIOD, Utilities.PHOTO_DAY);
+    }
+
 
     private String getRegistrationId(Context context) {
 
-        String registrationId = Utilities.getSaveData(this,Utilities.REG_ID);
-        if (registrationId==null) {
+        String registrationId = Utilities.getSaveData(this, Utilities.REG_ID);
+        if (registrationId == null) {
             Log.i(TAG, "Registration not found.");
             return "";
         }
         return registrationId;
     }
+
     private boolean checkPlayServices() {
         int resultCode = GooglePlayServicesUtil.isGooglePlayServicesAvailable(this);
         if (resultCode != ConnectionResult.SUCCESS) {
@@ -80,8 +88,6 @@ public class Splash extends SampleActivityBase {
         }
         return true;
     }
-
-
 
 
     public void registerInBackground() {
@@ -135,15 +141,15 @@ public class Splash extends SampleActivityBase {
             @Override
             public void run() {
                 Intent intent = null;
-                if(Utilities.getSavedBoolean(Splash.this,Utilities.IS_REMEMBER))
+                if (Utilities.getSavedBoolean(Splash.this, Utilities.IS_REMEMBER))
                     intent = new Intent(Splash.this, MainActivity.class);
                 else
                     intent = new Intent(Splash.this, AuthActivity.class);
-                overridePendingTransition(R.anim.enter,R.anim.exit);
+                overridePendingTransition(R.anim.enter, R.anim.exit);
                 startActivity(intent);
                 finish();
             }
-        },3000);
+        }, 3000);
     }
 
     private void createFolder() {
@@ -156,7 +162,7 @@ public class Splash extends SampleActivityBase {
 
     private void storeRegistrationId(Context context, String regId) {
 
-        Utilities.saveData(context,Utilities.REG_ID,regId);
+        Utilities.saveData(context, Utilities.REG_ID, regId);
     }
 
 

@@ -30,6 +30,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -41,18 +43,18 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
-    private static final String HIDE_NEXT_BUTTON = "hide_next_button";
+    private static final String IS_UPDATE = "IS_UPDATE";
     private String[] mQuestions;
     private EditText txt_alternate_email;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private boolean hide_next_button;
+    private boolean isUpdate;
     private ArrayList<ModelSecretQuestion> mQuestionList;
     public static final String TAG = "secret_question";
-    private Spinner spinner, spinner2, spinner3;
-    private EditText txt_ans1, txt_ans2, txt_ans3;
+    private Spinner spinner, spinner2;
+    private EditText txt_ans1, txt_ans2;
     private String mQuestionsId;
     private String mAns;
 
@@ -76,10 +78,10 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
     }
 
 
-    public static SecretQuestion newInstance(boolean is_hid_next_button) {
+    public static SecretQuestion newInstance(boolean isUpdate) {
         SecretQuestion fragment = new SecretQuestion();
         Bundle args = new Bundle();
-        args.putBoolean(HIDE_NEXT_BUTTON, is_hid_next_button);
+        args.putBoolean(IS_UPDATE, isUpdate);
         fragment.setArguments(args);
         return fragment;
     }
@@ -98,7 +100,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            hide_next_button = getArguments().getBoolean(HIDE_NEXT_BUTTON);
+            isUpdate = getArguments().getBoolean(IS_UPDATE);
         }
     }
 
@@ -122,12 +124,10 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
         txt_alternate_email = (EditText) view.findViewById(R.id.txt_alternate_email);
         spinner = (Spinner) view.findViewById(R.id.spinner1);
         spinner2 = (Spinner) view.findViewById(R.id.spinner2);
-        spinner3 = (Spinner) view.findViewById(R.id.spinner3);
         txt_ans1 = (EditText) view.findViewById(R.id.txt_ans1);
         txt_ans2 = (EditText) view.findViewById(R.id.txt_ans2);
-        txt_ans3 = (EditText) view.findViewById(R.id.txt_ans3);
         getSecretQuestions();
-        if (hide_next_button) {
+        if (isUpdate) {
             ((ImageButton) view.findViewById(R.id.btn_next)).setVisibility(View.GONE);
             ((ImageButton) view.findViewById(R.id.btn_save)).setVisibility(View.VISIBLE);
         }
@@ -173,8 +173,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
         spinner.setAdapter(adapter);
         spinner2.setAdapter(adapter);
         spinner2.setSelection(1);
-        spinner3.setAdapter(adapter);
-        spinner3.setSelection(2);
+
 
     }
 
@@ -189,33 +188,23 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
                 ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
                 break;
             case R.id.btn_save:
-
+                validation();
                 break;
         }
     }
 
     private void validation() {
-        ArrayList<EditText> editTexts = new ArrayList<>();
-        editTexts.add(txt_ans1);
-        editTexts.add(txt_ans2);
-        editTexts.add(txt_ans3);
-        int count = 0;
-        for (int i = 0; i < editTexts.size(); i++) {
-            if (TextUtils.isEmpty(editTexts.get(i).getText().toString())) {
-                count++;
-                if (count == 2) {
-                    showDialog("At least 2 security question is to be answered is must", "OK", "Cancel", new DialogClickListener() {
-                        @Override
-                        public void onPositiveButtonClick() {
+        if (TextUtils.isEmpty(txt_ans1.getText().toString()) || TextUtils.isEmpty(txt_ans2.getText().toString())) {
+            showDialog("Please provide all answers", "OK", "Cancel", new DialogClickListener() {
+                @Override
+                public void onPositiveButtonClick() {
 
-                        }
-                    });
-                    return;
                 }
-            }
-
-
+            });
+            return;
         }
+
+
         if (!TextUtils.isEmpty(txt_alternate_email.getText().toString())) {
             if (!Utilities.isValidEmail(txt_alternate_email.getText().toString())) {
                 txt_alternate_email.setError("Please enter correct email address");
@@ -226,21 +215,66 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
             }
 
         }
+
         proceedToSignUp();
+    }
+
+    private void update() {
+        Map<String, String> params = new HashMap();
+        params.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
+        params.put("secretQuestions", mQuestionsId);
+        params.put("secretAnswers", mAns);
+        if(txt_alternate_email.getText().toString()!=null)
+        params.put("alterNativeEmail", txt_alternate_email.getText().toString());
+
+
+        AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "updateSecurityQuestions", Utilities.BASE_URL + "updateSecurityQuestions", params, new AsyncHttpRequest.HttpResponseListener() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject object = new JSONObject(response);
+                    if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
+                        Utilities.toast(getActivity(),"Save Successfully");
+                    } else {
+                        showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
+                            @Override
+                            public void onPositiveButtonClick() {
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.getMessage() != null) {
+
+                }
+            }
+        });
+
+        AppController.getInstance().addToRequestQueue(request, "updateSecurityQuestions");
+
     }
 
     private void proceedToSignUp() {
         mQuestionsId = getId(spinner.getSelectedItem().toString());
         mQuestionsId = mQuestionsId + "," + getId(spinner2.getSelectedItem().toString());
-        mQuestionsId = mQuestionsId + "," + getId(spinner3.getSelectedItem().toString());
         mAns = txt_ans1.getText().toString();
         mAns = mAns + "," + txt_ans2.getText().toString();
-        mAns = mAns + "," + txt_ans3.getText().toString();
-        Signup.urlParams.put("secretQuestions ", mQuestionsId);
-        Signup.urlParams.put("secretAnswers", mAns);
+
         Log.e("ID ", mQuestionsId);
         Log.e("ANS ", mAns);
-        changeFragment(InvitePeople.newInstance(), InvitePeople.TAG);
+        if (!isUpdate) {
+            Signup.urlParams.put("secretQuestions ", mQuestionsId);
+            Signup.urlParams.put("secretAnswers", mAns);
+            changeFragment(InvitePeople.newInstance(), InvitePeople.TAG);
+        } else {
+            update();
+        }
 
     }
 

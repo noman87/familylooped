@@ -10,7 +10,6 @@
         android:id="@+id/image_view"
         android:layout_width="@dimen/photo_height"
         android:layout_height="@dimen/photo_height"
-        android:background="@drawable/bg"
         android:scaleType="centerCrop" />
 
     <CheckBox

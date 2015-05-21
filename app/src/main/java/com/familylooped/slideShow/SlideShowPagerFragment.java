@@ -18,12 +18,14 @@ import android.widget.LinearLayout;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.familylooped.MainActivity;
 import com.familylooped.R;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
+import com.familylooped.common.logger.Log;
 import com.familylooped.photos.AdapterMyPhoto;
 import com.familylooped.photos.ModelMyPhoto;
 import com.google.gson.Gson;
@@ -67,6 +69,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
     private LinearLayout layoutButtons;
     private int mRotationValue = 0;
     private ImageView mPhoto;
+    private ImageButton mBtnStop;
 
     /**
      * Use this factory method to create a new instance of
@@ -99,20 +102,13 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        period = Utilities.getSavedInt(getActivity(), Utilities.SLIDER_TIME);
+        delay = 3000;
+
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
-    }
-
-
-    private void timer() {
-        mTimer = new Timer();
-        mTimer.scheduleAtFixedRate(new TimerTask() {
-            public void run() {
-                mHandler.post(mUpdateResults);
-            }
-        }, delay, period);
     }
 
     @Override
@@ -131,6 +127,9 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         ((ImageButton) view.findViewById(R.id.btn_replay)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_delete)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_rotate)).setOnClickListener(this);
+        mBtnStop = (ImageButton) view.findViewById(R.id.btn_stop);
+        mBtnStop.setOnClickListener(this);
+
         //mPhoto = (ImageView) mViewPager.getFocusedChild();
         mViewPager.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -138,9 +137,11 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     int visibility = layoutButtons.getVisibility();
                     if (visibility == View.VISIBLE) {
+                        mBtnStop.setVisibility(View.GONE);
                         layoutButtons.setVisibility(View.GONE);
                     } else if (visibility == View.GONE) {
                         layoutButtons.setVisibility(View.VISIBLE);
+                        mBtnStop.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -148,8 +149,6 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
 
             }
         });
-        period = Utilities.getSavedInt(getActivity(), Utilities.SLIDER_TIME);
-        delay = 3000;
 
 
         mViewPager.setPageTransformer(true, new ReaderViewPagerTransformer(ReaderViewPagerTransformer.TransformType.FLOW));
@@ -185,6 +184,14 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         };
     }
 
+    private void timer() {
+        mTimer = new Timer();
+        mTimer.scheduleAtFixedRate(new TimerTask() {
+            public void run() {
+                mHandler.post(mUpdateResults);
+            }
+        }, delay, period);
+    }
 
     public void stopSlideShow() {
         mTimer.cancel();
@@ -199,14 +206,14 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         mList = new ArrayList<>();
         File file = new File(Environment.getExternalStorageDirectory() + "/FamilyLooped");
         File fileList[] = file.listFiles();
-        if (fileList != null & fileList.length>0) {
+        if (fileList != null & fileList.length > 0) {
             for (int i = 0; i < fileList.length; i++) {
                 mList.add(new ModelMyPhoto(fileList[i].getAbsolutePath()));
             }
 
-        mAdapter = new AdapterSlideShow(getChildFragmentManager(), mList);
-        mViewPager.setAdapter(mAdapter);
-        timer();
+            mAdapter = new AdapterSlideShow(getChildFragmentManager(), mList);
+            mViewPager.setAdapter(mAdapter);
+            timer();
         }
 
     }
@@ -282,6 +289,10 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
 
             case R.id.btn_replay:
                 playSlideShow();
+                break;
+            case R.id.btn_stop:
+                Log.e(TAG,"cLICK");
+                 getActivity().finish();
                 break;
         }
 

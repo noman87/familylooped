@@ -2,7 +2,9 @@ package com.familylooped.photos;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.Dialog;
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Environment;
 import android.view.LayoutInflater;
@@ -13,6 +15,7 @@ import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 
 import com.android.volley.toolbox.ImageLoader;
 import com.android.volley.toolbox.NetworkImageView;
@@ -20,6 +23,7 @@ import com.familylooped.R;
 import com.familylooped.common.AppController;
 import com.familylooped.common.fragments.DialogClickListener;
 import com.familylooped.common.logger.Log;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -59,21 +63,24 @@ public class AdapterMyPhoto extends ArrayAdapter<ModelPhoto> {
         }
         viewHolder = (ViewHolder) convertView.getTag();
         // Log.e("Path", "is " + list.get(position));
-        File file = new File(list.get(position).getUri());
+        final File file = new File(list.get(position).getUri());
         // Log.e("URI", Uri.fromFile(file).toString());
-        viewHolder.imageView.setImageURI(Uri.fromFile(file));
+        Picasso.with(activity).load(Uri.fromFile(file)).into(viewHolder.imageView);
+        //viewHolder.imageView.setImageURI(Uri.fromFile(file));
+
         final ViewHolder finalViewHolder = viewHolder;
         viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                if (finalViewHolder.checkBox.getVisibility() == View.GONE) {
+                showImage(Uri.fromFile(file));
+                /*if (finalViewHolder.checkBox.getVisibility() == View.GONE) {
                     finalViewHolder.checkBox.setVisibility(View.VISIBLE);
                     finalViewHolder.checkBox.setChecked(true);
                 } else {
                     finalViewHolder.checkBox.setVisibility(View.GONE);
                     finalViewHolder.checkBox.setChecked(false);
-                }
+                }*/
             }
         });
 
@@ -108,6 +115,25 @@ public class AdapterMyPhoto extends ArrayAdapter<ModelPhoto> {
         });*/
         return convertView;
 
+    }
+
+
+    public void showImage(Uri uri) {
+        Dialog builder = new Dialog(activity);
+        builder.requestWindowFeature(activity.getWindow().FEATURE_NO_TITLE);
+        builder.getWindow().setBackgroundDrawable(
+                new ColorDrawable(android.graphics.Color.TRANSPARENT));
+        builder.setOnDismissListener(new DialogInterface.OnDismissListener() {
+            @Override
+            public void onDismiss(DialogInterface dialogInterface) {
+                //nothing;
+            }
+        });
+
+        ImageView view = (ImageView)activity.getLayoutInflater().inflate(R.layout.item_single_image,null);
+        view.setImageURI(uri);
+        builder.setContentView(view);
+        builder.show();
     }
 
     private void showPopUp(final int position) {

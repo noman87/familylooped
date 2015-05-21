@@ -2,6 +2,7 @@ package com.familylooped.photos;
 
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -17,6 +18,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.ImageButton;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -29,6 +31,10 @@ import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
 import com.familylooped.common.logger.Log;
 import com.google.gson.Gson;
+import com.kbeanie.imagechooser.api.ChooserType;
+import com.kbeanie.imagechooser.api.ChosenImage;
+import com.kbeanie.imagechooser.api.ImageChooserListener;
+import com.kbeanie.imagechooser.api.ImageChooserManager;
 import com.thin.downloadmanager.DownloadRequest;
 import com.thin.downloadmanager.DownloadStatusListener;
 import com.thin.downloadmanager.ThinDownloadManager;
@@ -38,6 +44,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -50,7 +59,7 @@ import java.util.Map;
  * Use the {@link MyPhotos#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyPhotos extends BaseFragment {
+public class MyPhotos extends BaseFragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -73,6 +82,7 @@ public class MyPhotos extends BaseFragment {
     private int DOWNLOAD_THREAD_POOL_SIZE = 4;
     Handler handler = new Handler();
     private int mDownloadIndex = 0;
+    private ImageChooserManager imageChooserManager;
 
 
     /**
@@ -136,6 +146,9 @@ public class MyPhotos extends BaseFragment {
     }
 
     private void init(View view) {
+        ((ImageButton) view.findViewById(R.id.btn_add_photo)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_select)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_delete)).setOnClickListener(this);
         // createFolder();
         mList = new ArrayList<ModelMyPhoto>();
         mGridView = (GridView) view.findViewById(R.id.grid_view);
@@ -170,16 +183,14 @@ public class MyPhotos extends BaseFragment {
         photosUri = new ArrayList<>();
         File file = new File(Environment.getExternalStorageDirectory() + "/FamilyLooped");
         File fileList[] = file.listFiles();
-
         if (fileList != null) {
 
             for (int i = 0; i < fileList.length; i++) {
-                photosUri.add(new ModelPhoto(fileList[i].getAbsolutePath(),false));
+                photosUri.add(new ModelPhoto(fileList[i].getAbsolutePath(), false));
             }
         }
         mAdapterMyPhoto = new AdapterMyPhoto(getActivity(), photosUri, MyPhotos.this);
         mGridView.setAdapter(mAdapterMyPhoto);
-
 
     }
 
@@ -318,5 +329,84 @@ public class MyPhotos extends BaseFragment {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.btn_add_photo:
+                addPhoto();
+                break;
+            case R.id.btn_delete:
+                break;
+            case R.id.btn_select:
+                break;
+        }
+    }
+
+    private void addPhoto() {
+
+        imageChooserManager = new ImageChooserManager(this, ChooserType.REQUEST_PICK_PICTURE);
+        imageChooserManager.setImageChooserListener(new ImageChooserListener() {
+            @Override
+            public void onImageChosen(final ChosenImage image) {
+
+                getActivity().runOnUiThread(new Runnable() {
+
+                    @Override
+                    public void run() {
+                        if (image != null) {
+
+                            copyFile(image.getFileThumbnail(), Environment.getExternalStorageDirectory() + "/FamilyLooped");
+
+                        }
+                    }
+                });
+            }
+
+            @Override
+            public void onError(String s) {
+
+            }
+        });
+        try {
+            imageChooserManager.choose();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean copyFile(String from, String to) {
+        try {
+            File sd = Environment.getExternalStorageDirectory();
+            if (sd.canWrite()) {
+                int end = from.toString().lastIndexOf("/");
+                String str1 = from.toString().substring(0, end);
+                String str2 = from.toString().substring(end + 1, from.length());
+                File source = new File(str1, str2);
+                File destination = new File(to, str2);
+                if (source.exists()) {
+                    FileChannel src = new FileInputStream(source).getChannel();
+                    FileChannel dst = new FileOutputStream(destination).getChannel();
+                    dst.transferFrom(src, 0, src.size());
+                    src.close();
+                    dst.close();
+                    showPhotos();
+                }
+            }
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == getActivity().RESULT_OK &&
+                (requestCode == ChooserType.REQUEST_PICK_PICTURE ||
+                        requestCode == ChooserType.REQUEST_CAPTURE_PICTURE)) {
+            imageChooserManager.submit(requestCode, data);
+        }
     }
 }

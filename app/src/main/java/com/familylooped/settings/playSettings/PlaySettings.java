@@ -91,7 +91,8 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
 
         int sliderTime = Utilities.getSavedInt(getActivity(), Utilities.SLIDER_TIME);
         if (sliderTime < 0) {
-            Utilities.saveInt(getActivity(), Utilities.SLIDER_TIME, 3000);
+            sliderTime =3000;
+            Utilities.saveInt(getActivity(), Utilities.SLIDER_TIME, sliderTime);
         }
         switch (sliderTime) {
             case 3000:
