@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -34,6 +35,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -155,7 +157,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
         if (mIsUpdate) {
             ((ImageButton) view.findViewById(R.id.btn_submit)).setVisibility(View.GONE);
             ((ImageButton) view.findViewById(R.id.btn_save)).setVisibility(View.VISIBLE);
-            //  getContactsFromServer();
+            getContactsFromServer();
         } else {
             getContacts();
         }
@@ -165,14 +167,21 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
         Map<String, String> params = new HashMap();
         params.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
 
-        AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "getContacts", Utilities.BASE_URL + "login", params, new AsyncHttpRequest.HttpResponseListener() {
+        AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "getContacts", Utilities.BASE_URL + "getContacts", params, new AsyncHttpRequest.HttpResponseListener() {
             @Override
             public void onResponse(String response) {
 
                 try {
                     JSONObject object = new JSONObject(response);
                     if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
-                        JSONObject data = object.getJSONObject("data");
+                        JSONArray data = object.getJSONArray("data");
+                        Gson gson = new Gson();
+                        mContactList = new ArrayList<>();
+                        for (int i = 0; i < data.length(); i++) {
+                            mContactList.add(gson.fromJson(data.getJSONObject(i).toString(), ModelInvitePeople.class));
+                        }
+                        setUpAdapter(mContactList);
+
                     } else {
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
                             @Override
@@ -232,7 +241,50 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
             case R.id.btn_back:
                 ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
                 break;
+            case R.id.btn_save:
+                sendUpdatedContactToServer();
+                break;
         }
+    }
+
+    private void sendUpdatedContactToServer() {
+        Map<String, String> params = new HashMap();
+        params.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
+        Gson gson = new GsonBuilder().create();
+        JsonArray jsonArray = gson.toJsonTree(mContactList).getAsJsonArray();
+        params.put("contacts", jsonArray.toString());
+        AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "updateContacts", Utilities.BASE_URL + "updateContacts", params, new AsyncHttpRequest.HttpResponseListener() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject object = new JSONObject(response);
+                    if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
+                        Utilities.toast(getActivity(),"Your contacts has been saved");
+
+                    } else {
+                        showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
+                            @Override
+                            public void onPositiveButtonClick() {
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.getMessage() != null) {
+
+                }
+            }
+        });
+
+        AppController.getInstance().addToRequestQueue(request, "updateContacts");
+
+
     }
 
     private void proceedToSignUp() {
@@ -244,8 +296,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
         }
         JsonArray jsonArray = gson.toJsonTree(mCheckedList).getAsJsonArray();
         Log.d(TAG, "LIST " + jsonArray);
-        if (mEmailAddress.length() > 0)
-            Signup.urlParams.put("invitedEmails", mEmailAddress.substring(0, mEmailAddress.length() - 1));
+        Signup.urlParams.put("contacts", jsonArray.toString());
         AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "signUp", Utilities.BASE_URL + "signUp", Signup.urlParams, new AsyncHttpRequest.HttpResponseListener() {
             @Override
             public void onResponse(String response) {
@@ -306,8 +357,12 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
                 cursor.close();
             }
         }
-        mAdapter = new AdapterInvitePeople(getActivity(), mContactList, mIsUpdate);
-        mListView.setAdapter(mAdapter);
+        setUpAdapter(mContactList);
 
+    }
+
+    private void setUpAdapter(ArrayList<ModelInvitePeople> contactList) {
+        mAdapter = new AdapterInvitePeople(getActivity(), contactList, mIsUpdate);
+        mListView.setAdapter(mAdapter);
     }
 }

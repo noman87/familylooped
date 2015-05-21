@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
@@ -26,14 +28,14 @@ import java.util.ArrayList;
 /**
  * Created by Noman on 4/26/2015.
  */
-public class AdapterMyPhoto extends ArrayAdapter<String> {
+public class AdapterMyPhoto extends ArrayAdapter<ModelPhoto> {
     Activity activity;
-    ArrayList<String> list;
+    ArrayList<ModelPhoto> list;
     ImageLoader mImageLoader;
     MyPhotos myPhotos;
     private int items;
 
-    public AdapterMyPhoto(Activity activity, ArrayList<String> list, MyPhotos myPhotos) {
+    public AdapterMyPhoto(Activity activity, ArrayList<ModelPhoto> list, MyPhotos myPhotos) {
         super(activity, R.layout.item_photo, list);
         this.activity = activity;
         this.list = list;
@@ -52,25 +54,42 @@ public class AdapterMyPhoto extends ArrayAdapter<String> {
             convertView = inflater.inflate(R.layout.item_photo, null);
             viewHolder = new ViewHolder();
             viewHolder.imageView = (ImageView) convertView.findViewById(R.id.image_view);
-            // viewHolder.btn_delete = (ImageButton) convertView.findViewById(R.id.btn_delete);
+            viewHolder.checkBox = (CheckBox) convertView.findViewById(R.id.checkbox);
             convertView.setTag(viewHolder);
         }
         viewHolder = (ViewHolder) convertView.getTag();
-        Log.e("Path", "is " + list.get(position));
-        File file = new File(list.get(position));
-        Log.e("URI", Uri.fromFile(file).toString());
+        // Log.e("Path", "is " + list.get(position));
+        File file = new File(list.get(position).getUri());
+        // Log.e("URI", Uri.fromFile(file).toString());
         viewHolder.imageView.setImageURI(Uri.fromFile(file));
-
+        final ViewHolder finalViewHolder = viewHolder;
         viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showPopUp(position);
+
+                if (finalViewHolder.checkBox.getVisibility() == View.GONE) {
+                    finalViewHolder.checkBox.setVisibility(View.VISIBLE);
+                    finalViewHolder.checkBox.setChecked(true);
+                } else {
+                    finalViewHolder.checkBox.setVisibility(View.GONE);
+                    finalViewHolder.checkBox.setChecked(false);
+                }
             }
         });
 
+        viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                list.get(position).setCheck(isChecked);
+            }
+        });
+        if (list.get(position).check) {
+            viewHolder.checkBox.setChecked(true);
 
+        } else {
+            viewHolder.checkBox.setChecked(false);
 
-
+        }
         /*viewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -104,7 +123,7 @@ public class AdapterMyPhoto extends ArrayAdapter<String> {
                                     myPhotos.showDialog("Are you sure you want to delete this photo ?", "Yes", "No", new DialogClickListener() {
                                         @Override
                                         public void onPositiveButtonClick() {
-                                            File file = new File(list.get(position));
+                                            File file = new File(list.get(position).getUri());
                                             boolean deleted = file.delete();
                                             list.remove(position);
                                             notifyDataSetChanged();
@@ -116,15 +135,11 @@ public class AdapterMyPhoto extends ArrayAdapter<String> {
                             }
                         }
 
-                )
-                .
-
-                        show();
+                ).show();
     }
 
     class ViewHolder {
-
         ImageView imageView;
-        ImageButton btn_delete;
+        CheckBox checkBox;
     }
 }

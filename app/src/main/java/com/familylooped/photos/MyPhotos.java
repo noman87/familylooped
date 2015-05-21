@@ -58,7 +58,7 @@ public class MyPhotos extends BaseFragment {
     public static String TAG = "My Photos";
     private static String NOTIFICATION = "notification";
     private ThinDownloadManager downloadManager;
-    private ArrayList<String> photosUri;
+    private ArrayList<ModelPhoto> photosUri;
     private ProgressDialog mProgressDialog;
 
 
@@ -174,8 +174,7 @@ public class MyPhotos extends BaseFragment {
         if (fileList != null) {
 
             for (int i = 0; i < fileList.length; i++) {
-                photosUri.add(fileList[i].getAbsolutePath());
-
+                photosUri.add(new ModelPhoto(fileList[i].getAbsolutePath(),false));
             }
         }
         mAdapterMyPhoto = new AdapterMyPhoto(getActivity(), photosUri, MyPhotos.this);

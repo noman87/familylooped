@@ -59,7 +59,8 @@ public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
         finalViewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                list.remove(position);
+                notifyDataSetChanged();
             }
         });
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {

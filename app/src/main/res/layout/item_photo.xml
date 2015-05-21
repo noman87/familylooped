@@ -6,10 +6,20 @@
     android:layout_height="match_parent">
 
 
-
     <ImageView
         android:id="@+id/image_view"
         android:layout_width="@dimen/photo_height"
         android:layout_height="@dimen/photo_height"
+        android:background="@drawable/bg"
         android:scaleType="centerCrop" />
+
+    <CheckBox
+        android:id="@+id/checkbox"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:visibility="gone"
+        android:layout_alignRight="@+id/image_view"
+
+        />
 </RelativeLayout>
