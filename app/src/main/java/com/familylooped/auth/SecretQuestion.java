@@ -167,13 +167,24 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
     }
 
     private void setupAdapter() {
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(getActivity(),
-                R.layout.spiner_view, mQuestions);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinner.setAdapter(adapter);
-        spinner2.setAdapter(adapter);
-        spinner2.setSelection(1);
+        ArrayList<String> list1 = new ArrayList<>();
+        ArrayList<String> list2 = new ArrayList<>();
+        for (int i = 0; i <= 2; i++) {
+            list1.add(mQuestions[i]);
+        }
 
+        for (int i = 3; i <= 5; i++) {
+            list2.add(mQuestions[i]);
+        }
+        ArrayAdapter<String> adapter1 = new ArrayAdapter<String>(getActivity(),
+                R.layout.spiner_view, list1);
+
+        ArrayAdapter<String> adapter2 = new ArrayAdapter<String>(getActivity(),
+                R.layout.spiner_view, list2);
+        adapter1.setDropDownViewResource(R.layout.spiner_view);
+        adapter2.setDropDownViewResource(R.layout.spiner_view);
+        spinner.setAdapter(adapter1);
+        spinner2.setAdapter(adapter2);
 
     }
 
@@ -224,8 +235,8 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
         params.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
         params.put("secretQuestions", mQuestionsId);
         params.put("secretAnswers", mAns);
-        if(txt_alternate_email.getText().toString()!=null)
-        params.put("alterNativeEmail", txt_alternate_email.getText().toString());
+        if (txt_alternate_email.getText().toString() != null)
+            params.put("alterNativeEmail", txt_alternate_email.getText().toString());
 
 
         AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "updateSecurityQuestions", Utilities.BASE_URL + "updateSecurityQuestions", params, new AsyncHttpRequest.HttpResponseListener() {
@@ -235,7 +246,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
                 try {
                     JSONObject object = new JSONObject(response);
                     if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
-                        Utilities.toast(getActivity(),"Save Successfully");
+                        Utilities.toast(getActivity(), "Save Successfully");
                     } else {
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
                             @Override

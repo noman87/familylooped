@@ -58,6 +58,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     private static final String EMAIL = "email";
     private static final String IS_UPDATE = "is_update";
     public static String TAG = "invite_people";
+    private static String IS_ADD_NEW = "is_add_new";
     private ListView mListView;
     private boolean mIsUpdate;
 
@@ -74,6 +75,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     private String mEmailAddress = "";
     private AdapterInvitePeople mAdapter;
     private ArrayList<ModelInvitePeople> mCheckedList;
+    private boolean mIsAddNew;
 
 
     /**
@@ -94,12 +96,13 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
         return fragment;
     }
 
-    public static InvitePeople newInstance(String name, String lastName, String email) {
+    public static InvitePeople newInstance(String name, String lastName, String email, boolean isAddnew) {
         InvitePeople fragment = new InvitePeople();
         Bundle args = new Bundle();
         args.putString(FIRST_NAME, name);
         args.putString(LAST_NAME, lastName);
         args.putString(EMAIL, email);
+        args.putBoolean(IS_ADD_NEW, isAddnew);
         fragment.setArguments(args);
         return fragment;
     }
@@ -132,6 +135,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
             mEmailAddress = getArguments().getString(EMAIL);
             mContactList.add(new ModelInvitePeople(mFirstName + " " + mLastName, mEmailAddress));
             mIsUpdate = getArguments().getBoolean(IS_UPDATE);
+            mIsAddNew = getArguments().getBoolean(IS_ADD_NEW);
         }
     }
 
@@ -158,6 +162,11 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
             ((ImageButton) view.findViewById(R.id.btn_submit)).setVisibility(View.GONE);
             ((ImageButton) view.findViewById(R.id.btn_save)).setVisibility(View.VISIBLE);
             getContactsFromServer();
+        } else if (mIsAddNew) {
+            ((ImageButton) view.findViewById(R.id.btn_submit)).setVisibility(View.GONE);
+            ((ImageButton) view.findViewById(R.id.btn_save)).setVisibility(View.VISIBLE);
+            setUpAdapter(mContactList);
+
         } else {
             getContacts();
         }
@@ -260,7 +269,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
                 try {
                     JSONObject object = new JSONObject(response);
                     if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
-                        Utilities.toast(getActivity(),"Your contacts has been saved");
+                        Utilities.toast(getActivity(), "Your contacts has been saved");
 
                     } else {
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
@@ -308,6 +317,11 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
 
                         JSONObject data = object.getJSONObject("userData");
                         Utilities.saveData(getActivity(), Utilities.USER_ID, data.getString("id"));
+                        Utilities.saveData(getActivity(), Utilities.USER_FIRST_NAME, data.getString("firstName"));
+                        Utilities.saveData(getActivity(), Utilities.USER_LAST_NAME, data.getString("lastName"));
+                        Utilities.saveData(getActivity(), Utilities.USER_PASSWORD, data.getString("password"));
+                        Utilities.saveData(getActivity(), Utilities.USER_EMAIL, data.getString("email"));
+
                         changeActivity(MainActivity.class);
 
 

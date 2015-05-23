@@ -14,6 +14,7 @@ import android.widget.RadioGroup;
 import com.familylooped.MainActivity;
 import com.familylooped.R;
 import com.familylooped.auth.InvitePeople;
+import com.familylooped.auth.Signup;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.photos.MyPhotos;
@@ -102,7 +103,7 @@ public class Settings extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_personal_data:
-                changeFragment(PersonalData.newInstance(), PersonalData.TAG);
+                changeFragment(Signup.newInstance(true), PersonalData.TAG);
                 break;
 
             case R.id.btn_contacts:

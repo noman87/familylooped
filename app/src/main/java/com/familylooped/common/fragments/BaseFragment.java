@@ -18,7 +18,7 @@ public abstract class BaseFragment extends Fragment {
     public static boolean sDisableFragmentAnimations = false;
 
     protected void setTitle(String title) {
-        getActionBar().setTitle(title);
+       // getActionBar().setTitle(title);
 
     }
 

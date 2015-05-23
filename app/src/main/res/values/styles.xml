@@ -1,15 +1,14 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <!-- Customize your theme here. -->
 
 
     </style>
 
     <!-- the theme applied to the application or activity -->
-    <style name="CustomActionBarTheme"
-        parent="@style/Theme.AppCompat.Light.DarkActionBar">
+    <style name="CustomActionBarTheme" parent="@style/Theme.AppCompat.Light.DarkActionBar">
         <item name="android:actionBarStyle">@style/MyActionBar</item>
 
         <!-- Support library compatibility -->
@@ -17,8 +16,7 @@
     </style>
 
     <!-- ActionBar styles -->
-    <style name="MyActionBar"
-        parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
+    <style name="MyActionBar" parent="@style/Widget.AppCompat.Light.ActionBar.Solid.Inverse">
         <item name="android:background">@color/top_bar</item>
 
         <!-- Support library compatibility -->
@@ -42,18 +40,18 @@
     <style name="edit_text">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:padding">@dimen/small_margin</item>
+        <item name="android:padding">@dimen/medium_margin</item>
         <item name="android:textSize">@dimen/signup_textbox_size</item>
         <item name="android:textColor">@color/common_text</item>
-        <item name="android:drawablePadding">@dimen/small_margin</item>
+        <item name="android:drawablePadding">@dimen/medium_margin</item>
         <item name="android:textColorHint">@color/common_text</item>
+        <item name="android:background">@drawable/textbox</item>
         <item name="android:layout_marginTop">@dimen/small_margin</item>
 
     </style>
 
 
-
-    <style name="spiner" >
+    <style name="spiner">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:paddingTop">@dimen/small_margin</item>
@@ -95,9 +93,12 @@
         <item name="android:layout_marginTop">@dimen/small_margin</item>
     </style>
 
-    <style name="common_text_view" parent="android:Widget.TextView">
+    <style name="common_text_view">
         <item name="android:textColor">@color/common_text</item>
         <item name="android:textSize">@dimen/common_text_size</item>
+        <item name="android:background">@drawable/textbox</item>
+        <item name="android:padding">@dimen/medium_margin</item>
+        <item name="android:gravity">center_vertical</item>
 
     </style>
 
@@ -105,10 +106,10 @@
         <item name="android:textColor">@color/common_text</item>
         <item name="android:textColorHint">@color/common_text</item>
         <item name="android:textSize">@dimen/common_text_size</item>
-        <item name="android:padding">@dimen/small_margin</item>
+        <item name="android:background">@drawable/textbox</item>
+
+        <item name="android:padding">@dimen/medium_margin</item>
     </style>
-
-
 
 
 </resources>

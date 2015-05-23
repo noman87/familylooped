@@ -32,10 +32,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
                 android:hint="First Name"
-                android:textColor="@color/common_text"
-                android:padding="@dimen/small_margin"
-                android:textColorHint="@color/common_text"
-                android:textSize="@dimen/domin_name" />
+                style="@style/common_edit_text"/>
 
             <EditText
                 android:id="@+id/txt_last_name"
@@ -43,11 +40,8 @@
                 android:layout_height="wrap_content"
                 android:layout_weight=".5"
                 android:hint="Last Name"
-                android:layout_marginLeft="@dimen/small_margin"
-                android:textColor="@color/common_text"
-                android:padding="@dimen/small_margin"
-                android:textColorHint="@color/common_text"
-                android:textSize="@dimen/domin_name" />
+                style="@style/common_edit_text"
+                android:layout_marginLeft="@dimen/small_margin"/>
         </LinearLayout>
 
         <EditText
@@ -56,10 +50,7 @@
             android:layout_height="wrap_content"
             android:hint="Email"
             android:layout_marginTop="@dimen/small_margin"
-            android:textColor="@color/common_text"
-            android:padding="@dimen/small_margin"
-            android:textColorHint="@color/common_text"
-            android:textSize="@dimen/domin_name" />
+            style="@style/common_edit_text"/>
     </LinearLayout>
 
     <LinearLayout
@@ -69,12 +60,21 @@
         android:gravity="center">
 
 
+
+        <ImageButton
+            android:id="@+id/btn_back"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/btn_back"
+            android:layout_marginRight="@dimen/small_margin" />
         <ImageButton
             android:id="@+id/btn_add"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/add" />
+
     </LinearLayout>
 
 

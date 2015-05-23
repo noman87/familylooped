@@ -13,6 +13,7 @@ import android.widget.ListView;
 
 import com.familylooped.R;
 import com.familylooped.auth.InvitePeople;
+import com.familylooped.common.activities.BaseActionBarActivity;
 import com.familylooped.common.fragments.BaseFragment;
 
 import java.util.ArrayList;
@@ -34,8 +35,8 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
     private ListView mListView;
     private ArrayList<ModelManuallyContact> mDataList;
     private AdapterContactManually mAdapter;
-    private EditText mTxtFirstName,mTxtLastName,mTxtEmail;
-    private String name="",lastName="",email="";
+    private EditText mTxtFirstName, mTxtLastName, mTxtEmail;
+    private String name = "", lastName = "", email = "";
 
 
     /**
@@ -85,9 +86,11 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
 
     private void init(View view) {
         ((ImageButton) view.findViewById(R.id.btn_add)).setOnClickListener(this);
-        mTxtFirstName = (EditText)view.findViewById(R.id.txt_first_name);
-        mTxtLastName = (EditText)view.findViewById(R.id.txt_last_name);
-        mTxtEmail = (EditText)view.findViewById(R.id.txt_email);
+
+        ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
+        mTxtFirstName = (EditText) view.findViewById(R.id.txt_first_name);
+        mTxtLastName = (EditText) view.findViewById(R.id.txt_last_name);
+        mTxtEmail = (EditText) view.findViewById(R.id.txt_email);
 
     }
 
@@ -98,6 +101,9 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
             case R.id.btn_add:
                 add();
                 break;
+            case R.id.btn_back:
+                ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
+                break;
         }
     }
 
@@ -106,6 +112,6 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
         lastName = mTxtLastName.getText().toString();
         email = mTxtEmail.getText().toString();
 
-        changeFragment(InvitePeople.newInstance(name,lastName,email),InvitePeople.TAG);
+        changeFragment(InvitePeople.newInstance(name, lastName, email,true), InvitePeople.TAG);
     }
 }

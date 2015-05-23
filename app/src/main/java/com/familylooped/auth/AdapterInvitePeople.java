@@ -47,12 +47,21 @@ public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
             viewHolder = new ViewHolder();
             viewHolder.checkBox = (CheckBox) convertView.findViewById(R.id.checkbox);
             viewHolder.btn_delete = (ImageButton) convertView.findViewById(R.id.btn_delete);
+            viewHolder.txt_name = (TextView) convertView.findViewById(R.id.txt_name);
+            viewHolder.txt_last_name = (TextView) convertView.findViewById(R.id.txt_last_name);
+            viewHolder.email = (TextView) convertView.findViewById(R.id.txt_email);
             convertView.setTag(viewHolder);
         }
         viewHolder = (ViewHolder) convertView.getTag();
         final ViewHolder finalViewHolder = viewHolder;
-
-        finalViewHolder.checkBox.setText(list.get(position).getName() + "\n" + list.get(position).getEmail());
+        String name[] = list.get(position).getName().split(" ");
+        if (name.length > 1) {
+            viewHolder.txt_name.setText(name[0]);
+            viewHolder.txt_last_name.setText(name[1]);
+        } else {
+            viewHolder.txt_name.setText(list.get(position).getName());
+        }
+        viewHolder.email.setText(list.get(position).getEmail());
         if (mIsUpdate) {
             finalViewHolder.btn_delete.setVisibility(View.VISIBLE);
         }
@@ -88,6 +97,7 @@ public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
 
     class ViewHolder {
         CheckBox checkBox;
+        TextView txt_name, email, txt_last_name;
         ImageButton btn_delete;
     }
 }

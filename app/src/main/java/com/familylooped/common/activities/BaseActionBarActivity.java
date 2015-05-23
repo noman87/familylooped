@@ -1,8 +1,10 @@
 package com.familylooped.common.activities;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.ActionBarActivity;
 import android.view.MenuItem;
@@ -11,7 +13,7 @@ import com.familylooped.R;
 import com.familylooped.common.logger.Log;
 import com.familylooped.common.logger.LogWrapper;
 
-public class BaseActionBarActivity extends ActionBarActivity {
+public class BaseActionBarActivity extends FragmentActivity {
     private static final String TAG = "Base Activity";
     protected FragmentManager.OnBackStackChangedListener mOnBackStackChangedListener = new FragmentManager.OnBackStackChangedListener() {
         @Override
@@ -24,14 +26,14 @@ public class BaseActionBarActivity extends ActionBarActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        getSupportFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
+        //getSupportFragmentManager().addOnBackStackChangedListener(mOnBackStackChangedListener);
         initializeLogging();
     }
 
     private void setActionBarArrowDependingOnFragmentsBackStack() {
-        int backStackEntryCount =
+       /* int backStackEntryCount =
                 getSupportFragmentManager().getBackStackEntryCount();
-        getSupportActionBar().setDisplayHomeAsUpEnabled(backStackEntryCount > 0);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(backStackEntryCount > 0);*/
     }
 
 

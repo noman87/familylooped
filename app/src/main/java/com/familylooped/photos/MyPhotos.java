@@ -26,6 +26,7 @@ import com.android.volley.VolleyError;
 import com.familylooped.R;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
+import com.familylooped.common.activities.BaseActionBarActivity;
 import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
@@ -149,6 +150,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
         ((ImageButton) view.findViewById(R.id.btn_add_photo)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_select)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_delete)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
         // createFolder();
         mList = new ArrayList<ModelMyPhoto>();
         mGridView = (GridView) view.findViewById(R.id.grid_view);
@@ -340,6 +342,10 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
             case R.id.btn_delete:
                 break;
             case R.id.btn_select:
+                break;
+
+            case R.id.btn_back:
+                ((BaseActionBarActivity)getActivity()).popFragmentIfStackExist();
                 break;
         }
     }

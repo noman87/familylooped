@@ -83,6 +83,7 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
         super.onViewCreated(view, savedInstanceState);
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_save)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
         mRadionGroup = (RadioGroup) view.findViewById(R.id.radio_group);
         mRadionGroup.setOnCheckedChangeListener(this);
 

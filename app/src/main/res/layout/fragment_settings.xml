@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
         android:layout_marginTop="@dimen/medium_margin"
-
         android:background="@drawable/logo" />
 
     <LinearLayout
@@ -63,14 +62,33 @@
         </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:gravity="center_horizontal"
+            android:layout_height="wrap_content">
+
+            <ImageButton
+                android:id="@+id/btn_privacy"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/privacy" />
+
+            <ImageButton
+                android:id="@+id/btn_about"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="@dimen/medium_margin"
+                android:background="@drawable/about" />
+        </LinearLayout>
 
 
     </LinearLayout>
+
     <ImageButton
         android:id="@id/btn_back"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|center_horizontal"
         android:layout_marginLeft="@dimen/medium_margin"
         android:background="@drawable/btn_back" />
 </LinearLayout>

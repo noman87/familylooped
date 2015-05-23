@@ -5,47 +5,60 @@
     tools:context="com.familylooped.slideShow.SlideShowPagerFragment">
 
 
-    <FrameLayout
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:weightSum="100"
+        android:orientation="vertical">
 
-        <ImageButton
-            android:id="@+id/btn_stop"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
-            android:background="@drawable/stop_loop" />
+        <LinearLayout
+            android:id="@+id/layout_stop_button"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="15"
+            android:visibility="invisible"
+            android:padding="@dimen/small_margin">
+
+            <ImageButton
+                android:id="@+id/btn_stop"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/stop_loop" />
+        </LinearLayout>
+
 
         <android.support.v4.view.ViewPager
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
-            android:layout_height="match_parent" />
+            android:layout_height="0dp"
+            android:layout_weight="70"/>
 
         <LinearLayout
             android:id="@+id/layout_buttons"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone"
+            android:layout_height="0dp"
+            android:layout_weight="15"
+            android:visibility="invisible"
             android:layout_gravity="bottom">
 
             <ImageButton
                 android:id="@+id/btn_replay"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight=".33"
                 android:background="@drawable/selector_replay" />
 
             <ImageButton
                 android:id="@+id/btn_rotate"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight=".33"
                 android:background="@drawable/selector_rotate" />
 
             <ImageButton
                 android:id="@+id/btn_delete"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="match_parent"
                 android:layout_weight=".33"
                 android:background="@drawable/selector_delete" />
 
@@ -53,6 +66,6 @@
         </LinearLayout>
 
 
-    </FrameLayout>
+    </LinearLayout>
 
 </FrameLayout>

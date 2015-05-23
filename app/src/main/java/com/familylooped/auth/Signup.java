@@ -11,10 +11,13 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.familylooped.R;
 import com.familylooped.common.Utilities;
+import com.familylooped.common.activities.BaseActionBarActivity;
 import com.familylooped.common.fragments.BaseFragment;
+import com.familylooped.settings.personalData.changePassword.ChangePassword;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,9 +34,11 @@ public class Signup extends BaseFragment implements View.OnClickListener {
     private static final String ARG_PARAM2 = "param2";
     public static String TAG = "signUp";
     public static Map<String, String> urlParams;
+    private static String IS_UPDATE = "is_update";
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private boolean mIsUpdate;
 
     private String[] validateStrings = {"firstName", "lastName", "userName", "password",
             "confirm_password"};
@@ -64,6 +69,15 @@ public class Signup extends BaseFragment implements View.OnClickListener {
         return fragment;
     }
 
+
+    public static Signup newInstance(boolean is_update) {
+        Signup fragment = new Signup();
+        Bundle args = new Bundle();
+        args.putBoolean(IS_UPDATE, is_update);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
     public static Signup newInstance() {
         Signup fragment = new Signup();
         return fragment;
@@ -78,8 +92,7 @@ public class Signup extends BaseFragment implements View.OnClickListener {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+            mIsUpdate = getArguments().getBoolean(IS_UPDATE);
         }
     }
 
@@ -101,24 +114,38 @@ public class Signup extends BaseFragment implements View.OnClickListener {
     private void init(View view) {
         ((ImageButton) view.findViewById(R.id.btn_next)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
-
+        ((ImageButton) view.findViewById(R.id.btn_change_password)).setOnClickListener(this);
         txt_email = (EditText) view.findViewById(R.id.txt_email);
+        if (mIsUpdate) {
+            ((EditText) view.findViewById(R.id.txt_password)).setVisibility(View.GONE);
+            ((EditText) view.findViewById(R.id.txt_confirm_password)).setVisibility(View.GONE);
+            ((EditText) view.findViewById(R.id.txt_first_name)).setText(Utilities.getSaveData(getActivity(), Utilities.USER_FIRST_NAME));
+            ((EditText) view.findViewById(R.id.txt_last_name)).setText(Utilities.getSaveData(getActivity(), Utilities.USER_LAST_NAME));
+            String email[] = Utilities.getSaveData(getActivity(), Utilities.USER_EMAIL).split("@");
+            ((EditText) view.findViewById(R.id.txt_email)).setText(email[0]);
+            ((EditText) view.findViewById(R.id.txt_first_name)).setKeyListener(null);
+            ((EditText) view.findViewById(R.id.txt_last_name)).setKeyListener(null);
+            ((EditText) view.findViewById(R.id.txt_first_name)).setKeyListener(null);
+            ((EditText) view.findViewById(R.id.txt_email)).setKeyListener(null);
+            ((ImageButton) view.findViewById(R.id.btn_change_password)).setVisibility(View.VISIBLE);
 
-        //txt_alternate_email = (EditText) view.findViewById(R.id.txt_alternate_email);
-        LinearLayout mainLayout = (LinearLayout) view.findViewById(R.id.main_layout);
-        for (int i = 0; i < mainLayout.getChildCount(); i++) {
-            if (mainLayout.getChildAt(i) instanceof EditText) {
+        } else {
+            LinearLayout mainLayout = (LinearLayout) view.findViewById(R.id.main_layout);
+            for (int i = 0; i < mainLayout.getChildCount(); i++) {
+                if (mainLayout.getChildAt(i) instanceof EditText) {
 
-                editTextMap.put(mainLayout.getChildAt(i).getTag().toString(),
-                        (EditText) mainLayout.getChildAt(i));
-            } else if (mainLayout.getChildAt(i) instanceof LinearLayout) {
-                LinearLayout layout = (LinearLayout) mainLayout.getChildAt(i);
-                if (layout.getChildAt(0) instanceof EditText) {
-                    editTextMap.put(layout.getChildAt(0).getTag().toString(),
-                            (EditText) layout.getChildAt(0));
+                    editTextMap.put(mainLayout.getChildAt(i).getTag().toString(),
+                            (EditText) mainLayout.getChildAt(i));
+                } else if (mainLayout.getChildAt(i) instanceof LinearLayout) {
+                    LinearLayout layout = (LinearLayout) mainLayout.getChildAt(i);
+                    if (layout.getChildAt(0) instanceof EditText) {
+                        editTextMap.put(layout.getChildAt(0).getTag().toString(),
+                                (EditText) layout.getChildAt(0));
+                    }
                 }
             }
         }
+
 
     }
 
@@ -186,11 +213,18 @@ public class Signup extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_next:
-                validate();
+                if (mIsUpdate)
+                    changeFragment(SecretQuestion.newInstance(), SecretQuestion.TAG);
+                else
+                    validate();
                 break;
             case R.id.btn_back:
-                ((AuthActivity) getActivity()).popFragmentIfStackExist();
+                ((BaseActionBarActivity ) getActivity()).popFragmentIfStackExist();
                 break;
+            case R.id.btn_change_password:
+                changeFragment(ChangePassword.newInstance(), ChangePassword.TAG);
+                break;
+
 
         }
     }

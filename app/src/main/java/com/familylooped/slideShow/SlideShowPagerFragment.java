@@ -1,12 +1,15 @@
 package com.familylooped.slideShow;
 
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewPager;
+import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -15,6 +18,7 @@ import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
@@ -70,6 +74,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
     private int mRotationValue = 0;
     private ImageView mPhoto;
     private ImageButton mBtnStop;
+    private LinearLayout mLayoutStopButon;
 
     /**
      * Use this factory method to create a new instance of
@@ -123,6 +128,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         super.onViewCreated(view, savedInstanceState);
 
         layoutButtons = (LinearLayout) view.findViewById(R.id.layout_buttons);
+        mLayoutStopButon = (LinearLayout) view.findViewById(R.id.layout_stop_button);
         mViewPager = (ViewPager) view.findViewById(R.id.viewpager);
         ((ImageButton) view.findViewById(R.id.btn_replay)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_delete)).setOnClickListener(this);
@@ -136,12 +142,13 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     int visibility = layoutButtons.getVisibility();
+
                     if (visibility == View.VISIBLE) {
-                        mBtnStop.setVisibility(View.GONE);
-                        layoutButtons.setVisibility(View.GONE);
-                    } else if (visibility == View.GONE) {
+                        layoutButtons.setVisibility(View.INVISIBLE);
+                        mLayoutStopButon.setVisibility(View.INVISIBLE);
+                    } else if (visibility == View.INVISIBLE) {
                         layoutButtons.setVisibility(View.VISIBLE);
-                        mBtnStop.setVisibility(View.VISIBLE);
+                        mLayoutStopButon.setVisibility(View.VISIBLE);
                     }
                 }
 
@@ -275,11 +282,11 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
 
             case R.id.btn_delete:
                 stopSlideShow();
-                showDialog("Are you sure you want to delete this photo ?", "Yes", "No", new DialogClickListener() {
+                showDialog("Are you sure you want to delete this photo from loop?", "Yes", "No", new DialogClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
-                        File file = new File(mList.get(mViewPager.getCurrentItem()).getImage());
-                        boolean deleted = file.delete();
+                        //File file = new File(mList.get(mViewPager.getCurrentItem()).getImage());
+                        //boolean deleted = file.delete();
                         mAdapter.removeView(mViewPager, mViewPager.getCurrentItem());
                         reInitViewPager();
 
@@ -288,13 +295,42 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
                 break;
 
             case R.id.btn_replay:
-                playSlideShow();
+                //playSlideShow();
+                showPopup();
+                stopSlideShow();
+
                 break;
             case R.id.btn_stop:
                 Log.e(TAG,"cLICK");
                  getActivity().finish();
                 break;
         }
+
+    }
+
+    private void showPopup() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+        builder.setTitle("Send message");
+
+        LayoutInflater inflater = getActivity().getLayoutInflater();
+        View view = inflater.inflate(R.layout.invite_popup_view, null);
+        final TextView textView = (TextView) view.findViewById(R.id.txt_email);
+        builder.setView(view);
+        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+               // mEmailAddress = textView.getText().toString();
+                timer();
+            }
+        });
+        builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+
+                timer();
+            }
+        });
+        builder.create().show();
 
     }
 
