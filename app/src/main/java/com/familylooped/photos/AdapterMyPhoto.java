@@ -32,14 +32,14 @@ import java.util.ArrayList;
 /**
  * Created by Noman on 4/26/2015.
  */
-public class AdapterMyPhoto extends ArrayAdapter<ModelPhoto> {
+public class AdapterMyPhoto extends ArrayAdapter<ModelMyPhoto> {
     Activity activity;
-    ArrayList<ModelPhoto> list;
+    ArrayList<ModelMyPhoto> list;
     ImageLoader mImageLoader;
     MyPhotos myPhotos;
     private int items;
 
-    public AdapterMyPhoto(Activity activity, ArrayList<ModelPhoto> list, MyPhotos myPhotos) {
+    public AdapterMyPhoto(Activity activity, ArrayList<ModelMyPhoto> list, MyPhotos myPhotos) {
         super(activity, R.layout.item_photo, list);
         this.activity = activity;
         this.list = list;
@@ -62,18 +62,20 @@ public class AdapterMyPhoto extends ArrayAdapter<ModelPhoto> {
             convertView.setTag(viewHolder);
         }
         viewHolder = (ViewHolder) convertView.getTag();
-        // Log.e("Path", "is " + list.get(position));
-        final File file = new File(list.get(position).getUri());
-        // Log.e("URI", Uri.fromFile(file).toString());
-        Picasso.with(activity).load(Uri.fromFile(file)).into(viewHolder.imageView);
-        //viewHolder.imageView.setImageURI(Uri.fromFile(file));
+        Log.e("Path", "is " + list.get(position).getImage());
+        Picasso.with(activity).load(Uri.parse(list.get(position).getImage())).into(viewHolder.imageView);
 
-        final ViewHolder finalViewHolder = viewHolder;
+
         viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                showImage(Uri.fromFile(file));
+                //showImage(Uri.fromFile(file));
+                if (list.get(position).isCheck())
+                    list.get(position).setCheck(false);
+                else
+                    list.get(position).setCheck(true);
+                notifyDataSetChanged();
                 /*if (finalViewHolder.checkBox.getVisibility() == View.GONE) {
                     finalViewHolder.checkBox.setVisibility(View.VISIBLE);
                     finalViewHolder.checkBox.setChecked(true);
@@ -91,11 +93,16 @@ public class AdapterMyPhoto extends ArrayAdapter<ModelPhoto> {
             }
         });
         if (list.get(position).check) {
+           list.get(position).setShow(true);
             viewHolder.checkBox.setChecked(true);
-
         } else {
             viewHolder.checkBox.setChecked(false);
-
+            list.get(position).setShow(false);
+        }
+        if (list.get(position).isShow()) {
+            viewHolder.checkBox.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.checkBox.setVisibility(View.GONE);
         }
         /*viewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -130,7 +137,7 @@ public class AdapterMyPhoto extends ArrayAdapter<ModelPhoto> {
             }
         });
 
-        ImageView view = (ImageView)activity.getLayoutInflater().inflate(R.layout.item_single_image,null);
+        ImageView view = (ImageView) activity.getLayoutInflater().inflate(R.layout.item_single_image, null);
         view.setImageURI(uri);
         builder.setContentView(view);
         builder.show();
@@ -149,7 +156,7 @@ public class AdapterMyPhoto extends ArrayAdapter<ModelPhoto> {
                                     myPhotos.showDialog("Are you sure you want to delete this photo ?", "Yes", "No", new DialogClickListener() {
                                         @Override
                                         public void onPositiveButtonClick() {
-                                            File file = new File(list.get(position).getUri());
+                                            File file = new File(list.get(position).getImage());
                                             boolean deleted = file.delete();
                                             list.remove(position);
                                             notifyDataSetChanged();

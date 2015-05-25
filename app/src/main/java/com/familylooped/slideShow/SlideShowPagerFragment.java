@@ -211,18 +211,27 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
 
     private void showPhotos() {
         mList = new ArrayList<>();
-        File file = new File(Environment.getExternalStorageDirectory() + "/FamilyLooped");
-        File fileList[] = file.listFiles();
-        if (fileList != null & fileList.length > 0) {
-            for (int i = 0; i < fileList.length; i++) {
-                mList.add(new ModelMyPhoto(fileList[i].getAbsolutePath()));
+        if (Utilities.getSaveData(getActivity(), Utilities.PHOTO_JSON) != null) {
+            parseData(Utilities.getSaveData(getActivity(), Utilities.PHOTO_JSON));
+        }
+        mAdapter = new AdapterSlideShow(getChildFragmentManager(), mList);
+        mViewPager.setAdapter(mAdapter);
+        timer();
+
+
+    }
+
+    private void parseData(String json) {
+        Gson gson = new Gson();
+        try {
+            JSONArray jsonArray = new JSONArray(json);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                mList.add(gson.fromJson(jsonArray.getJSONObject(i).toString(), ModelMyPhoto.class));
             }
 
-            mAdapter = new AdapterSlideShow(getChildFragmentManager(), mList);
-            mViewPager.setAdapter(mAdapter);
-            timer();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
     }
 
 
@@ -301,8 +310,8 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
 
                 break;
             case R.id.btn_stop:
-                Log.e(TAG,"cLICK");
-                 getActivity().finish();
+                Log.e(TAG, "cLICK");
+                getActivity().finish();
                 break;
         }
 
@@ -319,7 +328,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-               // mEmailAddress = textView.getText().toString();
+                // mEmailAddress = textView.getText().toString();
                 timer();
             }
         });

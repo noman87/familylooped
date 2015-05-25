@@ -3,6 +3,7 @@ package com.familylooped.photos;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.media.MediaScannerConnection;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
@@ -47,11 +48,14 @@ import org.json.JSONObject;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.channels.FileChannel;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
 
@@ -67,23 +71,18 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
     private static final String ARG_PARAM2 = "param2";
     public static String TAG = "My Photos";
     private static String NOTIFICATION = "notification";
-    private ThinDownloadManager downloadManager;
-    private ArrayList<ModelPhoto> photosUri;
     private ProgressDialog mProgressDialog;
-
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private boolean is_notification;
     private GridView mGridView;
-    public ArrayList<ModelMyPhoto> mList;
-    private RequestQueue mRequestQueue;
+    public ArrayList<ModelMyPhoto> mList, mDownloadList;
     private AdapterMyPhoto mAdapterMyPhoto;
-    private int DOWNLOAD_THREAD_POOL_SIZE = 4;
-    Handler handler = new Handler();
     private int mDownloadIndex = 0;
     private ImageChooserManager imageChooserManager;
+    private int mImageCount;
 
 
     /**
@@ -152,7 +151,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
         ((ImageButton) view.findViewById(R.id.btn_delete)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
         // createFolder();
-        mList = new ArrayList<ModelMyPhoto>();
+        initializePhotoList();
         mGridView = (GridView) view.findViewById(R.id.grid_view);
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setTitle("Downloading");
@@ -181,26 +180,38 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
 
     }
 
-    private void showPhotos() {
-        photosUri = new ArrayList<>();
-        File file = new File(Environment.getExternalStorageDirectory() + "/FamilyLooped");
-        File fileList[] = file.listFiles();
-        if (fileList != null) {
-
-            for (int i = 0; i < fileList.length; i++) {
-                photosUri.add(new ModelPhoto(fileList[i].getAbsolutePath(), false));
-            }
+    private void initializePhotoList() {
+        mList = new ArrayList<>();
+        if (Utilities.getSaveData(getActivity(), Utilities.PHOTO_JSON) != null) {
+            parseData(Utilities.getSaveData(getActivity(), Utilities.PHOTO_JSON));
         }
-        mAdapterMyPhoto = new AdapterMyPhoto(getActivity(), photosUri, MyPhotos.this);
+    }
+
+    private void parseData(String json) {
+        Gson gson = new Gson();
+        try {
+            JSONArray jsonArray = new JSONArray(json);
+            for (int i = 0; i < jsonArray.length(); i++) {
+                mList.add(gson.fromJson(jsonArray.getJSONObject(i).toString(), ModelMyPhoto.class));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void showPhotos() {
+        mAdapterMyPhoto = new AdapterMyPhoto(getActivity(), mList, MyPhotos.this);
         mGridView.setAdapter(mAdapterMyPhoto);
 
     }
 
 
-    private void downloadFile(String url) {
+    private void downloadFile(final ModelMyPhoto photo) {
 
-        Uri downloadUri = Uri.parse(url);
-        Uri destinationUri = Uri.parse(Environment.getExternalStorageDirectory() + "/FamilyLooped" + "/" + System.currentTimeMillis() + "_.jpg");
+        Uri downloadUri = Uri.parse(photo.getImage());
+        final String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + Utilities.DIR_NAME + System.currentTimeMillis() + "_.jpg";
+        Uri destinationUri = Uri.parse(path);
         DownloadRequest downloadRequest = new DownloadRequest(downloadUri)
 
                 //.addCustomHeader("Auth-Token", "YourTokenApiKey")
@@ -210,10 +221,14 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
                     @Override
                     public void onDownloadComplete(int id) {
                         Log.e("STATS ", "Download complete Success " + id);
+                        mList.add(new ModelMyPhoto(photo.getId(), path, photo.from, photo.time));
                         mDownloadIndex++;
                         if (mDownloadIndex == mList.size()) {
+                            mDownloadIndex = 0;
                             showPhotos();
                             mProgressDialog.dismiss();
+                        } else {
+                            downloadQueue();
                         }
                     }
 
@@ -228,12 +243,6 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
 
                     }
                 });
-
-
-        downloadManager = new ThinDownloadManager();
-
-        downloadManager.add(downloadRequest);
-
     }
 
     private void removePhoto(final int position) {
@@ -259,7 +268,6 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
         if (Utilities.getSaveData(getActivity(), Utilities.PHOTO_TIME) != null) {
-
             urlParams.put("dateTime", Utilities.getSaveData(getActivity(), Utilities.PHOTO_TIME));
         } else {
             Calendar c = Calendar.getInstance();
@@ -279,16 +287,15 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
             public void onResponse(String response) {
                 try {
                     JSONObject object = new JSONObject(response);
+                    mDownloadList = new ArrayList<>();
                     if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
                         JSONArray data = object.getJSONArray("photos");
                         Gson gson = new Gson();
                         mProgressDialog.show();
-                        ;
                         for (int i = 0; i < data.length(); i++) {
-                            mList.add(gson.fromJson(data.getJSONObject(i).toString(), ModelMyPhoto.class));
-                            downloadFile(data.getJSONObject(i).getString("image"));
-
+                            mDownloadList.add(gson.fromJson(data.getJSONObject(i).toString(), ModelMyPhoto.class));
                         }
+                        downloadQueue();
 
                     } else {
 
@@ -308,6 +315,12 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
         });
 
         AppController.getInstance().addToRequestQueue(request);
+    }
+
+    private void downloadQueue() {
+        downloadFile(mDownloadList.get(mDownloadIndex));
+
+
     }
 
 
@@ -340,14 +353,37 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
                 addPhoto();
                 break;
             case R.id.btn_delete:
+                removePhoto();
                 break;
             case R.id.btn_select:
+                selectAll();
                 break;
 
             case R.id.btn_back:
-                ((BaseActionBarActivity)getActivity()).popFragmentIfStackExist();
+                ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
                 break;
         }
+    }
+
+    private void removePhoto() {
+        for (Iterator<ModelMyPhoto> iterator = mList.iterator(); iterator.hasNext(); ) {
+            ModelMyPhoto item = iterator.next();
+            if (item.isCheck()) {
+                File file = null;
+                try {
+                    file = new File(new URI(item.getImage()));
+                    boolean status = file.delete();
+                    Log.e("delete Status", "is " + status);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }
+
+                iterator.remove();
+            } else {
+                item.setShow(true);
+            }
+        }
+        mAdapterMyPhoto.notifyDataSetChanged();
     }
 
     private void addPhoto() {
@@ -363,7 +399,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
                     public void run() {
                         if (image != null) {
 
-                            copyFile(image.getFileThumbnail(), Environment.getExternalStorageDirectory() + "/FamilyLooped");
+                            copyFile(image.getFileThumbnail(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + Utilities.DIR_NAME);
 
                         }
                     }
@@ -397,14 +433,23 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
                     dst.transferFrom(src, 0, src.size());
                     src.close();
                     dst.close();
+                    addPhotoInList(destination.toURI().toString());
                     showPhotos();
                 }
+
             }
             return true;
         } catch (Exception e) {
             return false;
         }
     }
+
+    private void addPhotoInList(String to) {
+        String timeAndId = "" + System.currentTimeMillis();
+        mList.add(new ModelMyPhoto(timeAndId, to, "gallery", timeAndId));
+        mAdapterMyPhoto.notifyDataSetChanged();
+    }
+
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -414,5 +459,26 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
                         requestCode == ChooserType.REQUEST_CAPTURE_PICTURE)) {
             imageChooserManager.submit(requestCode, data);
         }
+    }
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        Gson gson = new Gson();
+        Utilities.saveData(getActivity(), Utilities.PHOTO_JSON, gson.toJson(mList));
+        MediaScannerConnection.scanFile(getActivity(), new String[]{Environment.getExternalStorageDirectory().toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
+
+            public void onScanCompleted(String path, Uri uri) {
+                Log.i("ExternalStorage", "Scanned " + path + ":");
+                Log.i("ExternalStorage", "-> uri=" + uri);
+            }
+        });
+    }
+
+    public void selectAll() {
+        for (ModelMyPhoto item : mList) {
+            item.setCheck(true);
+        }
+        mAdapterMyPhoto.notifyDataSetChanged();
     }
 }

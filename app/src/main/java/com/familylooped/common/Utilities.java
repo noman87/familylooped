@@ -124,6 +124,8 @@ public class Utilities {
     public static final String USER_LAST_NAME = "last_name";
     public static final String USER_EMAIL = "email";
     public static final String USER_PASSWORD = "password";
+    public static final String DIR_NAME ="/FamilyLooped" ;
+    public static final String PHOTO_JSON = "photo_json";
     public static String DATE_FORMAT = "dd/M/yyyy hh:mm:ss";
 
 
