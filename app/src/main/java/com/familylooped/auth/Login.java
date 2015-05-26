@@ -11,11 +11,13 @@ import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.familylooped.MainActivity;
 import com.familylooped.R;
+import com.familylooped.auth.forgotPassword.ForgotPassword;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.async.AsyncHttpRequest;
@@ -39,10 +41,11 @@ public class Login extends BaseFragment implements View.OnClickListener {
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-    private String TAG = "Login";
+    public static String TAG = "Login";
     private EditText txtEmail, txtPassword;
     private String mEmail, mPassword;
     private CheckBox mRememberMe;
@@ -101,6 +104,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
     private void init(View view) {
         ((ImageButton) view.findViewById(R.id.btn_reg)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_login)).setOnClickListener(this);
+        ((TextView)view.findViewById(R.id.forgot_password)).setOnClickListener(this);
         txtEmail = (EditText) view.findViewById(R.id.txt_email);
         txtPassword = (EditText) view.findViewById(R.id.txt_password);
         mRememberMe = (CheckBox) view.findViewById(R.id.remember_me);
@@ -111,6 +115,9 @@ public class Login extends BaseFragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btn_reg:
                 changeFragment(Signup.newInstance(), Signup.TAG);
+                break;
+            case R.id.forgot_password:
+                changeFragment(ForgotPassword.newInstance(), ForgotPassword.TAG);
                 break;
             case R.id.btn_login:
                 mEmail = txtEmail.getText().toString();

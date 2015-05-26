@@ -280,7 +280,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
         Log.e("ID ", mQuestionsId);
         Log.e("ANS ", mAns);
         if (!isUpdate) {
-            Signup.urlParams.put("secretQuestions ", mQuestionsId);
+            Signup.urlParams.put("secretQuestions", mQuestionsId);
             Signup.urlParams.put("secretAnswers", mAns);
             changeFragment(InvitePeople.newInstance(), InvitePeople.TAG);
         } else {

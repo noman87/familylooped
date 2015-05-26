@@ -16,6 +16,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.familylooped.MainActivity;
 import com.familylooped.R;
+import com.familylooped.auth.Login;
+import com.familylooped.auth.forgotPassword.ForgotPassword;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.async.AsyncHttpRequest;
@@ -41,28 +43,19 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static final String TAG = "Change Password";
+    private static String IS_FORGOT_PASSWORD = "is_forgot_password";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
     private EditText mOldPassword, mNewPassword, mConfirmPassword;
     private String mPassword = "";
+    private boolean mIsForgotPassword;
 
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ChnagePassword.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ChangePassword newInstance(String param1, String param2) {
+    public static ChangePassword newInstance(boolean is_forgot_password) {
         ChangePassword fragment = new ChangePassword();
         Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
+        args.putBoolean(IS_FORGOT_PASSWORD, is_forgot_password);
         fragment.setArguments(args);
         return fragment;
     }
@@ -82,6 +75,7 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            mIsForgotPassword = getArguments().getBoolean(IS_FORGOT_PASSWORD);
         }
     }
 
@@ -100,7 +94,9 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
         mOldPassword = (EditText) view.findViewById(R.id.txt_old_password);
         mNewPassword = (EditText) view.findViewById(R.id.txt_new_password);
         mConfirmPassword = (EditText) view.findViewById(R.id.txt_confirm_password);
-
+        if (mIsForgotPassword) {
+            mOldPassword.setVisibility(View.GONE);
+        }
     }
 
     @Override
@@ -110,15 +106,19 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
                 ((MainActivity) getActivity()).popFragmentIfStackExist();
                 break;
             case R.id.btn_save:
-                if (mOldPassword.getText().toString() != null) {
-                    byte[] data = Base64.decode(Utilities.getSaveData(getActivity(), Utilities.USER_PASSWORD), Base64.DEFAULT);
-                    try {
-                        mPassword = new String(data, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                if (!mIsForgotPassword) {
+                    if (mOldPassword.getText().toString() != null) {
+                        byte[] data = Base64.decode(Utilities.getSaveData(getActivity(), Utilities.USER_PASSWORD), Base64.DEFAULT);
+                        try {
+                            mPassword = new String(data, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
                     }
+                    validation();
+                } else {
+                    validation(true);
                 }
-                validation();
                 break;
         }
     }
@@ -168,12 +168,38 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
 
     }
 
+    private void validation(boolean isForgotPassword) {
+        if (TextUtils.isEmpty(mNewPassword.getText().toString()) || TextUtils.isEmpty(mConfirmPassword.getText().toString())) {
+            showDialog("All fields are mandatory to fill", "OK", "Cancel", new DialogClickListener() {
+                @Override
+                public void onPositiveButtonClick() {
+
+                }
+            });
+            return;
+        } else if (!TextUtils.equals(mNewPassword.getText().toString(), mConfirmPassword.getText().toString())) {
+
+            showDialog("New password and old password does not match! please try again", "OK", "Cancel", new DialogClickListener() {
+                @Override
+                public void onPositiveButtonClick() {
+
+                }
+            });
+            return;
+        } else {
+            proceedToChangePassword();
+        }
+
+    }
+
+
     private void proceedToChangePassword() {
-
         Map<String, String> params = new HashMap();
-        params.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
+        if (mIsForgotPassword)
+            params.put("userId", ForgotPassword.FORGOT_PASSWORD);
+        else
+            params.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
         params.put("password", mConfirmPassword.getText().toString());
-
         AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "resetPassword", Utilities.BASE_URL + "resetPassword", params, new AsyncHttpRequest.HttpResponseListener() {
             @Override
             public void onResponse(String response) {
@@ -181,11 +207,14 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
                 try {
                     JSONObject object = new JSONObject(response);
                     if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
-                        Utilities.saveData(getActivity(),Utilities.USER_PASSWORD,decodeString(mConfirmPassword.getText().toString()));
-                        Utilities.toast(getActivity(),"Your password has been changed");
+                        Utilities.saveData(getActivity(), Utilities.USER_PASSWORD, decodeString(mConfirmPassword.getText().toString()));
+                        Utilities.toast(getActivity(), "Your password has been changed");
                         mConfirmPassword.setText("");
                         mOldPassword.setText("");
                         mNewPassword.setText("");
+                        if (mIsForgotPassword) {
+                            changeFragmentWithoutBackStack(Login.newInstance(), Login.TAG);
+                        }
                     } else {
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
                             @Override
