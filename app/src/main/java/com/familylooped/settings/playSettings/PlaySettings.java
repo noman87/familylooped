@@ -115,19 +115,19 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
         }
         int photoPeriod = Utilities.getSavedInt(getActivity(), Utilities.PHOTO_PERIOD);
         if (photoPeriod < 0) {
-            Utilities.saveInt(getActivity(), Utilities.PHOTO_PERIOD, 1);
+            Utilities.saveInt(getActivity(), Utilities.PHOTO_PERIOD, Utilities.PHOTO_DAY);
         }
         switch (photoPeriod) {
-            case 1:
+            case Utilities.PHOTO_DAY:
                 ((RadioButton) view.findViewById(R.id.radio_day)).setChecked(true);
                 break;
-            case 2:
+            case Utilities.PHOTO_WEEK:
                 ((RadioButton) view.findViewById(R.id.radio_week)).setChecked(true);
                 break;
-            case 3:
+            case Utilities.PHOTO_MONTH:
                 ((RadioButton) view.findViewById(R.id.radio_month)).setChecked(true);
                 break;
-            case 4:
+            case Utilities.PHOTO_EVERY_THING:
                 ((RadioButton) view.findViewById(R.id.radio_evey_thing)).setChecked(true);
                 break;
         }
@@ -159,21 +159,21 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
 
 
             case R.id.radio_day:
-                photo_period = 1;
+                photo_period = Utilities.PHOTO_DAY;
                 break;
 
 
             case R.id.radio_week:
-                photo_period = 2;
+                photo_period = Utilities.PHOTO_WEEK;
                 break;
 
 
             case R.id.radio_month:
-                photo_period = 3;
+                photo_period = Utilities.PHOTO_MONTH;
                 break;
 
             case R.id.radio_evey_thing:
-                photo_period = 4;
+                photo_period = Utilities.PHOTO_EVERY_THING;
                 break;
         }
         if (group.getId() == R.id.radio_group)
