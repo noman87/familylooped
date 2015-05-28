@@ -1,94 +1,125 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/bg"
-    android:orientation="vertical"
-    android:padding="@dimen/medium_margin"
     tools:context="com.familylooped.settings.Settings">
 
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:layout_marginTop="@dimen/medium_margin"
-        android:background="@drawable/logo" />
-
     <LinearLayout
+
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
-        android:orientation="vertical">
+        android:layout_height="match_parent"
+
+        android:orientation="vertical"
+        android:padding="@dimen/medium_margin">
+
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/medium_margin"
+            android:background="@drawable/logo" />
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:gravity="center_horizontal"
-            android:layout_height="wrap_content">
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:orientation="vertical">
 
-            <ImageButton
-                android:id="@+id/btn_personal_data"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/personal_data" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:gravity="center_horizontal"
+                android:layout_height="wrap_content">
 
-            <ImageButton
-                android:id="@+id/btn_contacts"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/medium_margin"
-                android:background="@drawable/contacts" />
+                <ImageButton
+                    android:id="@+id/btn_personal_data"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/personal_data" />
+
+                <ImageButton
+                    android:id="@+id/btn_contacts"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/medium_margin"
+                    android:background="@drawable/contacts" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:gravity="center_horizontal"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/btn_play_settings"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/play_setting" />
+
+                <ImageButton
+                    android:id="@+id/btn_photos"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/medium_margin"
+                    android:background="@drawable/photos" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:gravity="center_horizontal"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/btn_privacy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/privacy" />
+
+                <ImageButton
+                    android:id="@+id/btn_about"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/medium_margin"
+                    android:background="@drawable/about" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:gravity="center_horizontal"
+                android:layout_height="wrap_content">
+
+                <ImageButton
+                    android:id="@+id/log_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="@dimen/medium_margin"
+                    android:background="@drawable/log_out" />
+
+
+            </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_marginTop="@dimen/medium_margin"
-            android:gravity="center_horizontal"
+
             android:layout_height="wrap_content">
 
             <ImageButton
-                android:id="@+id/btn_play_settings"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/play_setting" />
-
-            <ImageButton
-                android:id="@+id/btn_photos"
+                android:id="@id/btn_back"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="@dimen/medium_margin"
-                android:background="@drawable/photos" />
+                android:background="@drawable/btn_back" />
+
+
         </LinearLayout>
-
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:gravity="center_horizontal"
-            android:layout_height="wrap_content">
-
-            <ImageButton
-                android:id="@+id/btn_privacy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@drawable/privacy" />
-
-            <ImageButton
-                android:id="@+id/btn_about"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="@dimen/medium_margin"
-                android:background="@drawable/about" />
-        </LinearLayout>
-
-
     </LinearLayout>
-
-    <ImageButton
-        android:id="@id/btn_back"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/medium_margin"
-        android:background="@drawable/btn_back" />
-</LinearLayout>
+</ScrollView>

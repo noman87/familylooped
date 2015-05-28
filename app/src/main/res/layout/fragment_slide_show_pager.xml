@@ -31,7 +31,18 @@
             android:id="@+id/viewpager"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_weight="70"/>
+            android:layout_weight="70" />
+
+        <TextView
+            android:id="@+id/txt_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="24sp"
+            android:layout_marginLeft="@dimen/medium_margin"
+
+            android:textColor="@android:color/white"
+
+            android:textStyle="bold" />
 
         <LinearLayout
             android:id="@+id/layout_buttons"

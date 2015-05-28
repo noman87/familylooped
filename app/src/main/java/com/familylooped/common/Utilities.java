@@ -47,6 +47,7 @@ public class Utilities {
     public static final String PAID_USER = "1";
     public static final String EXPIRED_USER = "2";
 
+
     public static final String TCP_PROTOCOL_NAME = "tcp";
     public static final String UDP_PROTOCOL_NAME = "udp";
 
@@ -124,7 +125,7 @@ public class Utilities {
     public static final String USER_LAST_NAME = "last_name";
     public static final String USER_EMAIL = "email";
     public static final String USER_PASSWORD = "password";
-    public static final String DIR_NAME ="/FamilyLooped" ;
+    public static final String DIR_NAME = "/FamilyLooped";
     public static final String PHOTO_JSON = "photo_json";
     public static String DATE_FORMAT = "dd/M/yyyy hh:mm:ss";
 
@@ -142,9 +143,9 @@ public class Utilities {
 
     public static final String PHOTO_PERIOD = "photo_period";
     public static final int PHOTO_DAY = 1;
-    public static final int PHOTO_WEEK = 2;
-    public static final int PHOTO_MONTH = 3;
-    public static final int PHOTO_EVERY_THING = 4;
+    public static final int PHOTO_WEEK = 7;
+    public static final int PHOTO_MONTH = 30;
+    public static final int PHOTO_EVERY_THING = 3000000;
 
     public static <T> void printJSON(String TAG, Object object, Class<T> classOfT) {
         Gson gson = new Gson();
@@ -290,7 +291,7 @@ public class Utilities {
                 Settings.Secure.ANDROID_ID);
     }
 
-    public static boolean timeDiff(String startDate, String endDate) {
+    public static long timeDiff(String startDate, String endDate) {
         SimpleDateFormat simpleDateFormat =
                 new SimpleDateFormat("dd/M/yyyy hh:mm:ss");
         Date date1 = null, date2 = null;
@@ -320,8 +321,9 @@ public class Utilities {
         different = different % minutesInMilli;
 
         long elapsedSeconds = different / secondsInMilli;
-
-        if (elapsedDays > 0) {
+        Log.e("Days "," is"+elapsedDays);
+        return elapsedDays;
+        /*if (elapsedDays > 0) {
             return true;
         } else if (elapsedHours > 0) {
             return true;
@@ -329,7 +331,7 @@ public class Utilities {
             return true;
         } else {
             return false;
-        }
+        }*/
 
     }
 

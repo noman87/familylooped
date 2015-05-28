@@ -445,7 +445,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
     }
 
     private void addPhotoInList(String to) {
-        String timeAndId = "" + System.currentTimeMillis();
+        String timeAndId = Utilities.getData(System.currentTimeMillis(),Utilities.DATE_FORMAT);
         mList.add(new ModelMyPhoto(timeAndId, to, "gallery", timeAndId));
         mAdapterMyPhoto.notifyDataSetChanged();
     }

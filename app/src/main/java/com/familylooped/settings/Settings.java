@@ -13,6 +13,7 @@ import android.widget.RadioGroup;
 
 import com.familylooped.MainActivity;
 import com.familylooped.R;
+import com.familylooped.auth.AuthActivity;
 import com.familylooped.auth.InvitePeople;
 import com.familylooped.auth.Signup;
 import com.familylooped.common.Utilities;
@@ -94,6 +95,7 @@ public class Settings extends BaseFragment implements View.OnClickListener {
         ((ImageButton) view.findViewById(R.id.btn_play_settings)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_photos)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.log_out)).setOnClickListener(this);
 
 
     }
@@ -120,6 +122,11 @@ public class Settings extends BaseFragment implements View.OnClickListener {
 
             case R.id.btn_back:
                 ((MainActivity) getActivity()).popFragmentIfStackExist();
+                break;
+
+            case R.id.log_out:
+                Utilities.saveBoolean(getActivity(), Utilities.IS_REMEMBER, false);
+                changeActivity(AuthActivity.class);
                 break;
         }
     }

@@ -9,6 +9,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.familylooped.R;
+import com.familylooped.common.logger.Log;
 
 public class ActivitySlideShow extends FragmentActivity {
 
@@ -33,7 +34,12 @@ public class ActivitySlideShow extends FragmentActivity {
 
     }
 
-
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Log.e("BackPRess","buttons press");
+        finish();
+    }
 
     public void getCurrentPosition(){
 

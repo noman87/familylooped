@@ -56,6 +56,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     public static final String TAG = "Slide Show";
+    private String mDateFormat = "dd/M/yyyy hh:mm:ss";
     private static int mCurrentPagerIndex;
 
     // TODO: Rename and change types of parameters
@@ -75,6 +76,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
     private ImageView mPhoto;
     private ImageButton mBtnStop;
     private LinearLayout mLayoutStopButon;
+    private TextView mTxtName;
 
     /**
      * Use this factory method to create a new instance of
@@ -108,7 +110,6 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         period = Utilities.getSavedInt(getActivity(), Utilities.SLIDER_TIME);
-        delay = 3000;
 
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
@@ -133,6 +134,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         ((ImageButton) view.findViewById(R.id.btn_replay)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_delete)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_rotate)).setOnClickListener(this);
+        mTxtName = (TextView)view.findViewById(R.id.txt_name);
         mBtnStop = (ImageButton) view.findViewById(R.id.btn_stop);
         mBtnStop.setOnClickListener(this);
 
@@ -142,13 +144,15 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
             public boolean onTouch(View v, MotionEvent event) {
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     int visibility = layoutButtons.getVisibility();
-
                     if (visibility == View.VISIBLE) {
                         layoutButtons.setVisibility(View.INVISIBLE);
                         mLayoutStopButon.setVisibility(View.INVISIBLE);
+
                     } else if (visibility == View.INVISIBLE) {
                         layoutButtons.setVisibility(View.VISIBLE);
                         mLayoutStopButon.setVisibility(View.VISIBLE);
+                        stopSlideShow();
+                        timer(10000);
                     }
                 }
 
@@ -158,7 +162,8 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         });
 
 
-        mViewPager.setPageTransformer(true, new ReaderViewPagerTransformer(ReaderViewPagerTransformer.TransformType.FLOW));
+        mViewPager.setPageTransformer(false, new ReaderViewPagerTransformer(ReaderViewPagerTransformer.TransformType.FLOW));
+
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -169,6 +174,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
             public void onPageSelected(int position) {
                 /// currentIndex = position;
                 mCurrentPagerIndex = position;
+                mTxtName.setText("From: "+mList.get(position).getFrom());
             }
 
             @Override
@@ -182,16 +188,19 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
 
         mUpdateResults = new Runnable() {
             public void run() {
-                mViewPager.setCurrentItem(currentIndex);
                 currentIndex++;
                 if (currentIndex >= mList.size()) {
                     currentIndex = 0;
                 }
+                if (currentIndex == 0)
+                    mViewPager.setAdapter(mAdapter);
+                else
+                    mViewPager.setCurrentItem(currentIndex);
             }
         };
     }
 
-    private void timer() {
+    private void timer(int delay) {
         mTimer = new Timer();
         mTimer.scheduleAtFixedRate(new TimerTask() {
             public void run() {
@@ -204,10 +213,6 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         mTimer.cancel();
     }
 
-    public void playSlideShow() {
-        timer();
-    }
-
 
     private void showPhotos() {
         mList = new ArrayList<>();
@@ -216,17 +221,29 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         }
         mAdapter = new AdapterSlideShow(getChildFragmentManager(), mList);
         mViewPager.setAdapter(mAdapter);
-        timer();
+        if(mList.size()>0)
+        mTxtName.setText("From: "+mList.get(0).getFrom());
+
+        timer(period);
 
 
     }
 
     private void parseData(String json) {
         Gson gson = new Gson();
+        int days_preference = Utilities.getSavedInt(getActivity(), Utilities.PHOTO_PERIOD);
+        if (days_preference < 0) {
+            days_preference = Utilities.PHOTO_DAY;
+        }
+
         try {
             JSONArray jsonArray = new JSONArray(json);
             for (int i = 0; i < jsonArray.length(); i++) {
-                mList.add(gson.fromJson(jsonArray.getJSONObject(i).toString(), ModelMyPhoto.class));
+                JSONObject object = jsonArray.getJSONObject(i);
+                long timeDifference = Utilities.timeDiff(object.getString("time"), Utilities.getData(System.currentTimeMillis(), mDateFormat));
+                if(timeDifference<days_preference)
+                mList.add(gson.fromJson(object.toString(), ModelMyPhoto.class));
+
             }
 
         } catch (Exception e) {
@@ -254,7 +271,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
 
                     }
 
-                    timer();
+                    //timer();
 
 
                 } catch (JSONException e) {
@@ -297,7 +314,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
                         //File file = new File(mList.get(mViewPager.getCurrentItem()).getImage());
                         //boolean deleted = file.delete();
                         mAdapter.removeView(mViewPager, mViewPager.getCurrentItem());
-                        reInitViewPager();
+                        reInitViewPager(true);
 
                     }
                 });
@@ -311,6 +328,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
                 break;
             case R.id.btn_stop:
                 Log.e(TAG, "cLICK");
+                stopSlideShow();
                 getActivity().finish();
                 break;
         }
@@ -329,24 +347,38 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // mEmailAddress = textView.getText().toString();
-                timer();
+                timer(10000);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                timer();
+                timer(10000);
             }
         });
         builder.create().show();
 
     }
 
-    private void reInitViewPager() {
+    private void reInitViewPager(boolean is_increment) {
 
         mAdapter = new AdapterSlideShow(getChildFragmentManager(), mList);
         mViewPager.setAdapter(mAdapter);
-        mViewPager.setCurrentItem(mViewPager.getCurrentItem() + 1);
+        int position=0;
+        if (is_increment)
+            position =mViewPager.getCurrentItem() + 1;
+        else
+           position = mViewPager.getCurrentItem();
+            mViewPager.setCurrentItem(position);
+
+
+    }
+
+
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        stopSlideShow();
     }
 }
