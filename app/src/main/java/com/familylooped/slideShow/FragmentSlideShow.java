@@ -103,6 +103,7 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
         photo = (ImageView)view.findViewById(R.id.photo);
 
         photo.setImageURI(Uri.parse(mImagePath));
+        photo.setTag(mImagePath);
 
         /*ImageRequest imageRequest = new ImageRequest(mImagePath, new Response.Listener<Bitmap>() {
             @Override

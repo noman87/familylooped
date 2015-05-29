@@ -3,11 +3,16 @@ package com.familylooped.slideShow;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
+import android.media.ExifInterface;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
+import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
@@ -39,6 +44,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -134,7 +140,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         ((ImageButton) view.findViewById(R.id.btn_replay)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_delete)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_rotate)).setOnClickListener(this);
-        mTxtName = (TextView)view.findViewById(R.id.txt_name);
+        mTxtName = (TextView) view.findViewById(R.id.txt_name);
         mBtnStop = (ImageButton) view.findViewById(R.id.btn_stop);
         mBtnStop.setOnClickListener(this);
 
@@ -174,7 +180,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
             public void onPageSelected(int position) {
                 /// currentIndex = position;
                 mCurrentPagerIndex = position;
-                mTxtName.setText("From: "+mList.get(position).getFrom());
+                mTxtName.setText("From: " + mList.get(position).getFrom());
             }
 
             @Override
@@ -221,8 +227,8 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         }
         mAdapter = new AdapterSlideShow(getChildFragmentManager(), mList);
         mViewPager.setAdapter(mAdapter);
-        if(mList.size()>0)
-        mTxtName.setText("From: "+mList.get(0).getFrom());
+        if (mList.size() > 0)
+            mTxtName.setText("From: " + mList.get(0).getFrom());
 
         timer(period);
 
@@ -241,8 +247,8 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject object = jsonArray.getJSONObject(i);
                 long timeDifference = Utilities.timeDiff(object.getString("time"), Utilities.getData(System.currentTimeMillis(), mDateFormat));
-                if(timeDifference<days_preference)
-                mList.add(gson.fromJson(object.toString(), ModelMyPhoto.class));
+                if (timeDifference < days_preference)
+                    mList.add(gson.fromJson(object.toString(), ModelMyPhoto.class));
 
             }
 
@@ -290,6 +296,30 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         AppController.getInstance().addToRequestQueue(request, "get_photos");
     }
 
+    private void saveRotateImage(String fileName, int orientation) {
+        String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + Utilities.DIR_NAME;
+        String completeName = dir +"/"+ fileName;
+
+        File file = new File(completeName);
+        Log.e("Is exist", "Value is " + file.exists());
+
+        try {
+            Bitmap bitmap = BitmapFactory.decodeFile(completeName);
+            Matrix matrix = new Matrix();
+            matrix.postRotate(orientation);
+            file.delete();
+            File file_new = new File(completeName);
+            Bitmap bmp2 = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+            FileOutputStream fOut = new FileOutputStream(file_new);
+            bmp2.compress(Bitmap.CompressFormat.PNG, 85, fOut);
+            fOut.flush();
+            fOut.close();
+            bitmap.recycle();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void onClick(View v) {
@@ -297,10 +327,18 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         switch (v.getId()) {
             case R.id.btn_rotate:
                 stopSlideShow();
+                timer(5000);
+
+
+
                 FrameLayout layout = (FrameLayout) mViewPager.getChildAt(mViewPager.getCurrentItem());
                 ImageView imageView = (ImageView) layout.getChildAt(0);
+               // ImageView imageView = (ImageView) mViewPager.findViewWithTag(mList.get(mViewPager.getCurrentItem()));
+
                 mRotationValue = mRotationValue + 90;
                 imageView.setRotation(mRotationValue);
+                String fileName[] = mList.get(mViewPager.getCurrentItem()).getImage().split("/");
+                saveRotateImage(fileName[fileName.length - 1], mRotationValue);
                 if (mRotationValue == 360)
                     mRotationValue = 0;
 
@@ -365,12 +403,12 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
 
         mAdapter = new AdapterSlideShow(getChildFragmentManager(), mList);
         mViewPager.setAdapter(mAdapter);
-        int position=0;
+        int position = 0;
         if (is_increment)
-            position =mViewPager.getCurrentItem() + 1;
+            position = mViewPager.getCurrentItem() + 1;
         else
-           position = mViewPager.getCurrentItem();
-            mViewPager.setCurrentItem(position);
+            position = mViewPager.getCurrentItem();
+        mViewPager.setCurrentItem(position);
 
 
     }

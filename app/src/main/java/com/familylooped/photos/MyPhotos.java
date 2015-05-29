@@ -243,6 +243,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
 
                     }
                 });
+
     }
 
     private void removePhoto(final int position) {
@@ -319,8 +320,6 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
 
     private void downloadQueue() {
         downloadFile(mDownloadList.get(mDownloadIndex));
-
-
     }
 
 
