@@ -10,17 +10,48 @@ import com.familylooped.slideShow.FragmentSlideShow;
 public class ModelMyPhoto {
 
 
-    String id, image, from, time;
+    String id, image, from, timestamp, date;
     boolean check, show;
+    int rotationValue;
 
-
-    public ModelMyPhoto(String id, String image, String from, String time) {
+    public ModelMyPhoto(String id, String image, String from, String timestamp, String date, boolean check, boolean show) {
         this.id = id;
         this.image = image;
         this.from = from;
-        this.time = time;
+        this.timestamp = timestamp;
+        this.date = date;
+        this.check = check;
+        this.show = show;
+        this.rotationValue =0;
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public void setDate(String date) {
+        this.date = date;
+    }
+
+    public ModelMyPhoto(String id, String image, String from, String timestamp) {
+        this.id = id;
+        this.image = image;
+        this.from = from;
+        this.timestamp = timestamp;
+        this.check = check;
+        this.show = show;
+        this.show = false;
+        this.check = false;
+        this.rotationValue =0;
+    }
+
+    public String getTimestamp() {
+        return timestamp;
+    }
+
+    public void setTimestamp(String timestamp) {
+        this.timestamp = timestamp;
+    }
 
     public boolean isShow() {
         return show;
@@ -54,13 +85,6 @@ public class ModelMyPhoto {
         this.from = from;
     }
 
-    public String getTime() {
-        return time;
-    }
-
-    public void setTime(String time) {
-        this.time = time;
-    }
 
     public String getImage() {
         return image;
@@ -70,8 +94,15 @@ public class ModelMyPhoto {
         this.image = image;
     }
 
+    public int getRotationValue() {
+        return rotationValue;
+    }
+
+    public void setRotationValue(int rotationValue) {
+        this.rotationValue = rotationValue;
+    }
 
     public Fragment createFragment() {
-        return FragmentSlideShow.newInstance(image);
+        return FragmentSlideShow.newInstance(image,rotationValue);
     }
 }

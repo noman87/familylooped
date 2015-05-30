@@ -5,6 +5,10 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.util.SparseArray;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.familylooped.common.logger.Log;
 import com.familylooped.photos.ModelMyPhoto;
@@ -18,6 +22,12 @@ public class AdapterSlideShow extends FragmentStatePagerAdapter {
     // private ArrayList<View> views = new ArrayList<>();
     private ArrayList<ModelMyPhoto> list;
     private long baseId = 0;
+    SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
+
+
+
+
+
 
     public AdapterSlideShow(FragmentManager fm, ArrayList<ModelMyPhoto> list) {
         super(fm);
@@ -28,6 +38,10 @@ public class AdapterSlideShow extends FragmentStatePagerAdapter {
     @Override
     public Fragment getItem(int position) {
         return list.get(position).createFragment();
+    }
+
+    public View getCurrentView(int position){
+        return getItem(position).getView();
     }
 
     @Override
@@ -74,7 +88,6 @@ public class AdapterSlideShow extends FragmentStatePagerAdapter {
 
     public int removeView(ViewPager pager, int position) {
         list.remove(position);
-
 //
 //        //  notifyChangeInPosition(position);
 //        //    pager.removeViewAt(position);
@@ -83,4 +96,22 @@ public class AdapterSlideShow extends FragmentStatePagerAdapter {
 
         return position;
     }
+
+    @Override
+    public Object instantiateItem(ViewGroup container, int position) {
+        Fragment fragment = (Fragment) super.instantiateItem(container, position);
+        registeredFragments.put(position, fragment);
+        return fragment;
+    }
+
+    @Override
+    public void destroyItem(ViewGroup container, int position, Object object) {
+        registeredFragments.remove(position);
+        super.destroyItem(container, position, object);
+    }
+
+    public Fragment getRegisteredFragment(int position) {
+        return registeredFragments.get(position);
+    }
+
 }

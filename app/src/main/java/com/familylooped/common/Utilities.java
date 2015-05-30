@@ -28,6 +28,7 @@ import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -321,7 +322,7 @@ public class Utilities {
         different = different % minutesInMilli;
 
         long elapsedSeconds = different / secondsInMilli;
-        Log.e("Days "," is"+elapsedDays);
+        Log.e("Days ", " is" + elapsedDays);
         return elapsedDays;
         /*if (elapsedDays > 0) {
             return true;
@@ -342,6 +343,18 @@ public class Utilities {
         SimpleDateFormat sdf = new SimpleDateFormat(formate);
         String formattedDate = sdf.format(date);
         return formattedDate;
+    }
+
+    public static long dateToTimeStamp(String date, String dateFormat) {
+        Date newDate = null;
+        try {
+            DateFormat formatter = new SimpleDateFormat(dateFormat);
+            newDate = (Date) formatter.parse(date);
+            System.out.println("Today is " + newDate.getTime());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return newDate.getTime();
     }
 
 

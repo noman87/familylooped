@@ -246,7 +246,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
             JSONArray jsonArray = new JSONArray(json);
             for (int i = 0; i < jsonArray.length(); i++) {
                 JSONObject object = jsonArray.getJSONObject(i);
-                long timeDifference = Utilities.timeDiff(object.getString("time"), Utilities.getData(System.currentTimeMillis(), mDateFormat));
+                long timeDifference = Utilities.timeDiff(object.getString("timestamp"), Utilities.getData(System.currentTimeMillis(), mDateFormat));
                 if (timeDifference < days_preference)
                     mList.add(gson.fromJson(object.toString(), ModelMyPhoto.class));
 

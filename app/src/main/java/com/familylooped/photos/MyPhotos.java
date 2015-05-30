@@ -73,6 +73,8 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
     private static String NOTIFICATION = "notification";
     private ProgressDialog mProgressDialog;
 
+    Gson gson = new Gson();
+
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
@@ -171,11 +173,8 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
                 return false;
             }
         });
-        if (is_notification) {
-            download_photos();
-        } else {
-            showPhotos();
-        }
+
+        showPhotos();
 
 
     }
@@ -221,7 +220,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
                     @Override
                     public void onDownloadComplete(int id) {
                         Log.e("STATS ", "Download complete Success " + id);
-                        mList.add(new ModelMyPhoto(photo.getId(), path, photo.from, photo.time));
+                        mList.add(new ModelMyPhoto(photo.getId(), path, photo.from, photo.getTimestamp()));
                         mDownloadIndex++;
                         if (mDownloadIndex == mList.size()) {
                             mDownloadIndex = 0;
@@ -444,9 +443,10 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
     }
 
     private void addPhotoInList(String to) {
-        String timeAndId = Utilities.getData(System.currentTimeMillis(),Utilities.DATE_FORMAT);
+        String timeAndId = Utilities.getData(System.currentTimeMillis(), Utilities.DATE_FORMAT);
         mList.add(new ModelMyPhoto(timeAndId, to, "gallery", timeAndId));
         mAdapterMyPhoto.notifyDataSetChanged();
+        Utilities.saveData(getActivity(), Utilities.PHOTO_JSON, gson.toJson(mList));
     }
 
 
@@ -463,15 +463,14 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
     @Override
     public void onDestroyView() {
         super.onDestroyView();
-        Gson gson = new Gson();
-        Utilities.saveData(getActivity(), Utilities.PHOTO_JSON, gson.toJson(mList));
-        MediaScannerConnection.scanFile(getActivity(), new String[]{Environment.getExternalStorageDirectory().toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
+
+        /*MediaScannerConnection.scanFile(getActivity(), new String[]{Environment.getExternalStorageDirectory().toString()}, null, new MediaScannerConnection.OnScanCompletedListener() {
 
             public void onScanCompleted(String path, Uri uri) {
                 Log.i("ExternalStorage", "Scanned " + path + ":");
                 Log.i("ExternalStorage", "-> uri=" + uri);
             }
-        });
+        });*/
     }
 
     public void selectAll() {

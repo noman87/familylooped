@@ -92,7 +92,7 @@
         <RadioButton
             android:id="@+id/radio_evey_thing"
             style="@style/play_settings_radio"
-            android:text="Evey Thing" />
+            android:text="Everything" />
 
 
     </RadioGroup>

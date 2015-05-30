@@ -17,7 +17,8 @@ import android.util.Log;
 import com.familylooped.MainActivity;
 import com.familylooped.R;
 import com.familylooped.Splash;
-import com.familylooped.downloadPhotos.DownloadService;
+
+import com.familylooped.slideShow.DownloadService;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 public class GcmIntentService extends IntentService {
@@ -101,7 +102,7 @@ public class GcmIntentService extends IntentService {
         mBuilder.setContentIntent(contentIntent);
         mBuilder.setAutoCancel(true);
         mNotificationManager.notify((int) System.currentTimeMillis(), mBuilder.build());
-
+        this.startService(new Intent(this.getApplicationContext(), DownloadService.class));
 
     }
 }

@@ -5,7 +5,6 @@ import android.app.ProgressDialog;
 import android.graphics.Bitmap;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Fragment;
 import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -27,17 +26,13 @@ import com.familylooped.common.logger.Log;
 
 import java.io.File;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link FragmentSlideShow#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class FragmentSlideShow extends BaseFragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String IMAGE_PATH = "image_path";
+    private static String ROTATION_VALUE= "rotation_value";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -67,10 +62,11 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
         return fragment;
     }
 
-    public static FragmentSlideShow newInstance(String imagePath) {
+    public static FragmentSlideShow newInstance(String imagePath,int rotationValue) {
         FragmentSlideShow fragment = new FragmentSlideShow();
         Bundle args = new Bundle();
         args.putString(IMAGE_PATH, imagePath);
+        args.putInt(ROTATION_VALUE, rotationValue);
         fragment.setArguments(args);
         return fragment;
     }
@@ -84,7 +80,7 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mImagePath = getArguments().getString(IMAGE_PATH);
-
+            mRotationValue = getArguments().getInt(ROTATION_VALUE);
 
         }
     }
@@ -101,9 +97,7 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
         super.onViewCreated(view, savedInstanceState);
 
         photo = (ImageView)view.findViewById(R.id.photo);
-
         photo.setImageURI(Uri.parse(mImagePath));
-        photo.setTag(mImagePath);
 
         /*ImageRequest imageRequest = new ImageRequest(mImagePath, new Response.Listener<Bitmap>() {
             @Override
