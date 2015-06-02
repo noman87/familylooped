@@ -16,6 +16,7 @@ import com.familylooped.R;
 import com.familylooped.auth.SecretQuestion;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.fragments.BaseFragment;
+import com.familylooped.common.logger.Log;
 import com.familylooped.settings.personalData.changePassword.ChangePassword;
 
 /**

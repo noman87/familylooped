@@ -1,81 +1,98 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@drawable/bg"
-    android:orientation="vertical"
-    android:padding="@dimen/medium_margin"
-    tools:context="com.familylooped.auth.invitePeople.FragmentManuallyAddContact">
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_horizontal"
-        android:background="@drawable/logo"
-        android:layout_marginTop="@dimen/small_margin" />
+    android:background="@drawable/bg">
 
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="match_parent"
 
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:padding="@dimen/medium_margin"
+        tools:context="com.familylooped.auth.invitePeople.FragmentManuallyAddContact">
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/logo"
+            android:layout_marginTop="@dimen/small_margin" />
+
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_marginTop="@dimen/medium_margin"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_marginTop="@dimen/medium_margin"
+                android:layout_height="wrap_content">
+
+                <EditText
+                    android:id="@+id/txt_first_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight=".5"
+                    android:inputType="textPersonName"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
+                    android:hint="First Name"
+                    style="@style/common_edit_text" />
+
+                <EditText
+                    android:id="@+id/txt_last_name"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+
+                    android:inputType="textPersonName"
+                    android:singleLine="true"
+                    android:imeOptions="actionNext"
+                    android:layout_weight=".5"
+                    android:hint="Last Name"
+                    style="@style/common_edit_text"
+                    android:layout_marginLeft="@dimen/small_margin" />
+            </LinearLayout>
 
             <EditText
-                android:id="@+id/txt_first_name"
-                android:layout_width="0dp"
+                android:id="@+id/txt_email"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight=".5"
-                android:hint="First Name"
-                style="@style/common_edit_text"/>
-
-            <EditText
-                android:id="@+id/txt_last_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight=".5"
-                android:hint="Last Name"
-                style="@style/common_edit_text"
-                android:layout_marginLeft="@dimen/small_margin"/>
+                android:hint="Email"
+                android:inputType="textEmailAddress"
+                android:singleLine="true"
+                android:imeOptions="actionDone"
+                android:layout_marginTop="@dimen/small_margin"
+                style="@style/common_edit_text" />
         </LinearLayout>
 
-        <EditText
-            android:id="@+id/txt_email"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Email"
-            android:layout_marginTop="@dimen/small_margin"
-            style="@style/common_edit_text"/>
-    </LinearLayout>
-
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/medium_margin"
-        android:gravity="center">
+            android:layout_marginTop="@dimen/medium_margin"
+            android:gravity="center">
 
 
+            <ImageButton
+                android:id="@+id/btn_back"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/btn_back"
+                android:layout_marginRight="@dimen/small_margin" />
 
-        <ImageButton
-            android:id="@+id/btn_back"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/btn_back"
-            android:layout_marginRight="@dimen/small_margin" />
-        <ImageButton
-            android:id="@+id/btn_add"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/add" />
+            <ImageButton
+                android:id="@+id/btn_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/add" />
+
+        </LinearLayout>
+
 
     </LinearLayout>
-
-
-</LinearLayout>
+</ScrollView>

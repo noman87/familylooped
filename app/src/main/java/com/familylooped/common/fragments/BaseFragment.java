@@ -9,9 +9,12 @@ import android.support.v7.app.ActionBarActivity;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.view.animation.Animation;
 
 import com.familylooped.R;
+import com.familylooped.common.Utilities;
+import com.familylooped.common.logger.Log;
 
 public abstract class BaseFragment extends Fragment {
 
@@ -20,6 +23,13 @@ public abstract class BaseFragment extends Fragment {
     protected void setTitle(String title) {
        // getActionBar().setTitle(title);
 
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+        Log.e("Parent fargmetn","Called parent");
+        Utilities.hideKeyboard(getActivity(), view);
     }
 
     /**

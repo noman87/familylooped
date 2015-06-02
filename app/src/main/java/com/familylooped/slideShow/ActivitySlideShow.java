@@ -3,7 +3,11 @@ package com.familylooped.slideShow;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -15,6 +19,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
@@ -121,7 +126,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
         mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-                mRotationValue=0;
+                mRotationValue = 0;
             }
 
             @Override
@@ -245,8 +250,8 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
         AppController.getInstance().addToRequestQueue(request, "get_photos");
     }
 
-    private void saveRotateImage(String fileName,String orientation) {
-        Log.e(TAG,"rOTATION "+orientation);
+    private void saveRotateImage(String fileName, String orientation) {
+        Log.e(TAG, "rOTATION " + orientation);
         final ProgressDialog dialog = new ProgressDialog(this);
         class SavingFile extends AsyncTask<String, String, String> {
 
@@ -300,7 +305,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
                 dialog.hide();
             }
         }
-        new SavingFile().execute(fileName,orientation);
+        new SavingFile().execute(fileName, orientation);
     }
 
 
@@ -322,7 +327,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
                 mRotationValue = mRotationValue + 90;
                 fragment.photo.setRotation(mRotationValue);
                 String fileName[] = mList.get(mViewPager.getCurrentItem()).getImage().split("/");
-                saveRotateImage(fileName[fileName.length - 1], ""+ mRotationValue);
+                saveRotateImage(fileName[fileName.length - 1], "" + mRotationValue);
                 if (mRotationValue == 360)
                     mRotationValue = 0;
 
@@ -365,7 +370,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
         View view = inflater.inflate(R.layout.invite_popup_view, null);
         final TextView textView = (TextView) view.findViewById(R.id.txt_email);
         builder.setView(view);
-        builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+        builder.setPositiveButton("Send", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // mEmailAddress = textView.getText().toString();
@@ -397,10 +402,18 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
 
     }
 
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        LocalBroadcastManager.getInstance(this).registerReceiver(mPhotoReceiver, new IntentFilter("my-event"));
+    }
+
     @Override
     protected void onPause() {
         super.onPause();
         stopSlideShow();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mPhotoReceiver);
     }
 
     @Override
@@ -415,4 +428,19 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
         AlertDialogFragment fragment = AlertDialogFragment.newInstance(message, done, cancel, listener);
         fragment.show(getSupportFragmentManager(), "Dialog");
     }
+
+
+    private BroadcastReceiver mPhotoReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String jsonString = intent.getExtras().getString("json");
+            ModelMyPhoto photo = gson.fromJson(jsonString, ModelMyPhoto.class);
+            mList.add(photo);
+            mAdapter.notifyDataSetChanged();
+
+        }
+    };
 }
+
+
+

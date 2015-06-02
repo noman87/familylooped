@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.os.IBinder;
 import android.support.v4.app.NotificationCompat;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.widget.Toast;
 
@@ -105,7 +106,7 @@ public class DownloadService extends Service {
             Log.e("formatted string: ", "" + currentTime);
             Utilities.saveData(this, Utilities.PHOTO_TIME, "" + currentTime);
             urlParams.put("dateTime", "2015-05-01 11:01:04 +0500");
-            //urlParams.put("dateTime", currentTime.toString());
+           // urlParams.put("dateTime", "2015-06-01 11:01:04 +0500");
 
         }
 
@@ -166,8 +167,12 @@ public class DownloadService extends Service {
                     @Override
                     public void onDownloadComplete(int id) {
                         Log.e("STATS ", "Download complete Success " + id);
-                        mList.add(new ModelMyPhoto(photo.getId(),"file:"+ destinationUri.toString(),photo.getFrom() ,
-                                Utilities.getData(Utilities.dateToTimeStamp(photo.getDate(),"yyyy-MM-dd hh:mm:ss"), Utilities.DATE_FORMAT)));
+                        ModelMyPhoto downloadedPhoto = new ModelMyPhoto(photo.getId(), "file:" + destinationUri.toString(), photo.getFrom(),
+                                Utilities.getData(Utilities.dateToTimeStamp(photo.getDate(), "yyyy-MM-dd hh:mm:ss"), Utilities.DATE_FORMAT));
+                        mList.add(downloadedPhoto);
+                        Intent intent = new Intent("my-event");
+                        intent.putExtra("json",gson.toJson(downloadedPhoto));
+                        LocalBroadcastManager.getInstance(DownloadService.this).sendBroadcast(new Intent(intent));
                         savePhotoListJson();
                         mDownloadIndex++;
                         mBuilder.setContentText(("Download in progress " + mDownloadList.size() + " / " + mDownloadIndex));

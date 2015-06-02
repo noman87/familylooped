@@ -214,7 +214,7 @@ public class Signup extends BaseFragment implements View.OnClickListener {
         switch (v.getId()) {
             case R.id.btn_next:
                 if (mIsUpdate)
-                    changeFragment(SecretQuestion.newInstance(), SecretQuestion.TAG);
+                    changeFragment(SecretQuestion.newInstance(true), SecretQuestion.TAG);
                 else
                     validate();
                 break;
