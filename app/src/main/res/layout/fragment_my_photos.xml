@@ -20,6 +20,16 @@
         android:layout_marginTop="@dimen/small_margin"
         android:gravity="center">
         <ImageButton
+            android:id="@+id/btn_diselect"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginRight="@dimen/medium_margin"
+            android:visibility="gone"
+            android:background="@drawable/icon_delete"/>
+
+
+
+        <ImageButton
             android:id="@+id/btn_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -45,7 +55,7 @@
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight="1"
-        android:columnWidth="90dp"
+        android:columnWidth="@dimen/photo_width"
         android:layout_marginTop="@dimen/small_margin"
         android:numColumns="auto_fit"
         android:verticalSpacing="2dp"

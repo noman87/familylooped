@@ -6,7 +6,7 @@
     android:padding="@dimen/small_margin"
     android:hint="Enter your message"
     android:inputType="textMultiLine"
-    android:minLines="8"
+    android:minLines="5"
     android:maxLines="10"
 
 

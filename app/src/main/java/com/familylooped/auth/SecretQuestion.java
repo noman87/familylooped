@@ -56,7 +56,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
     private Spinner spinner, spinner2;
     private EditText txt_ans1, txt_ans2;
     private String mQuestionsId;
-    private String mAns;
+    private String mAns, mUsersSelectedQuestion1, mUsersSelectedQuestion2, mUsersSelectedAnswer1, mUsersSelectedAnswer2;
 
 
     /**
@@ -151,6 +151,8 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
 
                     }
                     setupAdapter();
+                    if (isUpdate)
+                        getUsersSecretQuestions();
 
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -165,6 +167,67 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
 
         AppController.getInstance().addToRequestQueue(request, "secretQuestion");
     }
+
+
+    private void getUsersSecretQuestions() {
+
+        HashMap<String, String> urlParams = new HashMap<>();
+        urlParams.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
+        AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "getUsersSecretQuestions", Utilities.BASE_URL + "userProfile", urlParams, new AsyncHttpRequest.HttpResponseListener() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONObject object = new JSONObject(response);
+                    JSONObject data = object.getJSONObject("data");
+                    txt_alternate_email.setText(data.getString("alterEmail"));
+                    JSONArray securityQuestions = data.getJSONArray("securityQuestions");
+                    for (int i = 0; i <= 1; i++) {
+                        mUsersSelectedQuestion1 = securityQuestions.getJSONObject(i).getString("title");
+                        mUsersSelectedAnswer1 = securityQuestions.getJSONObject(i).getString("answer");
+                        //mUsersSelectedQuestion2 = securityQuestions.getJSONObject(i).getString("title");
+
+                        //mUsersSelectedAnswer2 = securityQuestions.getJSONObject(i).getString("answer");
+                        if (i == 0) {
+                            spinner.setSelection(getQuestionPosition(1, mUsersSelectedQuestion1));
+                            txt_ans1.setText(mUsersSelectedAnswer1);
+                        } else {
+                            spinner2.setSelection(getQuestionPosition(2, mUsersSelectedQuestion1));
+                            txt_ans2.setText(mUsersSelectedAnswer1);
+                        }
+
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+
+            }
+        });
+
+        AppController.getInstance().addToRequestQueue(request, "getUsersSecretQuestions");
+
+
+    }
+
+
+    private int getQuestionPosition(int questionNumber, String strQuestion) {
+        String questions[];
+        if (questionNumber == 1) {
+            questions = getResources().getStringArray(R.array.secret_question_1);
+        } else {
+            questions = getResources().getStringArray(R.array.secret_question_2);
+        }
+        for (int i = 0; i < questions.length; i++) {
+            if (TextUtils.equals(questions[i], strQuestion)) {
+                return i;
+            }
+        }
+        return 0;
+    }
+
 
     private void setupAdapter() {
         ArrayList<String> list1 = new ArrayList<>();

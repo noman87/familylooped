@@ -23,6 +23,7 @@ import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -80,12 +81,14 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
     private TextView mTxtName;
     private String TAG = "Activity Slide Show";
     Gson gson = new Gson();
+    private int mSelectedPosition;
 
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_slide_show);
+
         period = Utilities.getSavedInt(this, Utilities.SLIDER_TIME);
         layoutButtons = (LinearLayout) findViewById(R.id.layout_buttons);
         mLayoutStopButon = (LinearLayout) findViewById(R.id.layout_stop_button);
@@ -181,6 +184,10 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
         }
         mAdapter = new AdapterSlideShow(getSupportFragmentManager(), mList);
         mViewPager.setAdapter(mAdapter);
+        if (getIntent().getExtras() != null) {
+            mSelectedPosition = getIntent().getExtras().getInt("position");
+            mViewPager.setCurrentItem(mSelectedPosition);
+        }
         if (mList.size() > 0)
             mTxtName.setText("From: " + mList.get(0).getFrom());
 
@@ -349,8 +356,16 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
 
             case R.id.btn_replay:
                 //playSlideShow();
-                showPopup();
                 stopSlideShow();
+                if (!TextUtils.equals(mList.get(mViewPager.getCurrentItem()).getFrom(), "gallery"))
+                    showPopup();
+                else
+                    showDialog("This photo has no email address attached", "OK", "Cancel", new DialogClickListener() {
+                        @Override
+                        public void onPositiveButtonClick() {
+
+                        }
+                    });
 
                 break;
             case R.id.btn_stop:

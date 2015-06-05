@@ -32,6 +32,7 @@ import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
 import com.familylooped.common.logger.Log;
+import com.familylooped.slideShow.ActivitySlideShow;
 import com.google.gson.Gson;
 import com.kbeanie.imagechooser.api.ChooserType;
 import com.kbeanie.imagechooser.api.ChosenImage;
@@ -64,7 +65,7 @@ import java.util.Map;
  * Use the {@link MyPhotos#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyPhotos extends BaseFragment implements View.OnClickListener {
+public class MyPhotos extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -85,6 +86,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
     private int mDownloadIndex = 0;
     private ImageChooserManager imageChooserManager;
     private int mImageCount;
+    private ImageButton mBtnDeselect;
 
 
     /**
@@ -152,9 +154,13 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
         ((ImageButton) view.findViewById(R.id.btn_select)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_delete)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
+        mBtnDeselect = (ImageButton) view.findViewById(R.id.btn_diselect);
+        mBtnDeselect.setOnClickListener(this);
+
         // createFolder();
         initializePhotoList();
         mGridView = (GridView) view.findViewById(R.id.grid_view);
+        mGridView.setOnItemClickListener(this);
         mProgressDialog = new ProgressDialog(getActivity());
         mProgressDialog.setTitle("Downloading");
         mProgressDialog.setMessage("Downloading images...");
@@ -352,15 +358,28 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.btn_delete:
                 removePhoto();
+                mBtnDeselect.setVisibility(View.GONE);
                 break;
             case R.id.btn_select:
                 selectAll();
+                mBtnDeselect.setVisibility(View.VISIBLE);
                 break;
 
             case R.id.btn_back:
                 ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
                 break;
+            case R.id.btn_diselect:
+                deSelectAll();
+                mBtnDeselect.setVisibility(View.GONE);
+                break;
         }
+    }
+
+    private void deSelectAll() {
+        for (ModelMyPhoto item : mList) {
+            item.setCheck(false);
+        }
+        mAdapterMyPhoto.notifyDataSetChanged();
     }
 
     private void removePhoto() {
@@ -381,7 +400,13 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
                 item.setShow(true);
             }
         }
+
+        updateJson();
         mAdapterMyPhoto.notifyDataSetChanged();
+    }
+
+    private void updateJson() {
+        Utilities.saveData(getActivity(), Utilities.PHOTO_JSON, gson.toJson(mList));
     }
 
     private void addPhoto() {
@@ -478,5 +503,13 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener {
             item.setCheck(true);
         }
         mAdapterMyPhoto.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Log.e(TAG, "" + position);
+        Bundle bundle = new Bundle();
+        bundle.putInt("position", position);
+        changeActivity(ActivitySlideShow.class, bundle);
     }
 }

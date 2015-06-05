@@ -10,8 +10,9 @@
     <dimen name="large_margin">24dp</dimen>
 
     <dimen name="navigation_drawer_width">240dp</dimen>
-    <dimen name="photo_height">100dp</dimen>
 
+    <dimen name="photo_height">100dp</dimen>
+    <dimen name="photo_width">100dp</dimen>
     <dimen name="default_margin">0dp</dimen>
 
     <dimen name="flag_width_size">50dp</dimen>
@@ -37,5 +38,6 @@
     <dimen name="signup_textbox_size">15sp</dimen>
     <dimen name="domin_name">15sp</dimen>
     <dimen name="common_text_size">20sp</dimen>
+    <dimen name="grid_column_width">90dp</dimen>
 
 </resources>

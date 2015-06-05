@@ -124,7 +124,7 @@ public class DownloadService extends Service {
                             mDownloadList.add(gson.fromJson(data.getJSONObject(i).toString(), ModelMyPhoto.class));
                         }
                         downloadQueue();
-                        mBuilder.setContentText("Download in progress " + mDownloadList.size() + " / " + mDownloadIndex);
+                        mBuilder.setContentText("Download in progress " + mDownloadIndex + " / " + mDownloadList.size() );
 
 
                     } else {

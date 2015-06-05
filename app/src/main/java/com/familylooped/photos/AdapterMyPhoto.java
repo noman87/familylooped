@@ -62,42 +62,53 @@ public class AdapterMyPhoto extends ArrayAdapter<ModelMyPhoto> {
             convertView.setTag(viewHolder);
         }
         viewHolder = (ViewHolder) convertView.getTag();
-        Log.e("Path", "is " + list.get(position).getImage());
+        //Log.e("Path", "is " + list.get(position).getImage());
         Picasso.with(activity).load(Uri.parse(list.get(position).getImage())).into(viewHolder.imageView);
 
 
-        viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
+        /*viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
+
                 //showImage(Uri.fromFile(file));
-                if (list.get(position).isCheck())
-                    list.get(position).setCheck(false);
-                else
-                    list.get(position).setCheck(true);
-                notifyDataSetChanged();
+                //if (list.get(position).isCheck())
+                //  list.get(position).setCheck(false);
+                //else
+                //list.get(position).setCheck(true);
+                //notifyDataSetChanged();
+
+
                 /*if (finalViewHolder.checkBox.getVisibility() == View.GONE) {
                     finalViewHolder.checkBox.setVisibility(View.VISIBLE);
                     finalViewHolder.checkBox.setChecked(true);
                 } else {
                     finalViewHolder.checkBox.setVisibility(View.GONE);
                     finalViewHolder.checkBox.setChecked(false);
-                }*/
+                }
             }
-        });
+        });*/
 
+        final ViewHolder finalViewHolder = viewHolder;
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 list.get(position).setCheck(isChecked);
+                if(isChecked)
+                    finalViewHolder.imageView.setAlpha(0.5f);
+                else
+
+                    finalViewHolder.imageView.setAlpha(1f);
             }
         });
         if (list.get(position).check) {
-           list.get(position).setShow(true);
+            list.get(position).setShow(true);
             viewHolder.checkBox.setChecked(true);
+            //viewHolder.imageView.setAlpha(0.5f);
         } else {
             viewHolder.checkBox.setChecked(false);
             list.get(position).setShow(false);
+           // viewHolder.imageView.setAlpha(1f);
         }
         if (list.get(position).isShow()) {
             viewHolder.checkBox.setVisibility(View.VISIBLE);

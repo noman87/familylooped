@@ -7,27 +7,19 @@
     <string name="title_activity_auth">AuthActivity</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
-    <array name="secret_question">
-        <item>Secret Question 1</item>
-        <item>Secret Question 1</item>
-        <item>Secret Question 1</item>
-        <item>Secret Question 1</item>
-        <item>Secret Question 1</item>
+    <array name="secret_question_1">
+        <item>What was your childhood nickname?</item>
+        <item>In what city or town was your first job?</item>
+        <item>What is your favorite team?</item>
     </array>
     <array name="secret_question_2">
-        <item>Secret Question 2</item>
-        <item>Secret Question 1</item>
-        <item>Secret Question 1</item>
-        <item>Secret Question 1</item>
-        <item>Secret Question 1</item>
+        <item>What is your pet\'s name ?</item>
+        <item>What was the name of your primary school ?</item>
+        <item>What is your favorite movie</item>
+        <item>What is the middle name of your oldest child</item>
+
     </array>
-    <array name="secret_question_3">
-        <item>Secret Question 3</item>
-        <item>Secret Question 1</item>
-        <item>Secret Question 1</item>
-        <item>Secret Question 1</item>
-        <item>Secret Question 1</item>
-    </array>
+
 
     <string name="title_activity_splash">Splash</string>
     <string name="title_activity_activity_slide_show">ActivitySlideShow</string>

@@ -159,9 +159,22 @@ public class Splash extends SampleActivityBase {
         boolean success = true;
         if (!folder.exists()) {
             success = folder.mkdir();
-            Log.e("Status,","is "+success);
-        }else{
-           Log.e("Path ","is "+folder.getAbsolutePath());
+            Log.e("Status,", "is " + success);
+            Utilities.saveBoolean(this, Utilities.FOLDER, true);
+        } else {
+            if (!Utilities.getSavedBoolean(this, Utilities.FOLDER)) {
+                if (folder.isDirectory()) {
+                    String[] children = folder.list();
+                    for (int i = 0; i < children.length; i++) {
+                        new File(folder, children[i]).delete();
+                    }
+                    boolean delete_status = folder.delete();
+
+                    folder.mkdir();
+                    Utilities.saveBoolean(this, Utilities.FOLDER, true);
+                }
+                Log.e("Path ", "is " + folder.getAbsolutePath());
+            }
         }
     }
 

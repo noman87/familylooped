@@ -147,6 +147,7 @@ public class Utilities {
     public static final int PHOTO_WEEK = 7;
     public static final int PHOTO_MONTH = 30;
     public static final int PHOTO_EVERY_THING = 3000000;
+    public static String FOLDER = "folder";
 
     public static <T> void printJSON(String TAG, Object object, Class<T> classOfT) {
         Gson gson = new Gson();
