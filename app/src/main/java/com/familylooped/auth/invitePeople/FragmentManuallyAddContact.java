@@ -13,6 +13,8 @@ import android.widget.ListView;
 
 import com.familylooped.R;
 import com.familylooped.auth.InvitePeople;
+import com.familylooped.auth.ModelInvitePeople;
+import com.familylooped.common.Utilities;
 import com.familylooped.common.activities.BaseActionBarActivity;
 import com.familylooped.common.fragments.BaseFragment;
 
@@ -28,15 +30,18 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    public static String TAG = "FragmentManuallyAddContact";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
-    private String mParam2;
+    private String mParam2, mContactList;
     private ListView mListView;
     private ArrayList<ModelManuallyContact> mDataList;
     private AdapterContactManually mAdapter;
     private EditText mTxtFirstName, mTxtLastName, mTxtEmail;
     private String name = "", lastName = "", email = "";
+    private static java.lang.String CONTACT_LIST = "contact_list";
+    private ArrayList<ModelInvitePeople> mList;
 
 
     /**
@@ -57,8 +62,11 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
         return fragment;
     }
 
-    public static FragmentManuallyAddContact newInstance() {
+    public static FragmentManuallyAddContact newInstance(String contactList) {
+        Bundle args = new Bundle();
+        args.putString(CONTACT_LIST, contactList);
         FragmentManuallyAddContact fragment = new FragmentManuallyAddContact();
+        fragment.setArguments(args);
         return fragment;
     }
 
@@ -68,6 +76,7 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
         if (getArguments() != null) {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
+            mContactList = getArguments().getString(CONTACT_LIST);
         }
     }
 
@@ -91,6 +100,9 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
         mTxtFirstName = (EditText) view.findViewById(R.id.txt_first_name);
         mTxtLastName = (EditText) view.findViewById(R.id.txt_last_name);
         mTxtEmail = (EditText) view.findViewById(R.id.txt_email);
+        if (mContactList != null) {
+            mList = Utilities.getArrayListFromGSON(mContactList);
+        }
 
     }
 
@@ -102,7 +114,8 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
                 add();
                 break;
             case R.id.btn_back:
-                ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
+                changeFragmentWithoutBackStack(InvitePeople.newInstance(),InvitePeople.TAG);
+                //((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
                 break;
         }
     }
@@ -111,7 +124,8 @@ public class FragmentManuallyAddContact extends BaseFragment implements View.OnC
         name = mTxtFirstName.getText().toString();
         lastName = mTxtLastName.getText().toString();
         email = mTxtEmail.getText().toString();
-
-        changeFragment(InvitePeople.newInstance(name, lastName, email,true), InvitePeople.TAG);
+        mList.add(0,new ModelInvitePeople(name +" "+ lastName,email));
+        //((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
+        //changeFragmentWithoutBackStack(InvitePeople.newInstance(name, lastName, email, true,Utilities.getJSON(mList)), InvitePeople.TAG);
     }
 }

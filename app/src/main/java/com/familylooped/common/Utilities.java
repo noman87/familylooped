@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
+import android.os.Environment;
 import android.provider.Settings;
 import android.text.SpannableString;
 import android.text.style.UnderlineSpan;
@@ -176,10 +177,9 @@ public class Utilities {
         return gson.fromJson(object, classOfT);
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     public static <T> ArrayList<T> getArrayListFromGSON(String object) {
         try {
-            InputStream stream = new ByteArrayInputStream(object.getBytes(StandardCharsets.UTF_8));
+            InputStream stream = new ByteArrayInputStream(object.getBytes("UTF-8"));
             BufferedReader br = new BufferedReader(new InputStreamReader(stream));
             Gson gson = new Gson();
             return gson.fromJson(br, new TypeToken<ArrayList<T>>() {
@@ -356,6 +356,25 @@ public class Utilities {
             e.printStackTrace();
         }
         return newDate.getTime();
+    }
+
+    public static String getPhotoPath(Context context) {
+        return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + Utilities.DIR_NAME;
+        /*if (Utilities.getSaveData(context, Utilities.USER_ID) != null)
+            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + Utilities.DIR_NAME + "/" + Utilities.getSaveData(context, Utilities.USER_ID);
+        else {
+            return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + Utilities.DIR_NAME;
+        }*/
+
+    }
+
+    public static String getUsersPhotoJson(Context context) {
+        Log.e("PhotoJson", Utilities.getSaveData(context, Utilities.USER_ID + "_" + Utilities.PHOTO_JSON));
+        return Utilities.getSaveData(context, Utilities.getSaveData(context,Utilities.USER_ID)+ "_" + Utilities.PHOTO_JSON);
+    }
+
+    public static void saveUsersPhotoJson(Context context, String json) {
+        Utilities.saveData(context, Utilities.getSaveData(context,Utilities.USER_ID) + "_" + Utilities.PHOTO_JSON, json);
     }
 
 

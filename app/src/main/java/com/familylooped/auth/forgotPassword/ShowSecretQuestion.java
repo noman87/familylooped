@@ -8,6 +8,7 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.TextView;
@@ -49,6 +50,7 @@ public class ShowSecretQuestion extends BaseFragment implements View.OnClickList
     private View mView;
     private String mQuestionId;
     private EditText mTxtAnswer;
+    private String mUserId;
 
     public static ShowSecretQuestion newInstance(String jsonString) {
         ShowSecretQuestion fragment = new ShowSecretQuestion();
@@ -84,7 +86,8 @@ public class ShowSecretQuestion extends BaseFragment implements View.OnClickList
         super.onViewCreated(view, savedInstanceState);
         ((ImageButton) view.findViewById(R.id.btn_next)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
-        mTxtAnswer = (EditText)view.findViewById(R.id.txt_ans);
+        ((Button) view.findViewById(R.id.btn_chnage_question)).setOnClickListener(this);
+        mTxtAnswer = (EditText) view.findViewById(R.id.txt_ans);
         mView = view;
         parseJsonData();
     }
@@ -95,7 +98,6 @@ public class ShowSecretQuestion extends BaseFragment implements View.OnClickList
         params.put("answer", mTxtAnswer.getText().toString());
 
 
-
         AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "answerSecuriyQuestion", Utilities.BASE_URL + "answerSecuriyQuestion", params, new AsyncHttpRequest.HttpResponseListener() {
             @Override
             public void onResponse(String response) {
@@ -103,7 +105,7 @@ public class ShowSecretQuestion extends BaseFragment implements View.OnClickList
                 try {
                     JSONObject object = new JSONObject(response);
                     if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
-                        changeFragment(ChangePassword.newInstance(true),ChangePassword.TAG);
+                        changeFragment(ChangePassword.newInstance(true), ChangePassword.TAG);
 
                     } else {
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
@@ -160,8 +162,67 @@ public class ShowSecretQuestion extends BaseFragment implements View.OnClickList
             case R.id.btn_back:
                 ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
                 break;
+            case R.id.btn_chnage_question:
+                changeQuestion();
+
+                break;
 
 
         }
     }
+
+    private void changeQuestion() {
+        Map<String, String> params = new HashMap();
+        params.put("userName", ForgotPassword.USER_NAME);
+
+
+        AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "checkUserName", Utilities.BASE_URL + "checkUserName", params, new AsyncHttpRequest.HttpResponseListener() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject object = new JSONObject(response);
+                    if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
+                        try {
+                            JSONObject data = object.getJSONObject("data");
+                            mUserId = object.getString("userId");
+                            mJsonString = data.toString();
+                            parseJsonData();
+                        } catch (Exception e) {
+                            ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
+                            showDialog("Your password has been sent to your alternate email address", "Ok", "Cancel", new DialogClickListener() {
+                                @Override
+                                public void onPositiveButtonClick() {
+
+                                }
+                            });
+
+                        }
+
+                    } else {
+                        showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
+                            @Override
+                            public void onPositiveButtonClick() {
+
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.getMessage() != null) {
+
+                }
+            }
+        });
+        AppController.getInstance().addToRequestQueue(request, "checkUserName");
+    }
+
+
 }

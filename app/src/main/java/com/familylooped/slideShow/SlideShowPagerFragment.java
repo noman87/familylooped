@@ -222,8 +222,8 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
 
     private void showPhotos() {
         mList = new ArrayList<>();
-        if (Utilities.getSaveData(getActivity(), Utilities.PHOTO_JSON) != null) {
-            parseData(Utilities.getSaveData(getActivity(), Utilities.PHOTO_JSON));
+        if (Utilities.getUsersPhotoJson(getActivity()) != null) {
+            parseData(Utilities.getUsersPhotoJson(getActivity()));
         }
         mAdapter = new AdapterSlideShow(getChildFragmentManager(), mList);
         mViewPager.setAdapter(mAdapter);
@@ -297,8 +297,8 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
     }
 
     private void saveRotateImage(String fileName, int orientation) {
-        String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + Utilities.DIR_NAME;
-        String completeName = dir +"/"+ fileName;
+        String dir = Utilities.getPhotoPath(getActivity());
+        String completeName = dir + "/" + fileName;
 
         File file = new File(completeName);
         Log.e("Is exist", "Value is " + file.exists());
@@ -330,10 +330,9 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
                 timer(5000);
 
 
-
                 FrameLayout layout = (FrameLayout) mViewPager.getChildAt(mViewPager.getCurrentItem());
                 ImageView imageView = (ImageView) layout.getChildAt(0);
-               // ImageView imageView = (ImageView) mViewPager.findViewWithTag(mList.get(mViewPager.getCurrentItem()));
+                // ImageView imageView = (ImageView) mViewPager.findViewWithTag(mList.get(mViewPager.getCurrentItem()));
 
                 mRotationValue = mRotationValue + 90;
                 imageView.setRotation(mRotationValue);

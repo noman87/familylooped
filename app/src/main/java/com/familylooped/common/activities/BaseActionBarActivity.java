@@ -84,6 +84,14 @@ public class BaseActionBarActivity extends FragmentActivity {
         startActivity(intent);
         finish();
     }
+    protected <T> void changeActivity(Class<T> cls, Bundle data) {
+        Intent resultIntent = new Intent(this, cls);
+        if (data != null)
+            resultIntent.putExtras(data);
+        startActivity(resultIntent);
+        finish();
+        overridePendingTransition(R.anim.enter, R.anim.exit);
+    }
 
     @Override
     protected void onStart() {

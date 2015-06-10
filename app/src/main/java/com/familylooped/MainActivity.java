@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.os.Build;
 
+import com.familylooped.auth.InvitePeople;
 import com.familylooped.common.activities.BaseActionBarActivity;
 import com.familylooped.dashboard.Dashboard;
 import com.familylooped.photos.MyPhotos;
@@ -30,11 +31,17 @@ public class MainActivity extends BaseActionBarActivity {
                     .add(R.id.container, new PlaceholderFragment())
                     .commit();*/
             if (getIntent().getExtras() != null) {
-                boolean is_notification = getIntent().getExtras().getBoolean("is_notification");
-                if (is_notification) {
-                    setFragment(MyPhotos.newInstance(true));
-                } else {
-                    setFragment(Dashboard.newInstance());
+                if (getIntent().hasExtra("is_notification")) {
+                    boolean is_notification = getIntent().getExtras().getBoolean("is_notification");
+                    if (is_notification) {
+                        setFragment(MyPhotos.newInstance(true));
+                    } else {
+                        setFragment(Dashboard.newInstance());
+                    }
+
+                } else if (getIntent().hasExtra("json")) {
+                    String json = getIntent().getExtras().getString("json");
+                    setFragment(InvitePeople.newInstance(true,json));
                 }
 
 

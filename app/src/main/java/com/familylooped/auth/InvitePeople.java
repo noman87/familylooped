@@ -24,6 +24,8 @@ import com.android.volley.VolleyError;
 import com.familylooped.MainActivity;
 import com.familylooped.R;
 import com.familylooped.auth.invitePeople.FragmentManuallyAddContact;
+import com.familylooped.auth.invitePeople.ManuallyAddContactActivity;
+import com.familylooped.auth.invitePeople.ModelManuallyContact;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.activities.BaseActionBarActivity;
@@ -31,6 +33,7 @@ import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
 import com.familylooped.common.logger.Log;
+import com.familylooped.settings.Settings;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
@@ -59,6 +62,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     private static final String IS_UPDATE = "is_update";
     public static String TAG = "invite_people";
     private static String IS_ADD_NEW = "is_add_new";
+    private static String JSON_STRING = "json_string";
     private ListView mListView;
     private boolean mIsUpdate;
 
@@ -76,6 +80,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     private AdapterInvitePeople mAdapter;
     private ArrayList<ModelInvitePeople> mCheckedList;
     private boolean mIsAddNew;
+    private String mJsonString;
 
 
     /**
@@ -96,13 +101,11 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
         return fragment;
     }
 
-    public static InvitePeople newInstance(String name, String lastName, String email, boolean isAddnew) {
+    public static InvitePeople newInstance( boolean isAddNew, String jsonString) {
         InvitePeople fragment = new InvitePeople();
         Bundle args = new Bundle();
-        args.putString(FIRST_NAME, name);
-        args.putString(LAST_NAME, lastName);
-        args.putString(EMAIL, email);
-        args.putBoolean(IS_ADD_NEW, isAddnew);
+        args.putString(JSON_STRING, jsonString);
+        args.putBoolean(IS_ADD_NEW, isAddNew);
         fragment.setArguments(args);
         return fragment;
     }
@@ -130,12 +133,9 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
         mContactList = new ArrayList<ModelInvitePeople>();
         if (getArguments() != null) {
-            mFirstName = getArguments().getString(FIRST_NAME);
-            mLastName = getArguments().getString(LAST_NAME);
-            mEmailAddress = getArguments().getString(EMAIL);
-            mContactList.add(new ModelInvitePeople(mFirstName + " " + mLastName, mEmailAddress));
             mIsUpdate = getArguments().getBoolean(IS_UPDATE);
             mIsAddNew = getArguments().getBoolean(IS_ADD_NEW);
+            mJsonString = getArguments().getString(JSON_STRING);
         }
     }
 
@@ -165,7 +165,19 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
         } else if (mIsAddNew) {
             ((ImageButton) view.findViewById(R.id.btn_submit)).setVisibility(View.GONE);
             ((ImageButton) view.findViewById(R.id.btn_save)).setVisibility(View.VISIBLE);
-            setUpAdapter(mContactList);
+            try {
+                JSONArray jsonArray = new JSONArray(mJsonString);
+                Gson gson = new Gson();
+                mContactList = new ArrayList<>();
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    mContactList.add(gson.fromJson(jsonArray.getJSONObject(i).toString(), ModelInvitePeople.class));
+                }
+                setUpAdapter(mContactList);
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+
 
         } else {
             getContacts();
@@ -245,9 +257,16 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
                 proceedToSignUp();
                 break;
             case R.id.btn_invite:
-                changeFragment(FragmentManuallyAddContact.newInstance(), "");
+                Bundle bundle = new Bundle();
+                bundle.putString("json", Utilities.getJSON(mContactList));
+                changeActivity(ManuallyAddContactActivity.class, bundle);
+
+//                changeFragmentWithoutBackStack(FragmentManuallyAddContact.newInstance(Utilities.getJSON(mContactList)), FragmentManuallyAddContact.TAG);
                 break;
             case R.id.btn_back:
+                if(mIsAddNew)
+                    changeFragment(Settings.newInstance(),Settings.TAG);
+                else
                 ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
                 break;
             case R.id.btn_save:

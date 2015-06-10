@@ -69,7 +69,7 @@ public class DownloadService extends Service {
 
     @Override
     public void onCreate() {
-        Toast.makeText(this, "The new Service was Created", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, "The new Service was Created", Toast.LENGTH_LONG).show();
         downloadManager = new ThinDownloadManager();
         initializePhotoList();
 
@@ -79,7 +79,7 @@ public class DownloadService extends Service {
     @Override
     public void onStart(Intent intent, int startId) {
         // For time consuming an long tasks you can launch a new thread here...
-        Toast.makeText(this, " Service Started", Toast.LENGTH_LONG).show();
+        //Toast.makeText(this, " Service Started", Toast.LENGTH_LONG).show();
         showNotification();
         download_photos();
         //downloadFile(new ModelMyPhoto("1","http://www.familylooped.com/app/uploads/gallery/1432874085_1.jpg","Noman","12121212"));
@@ -155,7 +155,7 @@ public class DownloadService extends Service {
         //Log.e("Path ", "is " + photo.getImage());
 
         Uri downloadUri = Uri.parse(photo.getImage());
-        final String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + Utilities.DIR_NAME + "/" + System.currentTimeMillis() + "_.jpg";
+        final String path = Utilities.getPhotoPath(this) + "/" + System.currentTimeMillis() + "_.jpg";
 
         final Uri destinationUri = Uri.parse(path);
         DownloadRequest downloadRequest = new DownloadRequest(downloadUri)
@@ -210,7 +210,7 @@ public class DownloadService extends Service {
     }
 
     private void savePhotoListJson() {
-        Utilities.saveData(this, Utilities.PHOTO_JSON, gson.toJson(mList));
+        Utilities.saveUsersPhotoJson(this,gson.toJson(mList));
     }
 
     public void showNotification() {
@@ -224,8 +224,8 @@ public class DownloadService extends Service {
 
     private void initializePhotoList() {
         mList = new ArrayList<>();
-        if (Utilities.getSaveData(this, Utilities.PHOTO_JSON) != null) {
-            parseData(Utilities.getSaveData(this, Utilities.PHOTO_JSON));
+        if (Utilities.getUsersPhotoJson(this) != null) {
+            parseData(Utilities.getUsersPhotoJson(this));
         }
     }
 

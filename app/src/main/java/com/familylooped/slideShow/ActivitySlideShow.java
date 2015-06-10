@@ -179,8 +179,8 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
 
     private void showPhotos() {
         mList = new ArrayList<>();
-        if (Utilities.getSaveData(this, Utilities.PHOTO_JSON) != null) {
-            parseData(Utilities.getSaveData(this, Utilities.PHOTO_JSON));
+        if (Utilities.getUsersPhotoJson(this) != null) {
+            parseData(Utilities.getUsersPhotoJson(this));
         }
         mAdapter = new AdapterSlideShow(getSupportFragmentManager(), mList);
         mViewPager.setAdapter(mAdapter);
@@ -277,7 +277,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
             protected String doInBackground(String... params) {
 
 
-                String dir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + Utilities.DIR_NAME;
+                String dir = Utilities.getPhotoPath(ActivitySlideShow.this);
                 String completeName = dir + "/" + params[0];
 
                 File file = new File(completeName);
@@ -297,7 +297,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
                     fOut.close();
                     bitmap.recycle();
                     mList.get(mViewPager.getCurrentItem()).setRotationValue(rotation);
-                    Utilities.saveData(ActivitySlideShow.this, Utilities.PHOTO_JSON, gson.toJson(mList));
+                    Utilities.saveUsersPhotoJson(ActivitySlideShow.this, gson.toJson(mList));
                 } catch (Exception e) {
                     e.printStackTrace();
                 }

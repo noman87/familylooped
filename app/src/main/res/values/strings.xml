@@ -17,13 +17,12 @@
         <item>What was the name of your primary school ?</item>
         <item>What is your favorite movie</item>
         <item>What is the middle name of your oldest child</item>
-
     </array>
-
 
     <string name="title_activity_splash">Splash</string>
     <string name="title_activity_activity_slide_show">ActivitySlideShow</string>
     <string name="title_activity_download">DownloadActivity</string>
     <string name="familylooped">\@familylooped.com</string>
+    <string name="title_activity_manually_add_contact">ManuallyAddContactActivity</string>
 
 </resources>

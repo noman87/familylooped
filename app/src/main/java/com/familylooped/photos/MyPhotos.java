@@ -187,8 +187,8 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
 
     private void initializePhotoList() {
         mList = new ArrayList<>();
-        if (Utilities.getSaveData(getActivity(), Utilities.PHOTO_JSON) != null) {
-            parseData(Utilities.getSaveData(getActivity(), Utilities.PHOTO_JSON));
+        if (Utilities.getUsersPhotoJson(getActivity()) != null) {
+            parseData(Utilities.getUsersPhotoJson(getActivity()));
         }
     }
 
@@ -406,7 +406,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
     }
 
     private void updateJson() {
-        Utilities.saveData(getActivity(), Utilities.PHOTO_JSON, gson.toJson(mList));
+        Utilities.saveUsersPhotoJson(getActivity(), gson.toJson(mList));
     }
 
     private void addPhoto() {
@@ -422,7 +422,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
                     public void run() {
                         if (image != null) {
 
-                            copyFile(image.getFileThumbnail(), Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + Utilities.DIR_NAME);
+                            copyFile(image.getFileThumbnail(), Utilities.getPhotoPath(getActivity()));
 
                         }
                     }
@@ -448,8 +448,13 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
                 int end = from.toString().lastIndexOf("/");
                 String str1 = from.toString().substring(0, end);
                 String str2 = from.toString().substring(end + 1, from.length());
+                File destinationFolder = new File(to);
+                if (!destinationFolder.exists()) {
+                    destinationFolder.mkdirs();
+                }
                 File source = new File(str1, str2);
                 File destination = new File(to, str2);
+
                 if (source.exists()) {
                     FileChannel src = new FileInputStream(source).getChannel();
                     FileChannel dst = new FileOutputStream(destination).getChannel();
@@ -469,9 +474,9 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
 
     private void addPhotoInList(String to) {
         String timeAndId = Utilities.getData(System.currentTimeMillis(), Utilities.DATE_FORMAT);
-        mList.add(new ModelMyPhoto(timeAndId, to, "gallery", timeAndId));
+        mList.add(new ModelMyPhoto(timeAndId, to, "Gallery", timeAndId));
         mAdapterMyPhoto.notifyDataSetChanged();
-        Utilities.saveData(getActivity(), Utilities.PHOTO_JSON, gson.toJson(mList));
+        Utilities.saveUsersPhotoJson(getActivity(), gson.toJson(mList));
     }
 
 

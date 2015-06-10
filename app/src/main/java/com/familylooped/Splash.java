@@ -153,8 +153,7 @@ public class Splash extends SampleActivityBase {
     }
 
     private void createFolder() {
-        File folder = new File(Environment.getExternalStoragePublicDirectory(
-                Environment.DIRECTORY_PICTURES), Utilities.DIR_NAME);
+        File folder = new File(Utilities.getPhotoPath(this));
         //File folder = new File(Environment.getExternalStorageDirectory() + "/FamilyLooped");
         boolean success = true;
         if (!folder.exists()) {

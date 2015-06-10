@@ -46,6 +46,7 @@ public class ForgotPassword extends BaseFragment implements View.OnClickListener
     private String mParam2;
     private EditText mTxtUsername;
     public static String FORGOT_PASSWORD;
+    public static String USER_NAME;
 
     // TODO: Rename and change types and number of parameters
     public static ForgotPassword newInstance() {
@@ -99,6 +100,7 @@ public class ForgotPassword extends BaseFragment implements View.OnClickListener
                         try {
                             JSONObject data = object.getJSONObject("data");
                             FORGOT_PASSWORD = object.getString("userId");
+                            USER_NAME = mTxtUsername.getText().toString();
                             changeFragment(ShowSecretQuestion.newInstance(data.toString()), ShowSecretQuestion.TAG);
                         } catch (Exception e) {
                             ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();

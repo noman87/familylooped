@@ -22,14 +22,14 @@ import java.util.ArrayList;
  */
 public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
     Activity activity;
-    ArrayList<ModelInvitePeople> list, checkedList;
+    ArrayList<ModelInvitePeople> mList, checkedList;
     boolean mIsUpdate;
 
 
     public AdapterInvitePeople(Activity activity, ArrayList<ModelInvitePeople> list, boolean isUpdate) {
         super(activity, R.layout.item_invite, list);
         this.activity = activity;
-        this.list = list;
+        this.mList = list;
         mIsUpdate = isUpdate;
         checkedList = new ArrayList<>();
 
@@ -54,31 +54,31 @@ public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
         }
         viewHolder = (ViewHolder) convertView.getTag();
         final ViewHolder finalViewHolder = viewHolder;
-        String name[] = list.get(position).getName().split(" ");
+        String name[] = mList.get(position).getName().split(" ");
         if (name.length > 1) {
             viewHolder.txt_name.setText(name[0]);
             viewHolder.txt_last_name.setText(name[1]);
         } else {
-            viewHolder.txt_name.setText(list.get(position).getName());
+            viewHolder.txt_name.setText(mList.get(position).getName());
         }
-        viewHolder.email.setText(list.get(position).getEmail());
+        viewHolder.email.setText(mList.get(position).getEmail());
         if (mIsUpdate) {
             finalViewHolder.btn_delete.setVisibility(View.VISIBLE);
         }
         finalViewHolder.btn_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                list.remove(position);
+                mList.remove(position);
                 notifyDataSetChanged();
             }
         });
         viewHolder.checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                list.get(position).setCheck(isChecked);
+                mList.get(position).setCheck(isChecked);
             }
         });
-        if (list.get(position).check) {
+        if (mList.get(position).check) {
             viewHolder.checkBox.setChecked(true);
 
         } else {
