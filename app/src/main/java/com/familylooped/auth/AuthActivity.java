@@ -14,7 +14,13 @@ public class AuthActivity extends BaseActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        setFragment(Login.newInstance());
+        if (getIntent().getExtras() != null) {
+            String json = getIntent().getExtras().getString("json");
+            setFragment(InvitePeople.newInstance(json));
+        } else {
+            setFragment(Login.newInstance());
+        }
+
     }
 
 

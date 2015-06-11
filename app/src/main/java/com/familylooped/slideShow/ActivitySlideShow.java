@@ -82,6 +82,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
     private String TAG = "Activity Slide Show";
     Gson gson = new Gson();
     private int mSelectedPosition;
+    private TextView mTxtSubject;
 
 
     @Override
@@ -97,6 +98,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
         ((ImageButton) findViewById(R.id.btn_delete)).setOnClickListener(this);
         ((ImageButton) findViewById(R.id.btn_rotate)).setOnClickListener(this);
         mTxtName = (TextView) findViewById(R.id.txt_name);
+        mTxtSubject = (TextView) findViewById(R.id.txt_subject);
         mBtnStop = (ImageButton) findViewById(R.id.btn_stop);
         mBtnStop.setOnClickListener(this);
 
@@ -137,6 +139,8 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
                 /// currentIndex = position;
                 //mCurrentPagerIndex = position;
                 mTxtName.setText("From: " + mList.get(position).getFrom());
+                if (mList.get(position).getSubject() != null || !TextUtils.equals(mList.get(position).getSubject(),"null"))
+                    mTxtSubject.setText("Subject: " + mList.get(position).getSubject());
             }
 
             @Override
@@ -188,8 +192,13 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
             mSelectedPosition = getIntent().getExtras().getInt("position");
             mViewPager.setCurrentItem(mSelectedPosition);
         }
-        if (mList.size() > 0)
+        if (mList.size() > 0) {
             mTxtName.setText("From: " + mList.get(0).getFrom());
+            if (mList.get(0).getSubject() != null || !TextUtils.equals(mList.get(0).getSubject(),"null"))
+                mTxtSubject.setText("Subject " + mList.get(0).getSubject());
+
+        }
+
 
         timer(period);
 

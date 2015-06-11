@@ -1,5 +1,6 @@
 package com.familylooped;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -14,6 +15,7 @@ import android.os.Build;
 
 import com.familylooped.auth.InvitePeople;
 import com.familylooped.common.activities.BaseActionBarActivity;
+import com.familylooped.common.logger.Log;
 import com.familylooped.dashboard.Dashboard;
 import com.familylooped.photos.MyPhotos;
 
@@ -24,7 +26,6 @@ public class MainActivity extends BaseActionBarActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         if (savedInstanceState == null) {
 
             /*getSupportFragmentManager().beginTransaction()
@@ -41,7 +42,7 @@ public class MainActivity extends BaseActionBarActivity {
 
                 } else if (getIntent().hasExtra("json")) {
                     String json = getIntent().getExtras().getString("json");
-                    setFragment(InvitePeople.newInstance(true,json));
+                    setFragment(InvitePeople.newInstance(true, json));
                 }
 
 
@@ -92,8 +93,9 @@ public class MainActivity extends BaseActionBarActivity {
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        getSupportFragmentManager().findFragmentById(R.id.container).onActivityResult(requestCode, resultCode, data);
 
     }
 }

@@ -62,6 +62,13 @@
                 android:gravity="center_vertical"
                 android:layout_gravity="center"
                 android:text="@string/familylooped" />
+
+            <ImageButton
+                android:id="@+id/btn_question"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:background="@drawable/question_mark"/>
         </LinearLayout>
 
         <EditText

@@ -226,7 +226,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
                     @Override
                     public void onDownloadComplete(int id) {
                         Log.e("STATS ", "Download complete Success " + id);
-                        mList.add(new ModelMyPhoto(photo.getId(), path, photo.from, photo.getTimestamp()));
+                        mList.add(new ModelMyPhoto(photo.getId(), path, photo.from, photo.getTimestamp(), "null"));
                         mDownloadIndex++;
                         if (mDownloadIndex == mList.size()) {
                             mDownloadIndex = 0;
@@ -474,7 +474,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
 
     private void addPhotoInList(String to) {
         String timeAndId = Utilities.getData(System.currentTimeMillis(), Utilities.DATE_FORMAT);
-        mList.add(new ModelMyPhoto(timeAndId, to, "Gallery", timeAndId));
+        mList.add(new ModelMyPhoto(timeAndId, to, "Gallery", timeAndId,"null"));
         mAdapterMyPhoto.notifyDataSetChanged();
         Utilities.saveUsersPhotoJson(getActivity(), gson.toJson(mList));
     }

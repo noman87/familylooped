@@ -98,19 +98,22 @@ public class ForgotPassword extends BaseFragment implements View.OnClickListener
                     JSONObject object = new JSONObject(response);
                     if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
                         try {
-                            JSONObject data = object.getJSONObject("data");
-                            FORGOT_PASSWORD = object.getString("userId");
-                            USER_NAME = mTxtUsername.getText().toString();
-                            changeFragment(ShowSecretQuestion.newInstance(data.toString()), ShowSecretQuestion.TAG);
+                            if (TextUtils.equals(object.getString("alterEmail"), "1")) {
+                                ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
+                                showDialog("Your password has been sent to your alternate email address", "Ok", "Cancel", new DialogClickListener() {
+                                    @Override
+                                    public void onPositiveButtonClick() {
+
+                                    }
+                                });
+                            } else {
+                                JSONObject data = object.getJSONObject("data");
+                                FORGOT_PASSWORD = object.getString("userId");
+                                USER_NAME = mTxtUsername.getText().toString();
+                                changeFragment(ShowSecretQuestion.newInstance(data.toString()), ShowSecretQuestion.TAG);
+                            }
                         } catch (Exception e) {
-                            ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
-                            showDialog("Your password has been sent to your alternate email address", "Ok", "Cancel", new DialogClickListener() {
-                                @Override
-                                public void onPositiveButtonClick() {
-
-                                }
-                            });
-
+                            e.printStackTrace();
                         }
 
                     } else {

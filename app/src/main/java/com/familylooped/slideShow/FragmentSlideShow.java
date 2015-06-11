@@ -23,6 +23,7 @@ import com.familylooped.common.AppController;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
 import com.familylooped.common.logger.Log;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 
@@ -97,7 +98,9 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
         super.onViewCreated(view, savedInstanceState);
 
         photo = (ImageView)view.findViewById(R.id.photo);
-        photo.setImageURI(Uri.parse(mImagePath));
+        Picasso.with(getActivity()).load(Uri.parse(mImagePath)).into(photo);
+
+        //photo.setImageURI(Uri.parse(mImagePath));
 
         /*ImageRequest imageRequest = new ImageRequest(mImagePath, new Response.Listener<Bitmap>() {
             @Override

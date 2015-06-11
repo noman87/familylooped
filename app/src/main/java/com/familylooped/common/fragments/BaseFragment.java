@@ -110,6 +110,14 @@ public abstract class BaseFragment extends Fragment {
         getActivity().finish();
     }
 
+    protected <T> void changeActivity(Class<T> cls,boolean isRemoveAll) {
+        Intent resultIntent = new Intent(getActivity(), cls);
+        resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        startActivity(resultIntent);
+        getActivity().overridePendingTransition(R.anim.enter, R.anim.exit);
+        getActivity().finish();
+    }
+
     public ActionBar getActionBar() {
         return ((ActionBarActivity) getActivity()).getSupportActionBar();
     }

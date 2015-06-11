@@ -17,6 +17,7 @@ import com.familylooped.R;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.activities.BaseActionBarActivity;
 import com.familylooped.common.fragments.BaseFragment;
+import com.familylooped.common.fragments.DialogClickListener;
 import com.familylooped.settings.personalData.changePassword.ChangePassword;
 
 import java.util.HashMap;
@@ -115,6 +116,7 @@ public class Signup extends BaseFragment implements View.OnClickListener {
         ((ImageButton) view.findViewById(R.id.btn_next)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_change_password)).setOnClickListener(this);
+        ((ImageButton)view.findViewById(R.id.btn_question)).setOnClickListener(this);
         txt_email = (EditText) view.findViewById(R.id.txt_email);
         if (mIsUpdate) {
             ((EditText) view.findViewById(R.id.txt_password)).setVisibility(View.GONE);
@@ -223,6 +225,14 @@ public class Signup extends BaseFragment implements View.OnClickListener {
                 break;
             case R.id.btn_change_password:
                 changeFragment(ChangePassword.newInstance(), ChangePassword.TAG);
+                break;
+            case R.id.btn_question:
+                showDialog("Please select username","OK","Cancel",new DialogClickListener() {
+                    @Override
+                    public void onPositiveButtonClick() {
+
+                    }
+                });
                 break;
 
 

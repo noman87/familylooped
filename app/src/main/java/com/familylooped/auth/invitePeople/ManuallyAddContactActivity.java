@@ -12,6 +12,7 @@ import android.widget.ListView;
 
 import com.familylooped.MainActivity;
 import com.familylooped.R;
+import com.familylooped.auth.AuthActivity;
 import com.familylooped.auth.InvitePeople;
 import com.familylooped.auth.ModelInvitePeople;
 import com.familylooped.common.Utilities;
@@ -35,18 +36,23 @@ public class ManuallyAddContactActivity extends BaseActionBarActivity implements
     private static java.lang.String CONTACT_LIST = "contact_list";
     private ArrayList<ModelInvitePeople> mList;
     private String mJsonString;
+    private boolean mIsAuthActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_manually_add_contact);
-        if (getIntent().getExtras().getString("json") != null) {
-            mJsonString = getIntent().getExtras().getString("json");
+        Bundle bundle = getIntent().getBundleExtra("data");
+
+        if (bundle.getString("json") != null) {
+            mJsonString = bundle.getString("json");
+            mIsAuthActivity = getIntent().getExtras().getBoolean("activity");
         }
         init();
 
 
     }
+
 
     private void init() {
         ((ImageButton) findViewById(R.id.btn_add)).setOnClickListener(this);
@@ -80,7 +86,14 @@ public class ManuallyAddContactActivity extends BaseActionBarActivity implements
         mList.add(0, new ModelInvitePeople(name + " " + lastName, email));
         Bundle bundle = new Bundle();
         bundle.putString("json", Utilities.getJSON(mList));
-        changeActivity(MainActivity.class, bundle);
+        Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("data", bundle);
+        setResult(RESULT_OK, intent);
+        finish();
+        /*if (mIsAuthActivity)
+            changeActivity(AuthActivity.class, bundle);
+        else
+            changeActivity(MainActivity.class, bundle);*/
 
         //((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
 

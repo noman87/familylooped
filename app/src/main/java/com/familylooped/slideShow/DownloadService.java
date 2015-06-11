@@ -106,7 +106,7 @@ public class DownloadService extends Service {
             Log.e("formatted string: ", "" + currentTime);
             Utilities.saveData(this, Utilities.PHOTO_TIME, "" + currentTime);
             urlParams.put("dateTime", "2015-05-01 11:01:04 +0500");
-           // urlParams.put("dateTime", "2015-06-01 11:01:04 +0500");
+            // urlParams.put("dateTime", "2015-06-01 11:01:04 +0500");
 
         }
 
@@ -124,7 +124,7 @@ public class DownloadService extends Service {
                             mDownloadList.add(gson.fromJson(data.getJSONObject(i).toString(), ModelMyPhoto.class));
                         }
                         downloadQueue();
-                        mBuilder.setContentText("Download in progress " + mDownloadIndex + " / " + mDownloadList.size() );
+                        mBuilder.setContentText("Download in progress " + mDownloadIndex + " / " + mDownloadList.size());
 
 
                     } else {
@@ -168,14 +168,14 @@ public class DownloadService extends Service {
                     public void onDownloadComplete(int id) {
                         Log.e("STATS ", "Download complete Success " + id);
                         ModelMyPhoto downloadedPhoto = new ModelMyPhoto(photo.getId(), "file:" + destinationUri.toString(), photo.getFrom(),
-                                Utilities.getData(Utilities.dateToTimeStamp(photo.getDate(), "yyyy-MM-dd hh:mm:ss"), Utilities.DATE_FORMAT));
+                                Utilities.getData(Utilities.dateToTimeStamp(photo.getDate(), "yyyy-MM-dd hh:mm:ss"), Utilities.DATE_FORMAT), photo.getSubject());
                         mList.add(downloadedPhoto);
                         Intent intent = new Intent("my-event");
-                        intent.putExtra("json",gson.toJson(downloadedPhoto));
+                        intent.putExtra("json", gson.toJson(downloadedPhoto));
                         LocalBroadcastManager.getInstance(DownloadService.this).sendBroadcast(new Intent(intent));
                         savePhotoListJson();
                         mDownloadIndex++;
-                        mBuilder.setContentText(("Download in progress " + mDownloadList.size() + " / " + mDownloadIndex));
+                        mBuilder.setContentText(("Download in progress " + mDownloadIndex + " / " + mDownloadList.size()));
                         mNotifyManager.notify(mNotificationId, mBuilder.build());
                         if (mDownloadIndex == mDownloadList.size()) {
                             mDownloadIndex = 0;
@@ -210,7 +210,7 @@ public class DownloadService extends Service {
     }
 
     private void savePhotoListJson() {
-        Utilities.saveUsersPhotoJson(this,gson.toJson(mList));
+        Utilities.saveUsersPhotoJson(this, gson.toJson(mList));
     }
 
     public void showNotification() {

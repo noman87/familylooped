@@ -1,9 +1,11 @@
 package com.familylooped.auth;
 
 
+import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -81,6 +83,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     private ArrayList<ModelInvitePeople> mCheckedList;
     private boolean mIsAddNew;
     private String mJsonString;
+    private boolean isAuthActivity;
 
 
     /**
@@ -101,7 +104,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
         return fragment;
     }
 
-    public static InvitePeople newInstance( boolean isAddNew, String jsonString) {
+    public static InvitePeople newInstance(boolean isAddNew, String jsonString) {
         InvitePeople fragment = new InvitePeople();
         Bundle args = new Bundle();
         args.putString(JSON_STRING, jsonString);
@@ -115,6 +118,15 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
         InvitePeople fragment = new InvitePeople();
         Bundle args = new Bundle();
         args.putBoolean(IS_UPDATE, isUpdate);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+
+    public static InvitePeople newInstance(String json) {
+        InvitePeople fragment = new InvitePeople();
+        Bundle args = new Bundle();
+        args.putString(JSON_STRING, json);
         fragment.setArguments(args);
         return fragment;
     }
@@ -165,22 +177,26 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
         } else if (mIsAddNew) {
             ((ImageButton) view.findViewById(R.id.btn_submit)).setVisibility(View.GONE);
             ((ImageButton) view.findViewById(R.id.btn_save)).setVisibility(View.VISIBLE);
-            try {
-                JSONArray jsonArray = new JSONArray(mJsonString);
-                Gson gson = new Gson();
-                mContactList = new ArrayList<>();
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    mContactList.add(gson.fromJson(jsonArray.getJSONObject(i).toString(), ModelInvitePeople.class));
-                }
-                setUpAdapter(mContactList);
-            } catch (Exception e) {
-                e.printStackTrace();
-
-            }
-
-
+            updateJson();
+        } else if (!mIsAddNew && mJsonString != null) {
+            updateJson();
         } else {
             getContacts();
+        }
+    }
+
+    private void updateJson() {
+        try {
+            JSONArray jsonArray = new JSONArray(mJsonString);
+            Gson gson = new Gson();
+            mContactList = new ArrayList<>();
+            for (int i = 0; i < jsonArray.length(); i++) {
+                mContactList.add(gson.fromJson(jsonArray.getJSONObject(i).toString(), ModelInvitePeople.class));
+            }
+            setUpAdapter(mContactList);
+        } catch (Exception e) {
+            e.printStackTrace();
+
         }
     }
 
@@ -251,6 +267,17 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     }
 
     @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == 101) {
+            if (data.getBundleExtra("data") != null) {
+                Log.e("Json", data.getBundleExtra("data").getString("json"));
+                mJsonString = data.getBundleExtra("data").getString("json");
+                updateJson();
+            }
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_submit:
@@ -259,15 +286,24 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
             case R.id.btn_invite:
                 Bundle bundle = new Bundle();
                 bundle.putString("json", Utilities.getJSON(mContactList));
-                changeActivity(ManuallyAddContactActivity.class, bundle);
+                Intent intent = new Intent(getActivity(), ManuallyAddContactActivity.class);
+                intent.putExtra("data", bundle);
+                startActivityForResult(intent, 101);
+                /*Bundle bundle = new Bundle();
+                isAuthActivity = false;
+                if (getActivity() instanceof AuthActivity)
+                    isAuthActivity = true;
+                bundle.putString("json", Utilities.getJSON(mContactList));
+                bundle.putBoolean("activity", isAuthActivity);
+                changeActivity(ManuallyAddContactActivity.class, bundle);*/
 
 //                changeFragmentWithoutBackStack(FragmentManuallyAddContact.newInstance(Utilities.getJSON(mContactList)), FragmentManuallyAddContact.TAG);
                 break;
             case R.id.btn_back:
-                if(mIsAddNew)
-                    changeFragment(Settings.newInstance(),Settings.TAG);
+                if (mIsAddNew)
+                    changeFragment(Settings.newInstance(), Settings.TAG);
                 else
-                ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
+                    ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
                 break;
             case R.id.btn_save:
                 sendUpdatedContactToServer();
@@ -341,7 +377,10 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
                         Utilities.saveData(getActivity(), Utilities.USER_PASSWORD, data.getString("password"));
                         Utilities.saveData(getActivity(), Utilities.USER_EMAIL, data.getString("email"));
 
-                        changeActivity(MainActivity.class);
+                        if (getActivity() instanceof AuthActivity)
+                            changeActivity(MainActivity.class, true);
+                        else
+                            changeActivity(MainActivity.class);
 
 
                     } else {
