@@ -28,7 +28,6 @@ public abstract class BaseFragment extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        Log.e("Parent fargmetn","Called parent");
         Utilities.hideKeyboard(getActivity(), view);
     }
 

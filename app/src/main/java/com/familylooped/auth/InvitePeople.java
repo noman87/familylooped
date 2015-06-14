@@ -216,7 +216,11 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
                         mContactList = new ArrayList<>();
                         for (int i = 0; i < data.length(); i++) {
                             mContactList.add(gson.fromJson(data.getJSONObject(i).toString(), ModelInvitePeople.class));
+                            mContactList.get(i).setCheck(true);
                         }
+                        /*for (int j = 0; j < mContactList.size(); j++) {
+                            mContactList.get(j).setCheck(true);
+                        }*/
                         setUpAdapter(mContactList);
 
                     } else {
@@ -325,6 +329,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
                     JSONObject object = new JSONObject(response);
                     if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
                         Utilities.toast(getActivity(), "Your contacts has been saved");
+                        ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
 
                     } else {
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {

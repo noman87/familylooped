@@ -63,7 +63,7 @@ public class AdapterMyPhoto extends ArrayAdapter<ModelMyPhoto> {
         }
         viewHolder = (ViewHolder) convertView.getTag();
         //Log.e("Path", "is " + list.get(position).getImage());
-        Picasso.with(activity).load(Uri.parse(list.get(position).getImage())).into(viewHolder.imageView);
+        Picasso.with(activity).load(Uri.parse(list.get(position).getImage())).fit().into(viewHolder.imageView);
 
 
         /*viewHolder.imageView.setOnClickListener(new View.OnClickListener() {

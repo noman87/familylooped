@@ -87,6 +87,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
     private ImageChooserManager imageChooserManager;
     private int mImageCount;
     private ImageButton mBtnDeselect;
+    private ImageButton btn_select;
 
 
     /**
@@ -151,9 +152,13 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
 
     private void init(View view) {
         ((ImageButton) view.findViewById(R.id.btn_add_photo)).setOnClickListener(this);
-        ((ImageButton) view.findViewById(R.id.btn_select)).setOnClickListener(this);
+        btn_select = (ImageButton) view.findViewById(R.id.btn_select);
+        btn_select.setOnClickListener(this);
+
         ((ImageButton) view.findViewById(R.id.btn_delete)).setOnClickListener(this);
+
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
+
         mBtnDeselect = (ImageButton) view.findViewById(R.id.btn_diselect);
         mBtnDeselect.setOnClickListener(this);
 
@@ -212,44 +217,6 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
     }
 
 
-    private void downloadFile(final ModelMyPhoto photo) {
-
-        Uri downloadUri = Uri.parse(photo.getImage());
-        final String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES).getAbsolutePath() + Utilities.DIR_NAME + System.currentTimeMillis() + "_.jpg";
-        Uri destinationUri = Uri.parse(path);
-        DownloadRequest downloadRequest = new DownloadRequest(downloadUri)
-
-                //.addCustomHeader("Auth-Token", "YourTokenApiKey")
-                //.setRetryPolicy(new DefaultRetryPolicy())
-                .setDestinationURI(destinationUri).setPriority(DownloadRequest.Priority.HIGH)
-                .setDownloadListener(new DownloadStatusListener() {
-                    @Override
-                    public void onDownloadComplete(int id) {
-                        Log.e("STATS ", "Download complete Success " + id);
-                        mList.add(new ModelMyPhoto(photo.getId(), path, photo.from, photo.getTimestamp(), "null"));
-                        mDownloadIndex++;
-                        if (mDownloadIndex == mList.size()) {
-                            mDownloadIndex = 0;
-                            showPhotos();
-                            mProgressDialog.dismiss();
-                        } else {
-                            downloadQueue();
-                        }
-                    }
-
-                    @Override
-                    public void onDownloadFailed(int id, int errorCode, String message) {
-                        Log.e("STATS ", "Download Failed " + id);
-                    }
-
-                    @Override
-                    public void onProgress(int id, long totalBytes, int progress) {
-                        Log.e("OnProgress ", "id " + id + " progress " + progress);
-
-                    }
-                });
-
-    }
 
     private void removePhoto(final int position) {
 
@@ -268,63 +235,6 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
             }
         });
         AppController.getInstance().addToRequestQueue(request);
-    }
-
-    private void download_photos() {
-        Map<String, String> urlParams = new HashMap<>();
-        urlParams.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
-        if (Utilities.getSaveData(getActivity(), Utilities.PHOTO_TIME) != null) {
-            urlParams.put("dateTime", Utilities.getSaveData(getActivity(), Utilities.PHOTO_TIME));
-        } else {
-            Calendar c = Calendar.getInstance();
-            SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ", Locale.ENGLISH);
-            String timeString = time.format(c.getTime());
-            StringBuffer currentTime = new StringBuffer(timeString);
-            currentTime.insert(timeString.indexOf("+"), " ");
-            Log.e("formatted string: ", "" + currentTime);
-            Utilities.saveData(getActivity(), Utilities.PHOTO_TIME, "" + currentTime);
-            urlParams.put("dateTime", "2015-05-01 11:01:04 +0500");
-
-        }
-
-
-        AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "getPictures", Utilities.BASE_URL + "getPictures", urlParams, new AsyncHttpRequest.HttpResponseListener() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject object = new JSONObject(response);
-                    mDownloadList = new ArrayList<>();
-                    if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
-                        JSONArray data = object.getJSONArray("photos");
-                        Gson gson = new Gson();
-                        mProgressDialog.show();
-                        for (int i = 0; i < data.length(); i++) {
-                            mDownloadList.add(gson.fromJson(data.getJSONObject(i).toString(), ModelMyPhoto.class));
-                        }
-                        downloadQueue();
-
-                    } else {
-
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        AppController.getInstance().addToRequestQueue(request);
-    }
-
-    private void downloadQueue() {
-        downloadFile(mDownloadList.get(mDownloadIndex));
     }
 
 
@@ -361,8 +271,17 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
                 mBtnDeselect.setVisibility(View.GONE);
                 break;
             case R.id.btn_select:
-                selectAll();
-                mBtnDeselect.setVisibility(View.VISIBLE);
+                String tag = btn_select.getTag().toString();
+                if (TextUtils.equals(tag, "select_all")) {
+                    btn_select.setTag("de_select");
+                    btn_select.setBackgroundResource(R.drawable.deselect);
+                    selectAll();
+
+                } else {
+                    btn_select.setTag("select_all");
+                    btn_select.setBackgroundResource(R.drawable.select_all);
+                    deSelectAll();
+                }
                 break;
 
             case R.id.btn_back:
@@ -400,7 +319,9 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
                 item.setShow(true);
             }
         }
+        btn_select.setTag("select_all");
 
+        btn_select.setBackgroundResource(R.drawable.select_all);
         updateJson();
         mAdapterMyPhoto.notifyDataSetChanged();
     }
@@ -474,7 +395,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
 
     private void addPhotoInList(String to) {
         String timeAndId = Utilities.getData(System.currentTimeMillis(), Utilities.DATE_FORMAT);
-        mList.add(new ModelMyPhoto(timeAndId, to, "Gallery", timeAndId,"null"));
+        mList.add(new ModelMyPhoto(timeAndId, to, "Gallery", timeAndId, "null"));
         mAdapterMyPhoto.notifyDataSetChanged();
         Utilities.saveUsersPhotoJson(getActivity(), gson.toJson(mList));
     }

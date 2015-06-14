@@ -3,9 +3,12 @@ package com.familylooped.slideShow;
 
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,7 +27,10 @@ import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
 import com.familylooped.common.logger.Log;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 
 public class FragmentSlideShow extends BaseFragment implements View.OnClickListener {
@@ -33,7 +39,7 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
     private static final String IMAGE_PATH = "image_path";
-    private static String ROTATION_VALUE= "rotation_value";
+    private static String ROTATION_VALUE = "rotation_value";
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -43,6 +49,7 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
     private ProgressBar progressBar;
     private LinearLayout layoutButtons;
     private int mRotationValue = 0;
+    private int mWidth, mHeight;
 
 
     /**
@@ -63,7 +70,7 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
         return fragment;
     }
 
-    public static FragmentSlideShow newInstance(String imagePath,int rotationValue) {
+    public static FragmentSlideShow newInstance(String imagePath, int rotationValue) {
         FragmentSlideShow fragment = new FragmentSlideShow();
         Bundle args = new Bundle();
         args.putString(IMAGE_PATH, imagePath);
@@ -96,11 +103,47 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        getScreenSize();
 
-        photo = (ImageView)view.findViewById(R.id.photo);
-        Picasso.with(getActivity()).load(Uri.parse(mImagePath)).into(photo);
+        photo = (ImageView) view.findViewById(R.id.photo);
+        Target target = new Target() {
+            @Override
+            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                ByteArrayOutputStream out = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                Bitmap compressBitmap = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
+                photo.setImageBitmap(compressBitmap);
+
+            }
+
+            @Override
+            public void onBitmapFailed(Drawable errorDrawable) {
+                Log.e("Error", "Error bitmap");
+
+            }
+
+            @Override
+            public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+            }
+        };
+
+        //Picasso.with(getActivity()).load(Uri.parse(mImagePath)).resize(mWidth,mHeight).into(photo);
 
         //photo.setImageURI(Uri.parse(mImagePath));
+
+        ImageRequest request = new ImageRequest(mImagePath, new Response.Listener<Bitmap>() {
+            @Override
+            public void onResponse(Bitmap response) {
+
+            }
+        }, mWidth, mHeight, ImageView.ScaleType.FIT_XY, Bitmap.Config.ALPHA_8, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+            error.printStackTrace();
+            }
+        });
+        AppController.getInstance().addToRequestQueue(request, "Getting Image");
 
         /*ImageRequest imageRequest = new ImageRequest(mImagePath, new Response.Listener<Bitmap>() {
             @Override
@@ -108,7 +151,7 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
                 progressBar.setVisibility(View.GONE);
                 photo.setImageBitmap(response);
                 //frameAnimation.stop();
-                Log.e("URL","is "+mImagePath);
+                Log.e("URL", "is " + mImagePath);
             }
         }, 0, 0, null, new Response.ErrorListener() {
             @Override
@@ -124,5 +167,11 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
     @Override
     public void onClick(View v) {
 
+    }
+
+    public void getScreenSize() {
+        Display display = getActivity().getWindowManager().getDefaultDisplay();
+        mWidth = display.getWidth();  // deprecated
+        mHeight = display.getHeight();  // deprecated
     }
 }

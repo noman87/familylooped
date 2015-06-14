@@ -10,16 +10,15 @@ import com.familylooped.slideShow.FragmentSlideShow;
 public class ModelMyPhoto {
 
 
-    String id, image, from, timestamp, date, subject;
+    String id, image, from, timestamp, subject;
     boolean check, show;
     int rotationValue;
 
-    public ModelMyPhoto(String id, String image, String from, String timestamp, String date, boolean check, boolean show) {
+    public ModelMyPhoto(String id, String image, String from, String timestamp, boolean check, boolean show) {
         this.id = id;
         this.image = image;
         this.from = from;
         this.timestamp = timestamp;
-        this.date = date;
         this.check = check;
         this.show = show;
         this.rotationValue = 0;
@@ -31,14 +30,6 @@ public class ModelMyPhoto {
 
     public void setSubject(String subject) {
         this.subject = subject;
-    }
-
-    public String getDate() {
-        return date;
-    }
-
-    public void setDate(String date) {
-        this.date = date;
     }
 
     public ModelMyPhoto(String id, String image, String from, String timestamp,String subject) {

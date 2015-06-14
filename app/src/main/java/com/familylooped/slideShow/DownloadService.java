@@ -39,6 +39,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -95,8 +96,10 @@ public class DownloadService extends Service {
     private void download_photos() {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("userId", Utilities.getSaveData(this, Utilities.USER_ID));
+        String url = "getPictures?userId=" + Utilities.getSaveData(this, Utilities.USER_ID) + "&";
         if (Utilities.getSaveData(this, Utilities.PHOTO_TIME) != null) {
-            urlParams.put("dateTime", Utilities.getSaveData(this, Utilities.PHOTO_TIME));
+            urlParams.put("dateTime", Utilities.getEncodedString(Utilities.getSaveData(this, Utilities.PHOTO_TIME)));
+            url = url + "dateTime=" + Utilities.getEncodedString(Utilities.getSaveData(this, Utilities.PHOTO_TIME));
         } else {
             Calendar c = Calendar.getInstance();
             SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ", Locale.ENGLISH);
@@ -105,13 +108,14 @@ public class DownloadService extends Service {
             currentTime.insert(timeString.indexOf("+"), " ");
             Log.e("formatted string: ", "" + currentTime);
             Utilities.saveData(this, Utilities.PHOTO_TIME, "" + currentTime);
-            urlParams.put("dateTime", "2015-05-01 11:01:04 +0500");
+            //urlParams.put("dateTime", Utilities.getEncodedString("2015-05-01 11:01:04 +0500"));
+            url = url + "dateTime=" + Utilities.getEncodedString("2015-05-01 11:01:04 +0500");
             // urlParams.put("dateTime", "2015-06-01 11:01:04 +0500");
 
         }
 
 
-        AsyncHttpRequest request = new AsyncHttpRequest(this, "getPictures", Utilities.BASE_URL + "getPictures", urlParams, true, new AsyncHttpRequest.HttpResponseListener() {
+        AsyncHttpRequest request = new AsyncHttpRequest(this, "getPictures", Utilities.BASE_URL + url, null, true, new AsyncHttpRequest.HttpResponseListener() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -125,7 +129,7 @@ public class DownloadService extends Service {
                         }
                         downloadQueue();
                         mBuilder.setContentText("Download in progress " + mDownloadIndex + " / " + mDownloadList.size());
-
+                        updateDate();
 
                     } else {
 
@@ -145,6 +149,17 @@ public class DownloadService extends Service {
         });
 
         AppController.getInstance().addToRequestQueue(request);
+    }
+
+    private void updateDate() {
+
+        Calendar c = Calendar.getInstance();
+        SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ", Locale.ENGLISH);
+        String timeString = time.format(c.getTime());
+        StringBuffer currentTime = new StringBuffer(timeString);
+        currentTime.insert(timeString.indexOf("+"), " ");
+        Log.e("formatted string: ", "" + currentTime);
+        Utilities.saveData(this, Utilities.PHOTO_TIME, "" + currentTime);
     }
 
     private void downloadQueue() {
@@ -167,13 +182,17 @@ public class DownloadService extends Service {
                     @Override
                     public void onDownloadComplete(int id) {
                         Log.e("STATS ", "Download complete Success " + id);
-                        ModelMyPhoto downloadedPhoto = new ModelMyPhoto(photo.getId(), "file:" + destinationUri.toString(), photo.getFrom(),
-                                Utilities.getData(Utilities.dateToTimeStamp(photo.getDate(), "yyyy-MM-dd hh:mm:ss"), Utilities.DATE_FORMAT), photo.getSubject());
+                        long time = Long.parseLong(photo.getTimestamp())*1000l;
+                        ModelMyPhoto downloadedPhoto = new ModelMyPhoto(photo.getId(),
+                                "file:" + destinationUri.toString(), photo.getFrom(),
+                                Utilities.getData(time,
+                                        Utilities.DATE_FORMAT), photo.getSubject());
                         mList.add(downloadedPhoto);
+                        savePhotoListJson();
                         Intent intent = new Intent("my-event");
                         intent.putExtra("json", gson.toJson(downloadedPhoto));
                         LocalBroadcastManager.getInstance(DownloadService.this).sendBroadcast(new Intent(intent));
-                        savePhotoListJson();
+
                         mDownloadIndex++;
                         mBuilder.setContentText(("Download in progress " + mDownloadIndex + " / " + mDownloadList.size()));
                         mNotifyManager.notify(mNotificationId, mBuilder.build());
@@ -199,7 +218,7 @@ public class DownloadService extends Service {
 
                     @Override
                     public void onProgress(int id, long totalBytes, int progress) {
-                        Log.e("OnProgress ", "id " + id + " progress " + progress);
+                        //  Log.e("OnProgress ", "id " + id + " progress " + progress);
 
                         mBuilder.setProgress(100, progress, false);
                         mNotifyManager.notify(mNotificationId, mBuilder.build());

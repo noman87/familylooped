@@ -343,6 +343,7 @@ public class Utilities {
         Date date = new Date(unixSeconds);
         SimpleDateFormat sdf = new SimpleDateFormat(formate);
         String formattedDate = sdf.format(date);
+        Log.d("FormatedDate",formattedDate);
         return formattedDate;
     }
 
@@ -369,12 +370,21 @@ public class Utilities {
     }
 
     public static String getUsersPhotoJson(Context context) {
-        Log.e("PhotoJson", Utilities.getSaveData(context, Utilities.USER_ID + "_" + Utilities.PHOTO_JSON));
-        return Utilities.getSaveData(context, Utilities.getSaveData(context,Utilities.USER_ID)+ "_" + Utilities.PHOTO_JSON);
+        Log.e("PhotoJson", Utilities.getSaveData(context, Utilities.getSaveData(context,Utilities.USER_ID) + "_" + Utilities.PHOTO_JSON));
+        return Utilities.getSaveData(context, Utilities.getSaveData(context, Utilities.USER_ID) + "_" + Utilities.PHOTO_JSON);
     }
 
     public static void saveUsersPhotoJson(Context context, String json) {
-        Utilities.saveData(context, Utilities.getSaveData(context,Utilities.USER_ID) + "_" + Utilities.PHOTO_JSON, json);
+        Utilities.saveData(context, Utilities.getSaveData(context, Utilities.USER_ID) + "_" + Utilities.PHOTO_JSON, json);
+    }
+
+    public static String getEncodedString(String string) {
+        try {
+            return URLEncoder.encode(string, "UTF-8");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
 

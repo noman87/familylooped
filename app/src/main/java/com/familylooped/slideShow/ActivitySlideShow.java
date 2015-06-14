@@ -116,6 +116,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
                         layoutButtons.setVisibility(View.VISIBLE);
                         mLayoutStopButon.setVisibility(View.VISIBLE);
                         stopSlideShow();
+                        if(getIntent().getExtras()==null)
                         timer(10000);
                     }
                 }
@@ -136,11 +137,13 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
 
             @Override
             public void onPageSelected(int position) {
-                /// currentIndex = position;
+                currentIndex = position;
                 //mCurrentPagerIndex = position;
                 mTxtName.setText("From: " + mList.get(position).getFrom());
-                if (mList.get(position).getSubject() != null || !TextUtils.equals(mList.get(position).getSubject(),"null"))
+                if (!TextUtils.equals(mList.get(position).getSubject(), "null"))
                     mTxtSubject.setText("Subject: " + mList.get(position).getSubject());
+                else
+                    mTxtSubject.setText("Subject: ");
             }
 
             @Override
@@ -153,7 +156,10 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
 
 
         mUpdateResults = new Runnable() {
+
             public void run() {
+                layoutButtons.setVisibility(View.INVISIBLE);
+                mLayoutStopButon.setVisibility(View.INVISIBLE);
                 currentIndex++;
                 if (currentIndex >= mList.size()) {
                     currentIndex = 0;
@@ -194,13 +200,16 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
         }
         if (mList.size() > 0) {
             mTxtName.setText("From: " + mList.get(0).getFrom());
-            if (mList.get(0).getSubject() != null || !TextUtils.equals(mList.get(0).getSubject(),"null"))
+            if (!TextUtils.equals(mList.get(0).getSubject(), "null"))
                 mTxtSubject.setText("Subject " + mList.get(0).getSubject());
+            else
+                mTxtSubject.setText("Subject: ");
 
         }
 
-
-        timer(period);
+        if (getIntent().getExtras() == null) {
+            timer(period);
+        }
 
 
     }

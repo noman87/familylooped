@@ -84,6 +84,7 @@ public class ManuallyAddContactActivity extends BaseActionBarActivity implements
         lastName = mTxtLastName.getText().toString();
         email = mTxtEmail.getText().toString();
         mList.add(0, new ModelInvitePeople(name + " " + lastName, email));
+        mList.get(0).setCheck(true);
         Bundle bundle = new Bundle();
         bundle.putString("json", Utilities.getJSON(mList));
         Intent intent = new Intent(this, MainActivity.class);
