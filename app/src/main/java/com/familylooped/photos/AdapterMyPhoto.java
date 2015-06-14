@@ -63,7 +63,7 @@ public class AdapterMyPhoto extends ArrayAdapter<ModelMyPhoto> {
         }
         viewHolder = (ViewHolder) convertView.getTag();
         //Log.e("Path", "is " + list.get(position).getImage());
-        Picasso.with(activity).load(Uri.parse(list.get(position).getImage())).fit().into(viewHolder.imageView);
+        Picasso.with(activity).load(Uri.parse(list.get(position).getImage())).resizeDimen(R.dimen.photo_width, R.dimen.photo_height).centerInside().into(viewHolder.imageView);
 
 
         /*viewHolder.imageView.setOnClickListener(new View.OnClickListener() {
@@ -94,7 +94,7 @@ public class AdapterMyPhoto extends ArrayAdapter<ModelMyPhoto> {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 list.get(position).setCheck(isChecked);
-                if(isChecked)
+                if (isChecked)
                     finalViewHolder.imageView.setAlpha(0.5f);
                 else
 
@@ -108,7 +108,7 @@ public class AdapterMyPhoto extends ArrayAdapter<ModelMyPhoto> {
         } else {
             viewHolder.checkBox.setChecked(false);
             list.get(position).setShow(false);
-           // viewHolder.imageView.setAlpha(1f);
+            // viewHolder.imageView.setAlpha(1f);
         }
         if (list.get(position).isShow()) {
             viewHolder.checkBox.setVisibility(View.VISIBLE);

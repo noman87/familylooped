@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.annotation.Nullable;
 import android.view.Display;
 import android.view.LayoutInflater;
@@ -28,10 +29,12 @@ import com.familylooped.common.fragments.DialogClickListener;
 import com.familylooped.common.logger.Log;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
+import com.squareup.picasso.Transformation;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.IOException;
 
 public class FragmentSlideShow extends BaseFragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
@@ -50,6 +53,9 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
     private LinearLayout layoutButtons;
     private int mRotationValue = 0;
     private int mWidth, mHeight;
+    private Bitmap mBitmap;
+    private static final int MAX_WIDTH = 1024;
+    private static final int MAX_HEIGHT = 768;
 
 
     /**
@@ -106,63 +112,19 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
         getScreenSize();
 
         photo = (ImageView) view.findViewById(R.id.photo);
-        Target target = new Target() {
-            @Override
-            public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                Bitmap compressBitmap = BitmapFactory.decodeStream(new ByteArrayInputStream(out.toByteArray()));
-                photo.setImageBitmap(compressBitmap);
 
-            }
+        int size = (int) Math.ceil(Math.sqrt(MAX_WIDTH * MAX_HEIGHT));
 
-            @Override
-            public void onBitmapFailed(Drawable errorDrawable) {
-                Log.e("Error", "Error bitmap");
+// Loads given image
+        Picasso.with(getActivity())
+                .load(Uri.parse(mImagePath))
+                .transform(new BitmapTransform(MAX_WIDTH, MAX_HEIGHT))
+                .skipMemoryCache()
+                .resize(size, size)
+                .centerInside()
+                .into(photo);
 
-            }
-
-            @Override
-            public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-            }
-        };
-
-        //Picasso.with(getActivity()).load(Uri.parse(mImagePath)).resize(mWidth,mHeight).into(photo);
-
-        //photo.setImageURI(Uri.parse(mImagePath));
-
-        ImageRequest request = new ImageRequest(mImagePath, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-
-            }
-        }, mWidth, mHeight, ImageView.ScaleType.FIT_XY, Bitmap.Config.ALPHA_8, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-            error.printStackTrace();
-            }
-        });
-        AppController.getInstance().addToRequestQueue(request, "Getting Image");
-
-        /*ImageRequest imageRequest = new ImageRequest(mImagePath, new Response.Listener<Bitmap>() {
-            @Override
-            public void onResponse(Bitmap response) {
-                progressBar.setVisibility(View.GONE);
-                photo.setImageBitmap(response);
-                //frameAnimation.stop();
-                Log.e("URL", "is " + mImagePath);
-            }
-        }, 0, 0, null, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-
-        });
-        AppController.getInstance().addToRequestQueue(imageRequest, "Getting Image");*/
     }
-
 
     @Override
     public void onClick(View v) {
@@ -174,4 +136,45 @@ public class FragmentSlideShow extends BaseFragment implements View.OnClickListe
         mWidth = display.getWidth();  // deprecated
         mHeight = display.getHeight();  // deprecated
     }
+
+    public class BitmapTransform implements Transformation {
+
+        int maxWidth;
+        int maxHeight;
+
+        public BitmapTransform(int maxWidth, int maxHeight) {
+            this.maxWidth = maxWidth;
+            this.maxHeight = maxHeight;
+        }
+
+        @Override
+        public Bitmap transform(Bitmap source) {
+            int targetWidth, targetHeight;
+            double aspectRatio;
+
+            if (source.getWidth() > source.getHeight()) {
+                targetWidth = maxWidth;
+                aspectRatio = (double) source.getHeight() / (double) source.getWidth();
+                targetHeight = (int) (targetWidth * aspectRatio);
+            } else {
+                targetHeight = maxHeight;
+                aspectRatio = (double) source.getWidth() / (double) source.getHeight();
+                targetWidth = (int) (targetHeight * aspectRatio);
+            }
+
+            Bitmap result = Bitmap.createScaledBitmap(source, targetWidth, targetHeight, false);
+            if (result != source) {
+                source.recycle();
+            }
+            return result;
+        }
+
+        @Override
+        public String key() {
+            return maxWidth + "x" + maxHeight;
+        }
+
+    }
+
+    ;
 }
