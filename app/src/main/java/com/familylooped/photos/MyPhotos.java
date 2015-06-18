@@ -171,7 +171,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
         mProgressDialog.setMessage("Downloading images...");
 
 
-        mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+       /* mGridView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
             public boolean onItemLongClick(AdapterView<?> parent, View view, final int position, long id) {
                 showDialog("Do you want to remove this photo", "Yes", "No", new DialogClickListener() {
@@ -183,10 +183,16 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
 
                 return false;
             }
-        });
+        });*/
 
         showPhotos();
 
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        Log.e("Call", "OnREsume");
 
     }
 
@@ -214,27 +220,6 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
         mAdapterMyPhoto = new AdapterMyPhoto(getActivity(), mList, MyPhotos.this);
         mGridView.setAdapter(mAdapterMyPhoto);
 
-    }
-
-
-
-    private void removePhoto(final int position) {
-
-        HashMap<String, String> urlParams = new HashMap<>();
-        // urlParams.put("photoId", mList.get(position).getId());
-        AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "delete_photo", Utilities.BASE_URL + "deletePhoto", urlParams, new AsyncHttpRequest.HttpResponseListener() {
-            @Override
-            public void onResponse(String response) {
-                mList.remove(position);
-                mAdapterMyPhoto.notifyDataSetChanged();
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-        AppController.getInstance().addToRequestQueue(request);
     }
 
 
@@ -267,7 +252,13 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
                 addPhoto();
                 break;
             case R.id.btn_delete:
-                removePhoto();
+                showDialog("Are you sure you want to delete this photo?",
+                        "Yes", "No", new DialogClickListener() {
+                            @Override
+                            public void onPositiveButtonClick() {
+                                removePhoto();
+                            }
+                        });
                 mBtnDeselect.setVisibility(View.GONE);
                 break;
             case R.id.btn_select:
@@ -302,24 +293,45 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
     }
 
     private void removePhoto() {
-        for (Iterator<ModelMyPhoto> iterator = mList.iterator(); iterator.hasNext(); ) {
-            ModelMyPhoto item = iterator.next();
-            if (item.isCheck()) {
+       /* for (int i = 0; i < mList.size(); i++) {
+            if (mList.get(i).isCheck()) {
                 File file = null;
                 try {
-                    file = new File(new URI(item.getImage()));
+                    file = new File(new URI(mList.get(i).getImage()));
                     boolean status = file.delete();
                     Log.e("delete Status", "is " + status);
+
                 } catch (URISyntaxException e) {
                     e.printStackTrace();
                 }
+            }
 
+            btn_select.setTag("select_all");
+            btn_select.setBackgroundResource(R.drawable.select_all);
+            updateJson();
+            mAdapterMyPhoto.notifyDataSetChanged();
+
+        }*/
+        for (Iterator<ModelMyPhoto> iterator = mList.iterator(); iterator.hasNext(); ) {
+            ModelMyPhoto item = iterator.next();
+            if (item.isCheck()) {
+                /*File file = null;
+                try {
+                    file = new File(new URI(item.getImage()));
+                    //boolean status = file.delete();
+                    //Log.e("delete Status", "is " + status);
+                } catch (URISyntaxException e) {
+                    e.printStackTrace();
+                }*/
                 iterator.remove();
             } else {
                 item.setShow(true);
             }
         }
         btn_select.setTag("select_all");
+        for (ModelMyPhoto photo : mList) {
+            Log.e("PATH", photo.getImage());
+        }
 
         btn_select.setBackgroundResource(R.drawable.select_all);
         updateJson();
@@ -408,6 +420,9 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
                 (requestCode == ChooserType.REQUEST_PICK_PICTURE ||
                         requestCode == ChooserType.REQUEST_CAPTURE_PICTURE)) {
             imageChooserManager.submit(requestCode, data);
+        } else if (resultCode == getActivity().RESULT_OK && requestCode == 111) {
+            initializePhotoList();
+            showPhotos();
         }
     }
 
@@ -435,7 +450,12 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         Log.e(TAG, "" + position);
         Bundle bundle = new Bundle();
-        bundle.putInt("position", position);
-        changeActivity(ActivitySlideShow.class, bundle);
+        //bundle.putInt("position", position);
+        Intent intent = new Intent(getActivity(), ActivitySlideShow.class);
+        intent.putExtra("position", position);
+        startActivityForResult(intent, 111);
+        ///changeActivity(ActivitySlideShow.class, bundle);
     }
+
+
 }

@@ -32,6 +32,8 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
     private String mParam1;
     private String mParam2;
     private RadioGroup mRadionGroup, mPhotoRadioGroup;
+    private int mValue=0;
+    private int photo_period=0;
 
 
     /**
@@ -135,26 +137,26 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
 
     @Override
     public void onCheckedChanged(RadioGroup group, int checkedId) {
-        int value = 0;
-        int photo_period = 0;
+
+
         switch (checkedId) {
             case R.id.radio_3_sec:
-                value = 3;
+                mValue = 3;
                 break;
 
             case R.id.radio_7_sec:
-                value = 7;
+                mValue = 7;
                 break;
             case R.id.radio_5_sec:
-                value = 5;
+                mValue = 5;
                 break;
 
             case R.id.radio_10_sec:
-                value = 10;
+                mValue = 10;
                 break;
 
             case R.id.radio_15_sec:
-                value = 15;
+                mValue = 15;
                 break;
 
 
@@ -176,10 +178,6 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
                 photo_period = Utilities.PHOTO_EVERY_THING;
                 break;
         }
-        if (group.getId() == R.id.radio_group)
-            Utilities.saveInt(getActivity(), Utilities.SLIDER_TIME, value * 1000);
-        else
-            Utilities.saveInt(getActivity(), Utilities.PHOTO_PERIOD, photo_period);
 
     }
 
@@ -190,7 +188,10 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
                 ((MainActivity) getActivity()).popFragmentIfStackExist();
                 break;
             case R.id.btn_save:
+                    Utilities.saveInt(getActivity(), Utilities.SLIDER_TIME, mValue * 1000);
+                    Utilities.saveInt(getActivity(), Utilities.PHOTO_PERIOD, photo_period);
                 Utilities.toast(getActivity(), "You settings has been saved");
+                ((MainActivity) getActivity()).popFragmentIfStackExist();
                 break;
         }
     }

@@ -1,5 +1,6 @@
 package com.familylooped.slideShow;
 
+import android.app.Activity;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
@@ -10,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
+import com.familylooped.common.Utilities;
 import com.familylooped.common.logger.Log;
 import com.familylooped.photos.ModelMyPhoto;
+import com.google.gson.Gson;
 
 import java.util.ArrayList;
 
@@ -22,17 +25,15 @@ public class AdapterSlideShow extends FragmentStatePagerAdapter {
     // private ArrayList<View> views = new ArrayList<>();
     private ArrayList<ModelMyPhoto> list;
     private long baseId = 0;
+    private Activity mActivity;
     SparseArray<Fragment> registeredFragments = new SparseArray<Fragment>();
 
 
-
-
-
-
-    public AdapterSlideShow(FragmentManager fm, ArrayList<ModelMyPhoto> list) {
+    public AdapterSlideShow(Activity activity, FragmentManager fm, ArrayList<ModelMyPhoto> list) {
         super(fm);
         this.list = list;
         Log.e("list size", "" + list.size());
+        mActivity = activity;
     }
 
     @Override
@@ -40,7 +41,7 @@ public class AdapterSlideShow extends FragmentStatePagerAdapter {
         return list.get(position).createFragment();
     }
 
-    public View getCurrentView(int position){
+    public View getCurrentView(int position) {
         return getItem(position).getView();
     }
 
@@ -87,7 +88,9 @@ public class AdapterSlideShow extends FragmentStatePagerAdapter {
     }
 
     public int removeView(ViewPager pager, int position) {
+        Gson gson = new Gson();
         list.remove(position);
+        Utilities.saveUsersPhotoJson(mActivity, gson.toJson(list));
 //
 //        //  notifyChangeInPosition(position);
 //        //    pager.removeViewAt(position);
@@ -95,6 +98,10 @@ public class AdapterSlideShow extends FragmentStatePagerAdapter {
 //        pager.getAdapter().notifyDataSetChanged();
 
         return position;
+    }
+
+    private void deletePhotoFromApp(int currentItem) {
+
     }
 
     @Override

@@ -71,8 +71,6 @@ public class DownloadService extends Service {
     @Override
     public void onCreate() {
         //Toast.makeText(this, "The new Service was Created", Toast.LENGTH_LONG).show();
-        downloadManager = new ThinDownloadManager();
-        initializePhotoList();
 
 
     }
@@ -81,6 +79,8 @@ public class DownloadService extends Service {
     public void onStart(Intent intent, int startId) {
         // For time consuming an long tasks you can launch a new thread here...
         //Toast.makeText(this, " Service Started", Toast.LENGTH_LONG).show();
+        downloadManager = new ThinDownloadManager();
+        initializePhotoList();
         showNotification();
         download_photos();
         //downloadFile(new ModelMyPhoto("1","http://www.familylooped.com/app/uploads/gallery/1432874085_1.jpg","Noman","12121212"));
@@ -97,6 +97,7 @@ public class DownloadService extends Service {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("userId", Utilities.getSaveData(this, Utilities.USER_ID));
         String url = "getPictures?userId=" + Utilities.getSaveData(this, Utilities.USER_ID) + "&";
+        url = url + "currentTime=" + Utilities.getEncodedString(Utilities.getData(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss") + " +0500")+"&";
         if (Utilities.getSaveData(this, Utilities.PHOTO_TIME) != null) {
             urlParams.put("dateTime", Utilities.getEncodedString(Utilities.getSaveData(this, Utilities.PHOTO_TIME)));
             url = url + "dateTime=" + Utilities.getEncodedString(Utilities.getSaveData(this, Utilities.PHOTO_TIME));
@@ -182,13 +183,13 @@ public class DownloadService extends Service {
                     @Override
                     public void onDownloadComplete(int id) {
                         Log.e("STATS ", "Download complete Success " + id);
-                        long time = Long.parseLong(photo.getTimestamp())*1000l;
+                        long time = Long.parseLong(photo.getTimestamp()) * 1000l;
                         ModelMyPhoto downloadedPhoto = new ModelMyPhoto(photo.getId(),
                                 "file:" + destinationUri.toString(), photo.getFrom(),
                                 Utilities.getData(time,
                                         Utilities.DATE_FORMAT), photo.getSubject());
                         mList.add(downloadedPhoto);
-                        savePhotoListJson();
+
                         Intent intent = new Intent("my-event");
                         intent.putExtra("json", gson.toJson(downloadedPhoto));
                         LocalBroadcastManager.getInstance(DownloadService.this).sendBroadcast(new Intent(intent));
@@ -197,6 +198,7 @@ public class DownloadService extends Service {
                         mBuilder.setContentText(("Download in progress " + mDownloadIndex + " / " + mDownloadList.size()));
                         mNotifyManager.notify(mNotificationId, mBuilder.build());
                         if (mDownloadIndex == mDownloadList.size()) {
+                            savePhotoListJson();
                             mDownloadIndex = 0;
                             //downloadManager.release();
                             mBuilder.setContentText("Download completed");
@@ -249,6 +251,7 @@ public class DownloadService extends Service {
     }
 
     private void parseData(String json) {
+        Log.e("Init_json", json);
         Gson gson = new Gson();
         try {
             JSONArray jsonArray = new JSONArray(json);

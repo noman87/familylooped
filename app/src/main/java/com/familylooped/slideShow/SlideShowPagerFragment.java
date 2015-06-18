@@ -225,7 +225,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
         if (Utilities.getUsersPhotoJson(getActivity()) != null) {
             parseData(Utilities.getUsersPhotoJson(getActivity()));
         }
-        mAdapter = new AdapterSlideShow(getChildFragmentManager(), mList);
+        mAdapter = new AdapterSlideShow(getActivity(),getChildFragmentManager(), mList);
         mViewPager.setAdapter(mAdapter);
         if (mList.size() > 0)
             mTxtName.setText("From: " + mList.get(0).getFrom());
@@ -400,7 +400,7 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
 
     private void reInitViewPager(boolean is_increment) {
 
-        mAdapter = new AdapterSlideShow(getChildFragmentManager(), mList);
+        mAdapter = new AdapterSlideShow(getActivity(),getChildFragmentManager(), mList);
         mViewPager.setAdapter(mAdapter);
         int position = 0;
         if (is_increment)

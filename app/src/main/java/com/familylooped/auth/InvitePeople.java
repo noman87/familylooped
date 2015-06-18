@@ -381,6 +381,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
                         Utilities.saveData(getActivity(), Utilities.USER_LAST_NAME, data.getString("lastName"));
                         Utilities.saveData(getActivity(), Utilities.USER_PASSWORD, data.getString("password"));
                         Utilities.saveData(getActivity(), Utilities.USER_EMAIL, data.getString("email"));
+                        Utilities.saveData(getActivity(), Utilities.USER_NAME, data.getString("userName"));
 
                         if (getActivity() instanceof AuthActivity)
                             changeActivity(MainActivity.class, true);

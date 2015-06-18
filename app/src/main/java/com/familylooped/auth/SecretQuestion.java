@@ -310,6 +310,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
                     JSONObject object = new JSONObject(response);
                     if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
                         Utilities.toast(getActivity(), "Save Successfully");
+                        ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
                     } else {
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
                             @Override

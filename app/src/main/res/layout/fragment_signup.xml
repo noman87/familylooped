@@ -42,33 +42,37 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="2dp"
+            android:weightSum="100">
 
             <EditText
                 android:id="@+id/txt_email"
                 style="@style/edit_text"
                 android:hint="Username"
                 android:layout_width="0dp"
-                android:layout_weight=".5"
+                android:layout_weight="60"
                 android:inputType="text"
+                android:singleLine="true"
                 android:tag="userName"
                 android:drawableLeft="@drawable/userid" />
 
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
-                android:layout_weight=".5"
+                android:layout_weight="35"
                 android:textSize="@dimen/domin_name"
-                android:gravity="center_vertical"
+                android:gravity="center_vertical|"
                 android:layout_gravity="center"
                 android:text="@string/familylooped" />
 
             <ImageButton
                 android:id="@+id/btn_question"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:background="@drawable/question_mark"/>
+                android:layout_weight="5"
+                android:background="@drawable/question_mark" />
         </LinearLayout>
 
         <EditText

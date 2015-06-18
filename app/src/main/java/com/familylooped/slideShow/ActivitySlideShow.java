@@ -38,6 +38,7 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.familylooped.MainActivity;
 import com.familylooped.R;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
@@ -83,6 +84,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
     Gson gson = new Gson();
     private int mSelectedPosition;
     private TextView mTxtSubject;
+    private boolean mIsOnePhotoSelection;
 
 
     @Override
@@ -116,8 +118,8 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
                         layoutButtons.setVisibility(View.VISIBLE);
                         mLayoutStopButon.setVisibility(View.VISIBLE);
                         stopSlideShow();
-                        if(getIntent().getExtras()==null)
-                        timer(10000);
+                        if (getIntent().getExtras() == null)
+                            timer(10000);
                     }
                 }
 
@@ -192,9 +194,10 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
         if (Utilities.getUsersPhotoJson(this) != null) {
             parseData(Utilities.getUsersPhotoJson(this));
         }
-        mAdapter = new AdapterSlideShow(getSupportFragmentManager(), mList);
+        mAdapter = new AdapterSlideShow(this, getSupportFragmentManager(), mList);
         mViewPager.setAdapter(mAdapter);
         if (getIntent().getExtras() != null) {
+            mIsOnePhotoSelection = true;
             mSelectedPosition = getIntent().getExtras().getInt("position");
             mViewPager.setCurrentItem(mSelectedPosition);
         }
@@ -366,7 +369,13 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
                         //File file = new File(mList.get(mViewPager.getCurrentItem()).getImage());
                         //boolean deleted = file.delete();
                         mAdapter.removeView(mViewPager, mViewPager.getCurrentItem());
-                        reInitViewPager(true);
+                        if (mIsOnePhotoSelection) {
+                            setResult(Activity.RESULT_OK, null);
+                            finish();
+
+                        } else {
+                            reInitViewPager(true);
+                        }
 
                     }
                 });
@@ -375,7 +384,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
             case R.id.btn_replay:
                 //playSlideShow();
                 stopSlideShow();
-                if (!TextUtils.equals(mList.get(mViewPager.getCurrentItem()).getFrom(), "gallery"))
+                if (!TextUtils.equals(mList.get(mViewPager.getCurrentItem()).getFrom(), "Gallery"))
                     showPopup();
                 else
                     showDialog("This photo has no email address attached", "OK", "Cancel", new DialogClickListener() {
@@ -395,6 +404,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
 
     }
 
+
     private void showPopup() {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle("Send message");
@@ -407,6 +417,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
             @Override
             public void onClick(DialogInterface dialog, int which) {
                 // mEmailAddress = textView.getText().toString();
+                sendReply(mList.get(mViewPager.getCurrentItem()).getId(), textView.getText().toString());
                 timer(10000);
             }
         });
@@ -421,9 +432,48 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
 
     }
 
+    private void sendReply(String id, String message) {
+
+        Map<String, String> params = new HashMap();
+        params.put("id", id);
+        params.put("text", message);
+        AsyncHttpRequest request = new AsyncHttpRequest(this, "Reply", Utilities.BASE_URL + "reply", params, new AsyncHttpRequest.HttpResponseListener() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject object = new JSONObject(response);
+                    if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
+                        Utilities.toast(ActivitySlideShow.this, "Your message has been sent");
+                    } else {
+                        showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
+                            @Override
+                            public void onPositiveButtonClick() {
+
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.getMessage() != null) {
+
+                }
+            }
+        });
+
+        AppController.getInstance().addToRequestQueue(request, "reply");
+    }
+
     private void reInitViewPager(boolean is_increment) {
 
-        mAdapter = new AdapterSlideShow(getSupportFragmentManager(), mList);
+        mAdapter = new AdapterSlideShow(this, getSupportFragmentManager(), mList);
         mViewPager.setAdapter(mAdapter);
         int position = 0;
         if (is_increment)

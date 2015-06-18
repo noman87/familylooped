@@ -13,12 +13,20 @@ import android.widget.ImageButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.familylooped.MainActivity;
 import com.familylooped.R;
+import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.activities.BaseActionBarActivity;
+import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
 import com.familylooped.settings.personalData.changePassword.ChangePassword;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -112,11 +120,49 @@ public class Signup extends BaseFragment implements View.OnClickListener {
 
     }
 
+    private void checkUserName() {
+        Map<String, String> params = new HashMap();
+        params.put("userName", txt_email.getText().toString());
+        AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "checkUserName", Utilities.BASE_URL + "checkUserName2", params, new AsyncHttpRequest.HttpResponseListener() {
+            @Override
+            public void onResponse(String response) {
+
+                try {
+                    JSONObject object = new JSONObject(response);
+                    if (TextUtils.equals(object.getString("status"), Utilities.SUCCESS)) {
+                        ProceedToRegistration();
+                    } else {
+                        showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
+                            @Override
+                            public void onPositiveButtonClick() {
+
+                            }
+                        });
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                if (error.getMessage() != null) {
+
+                }
+            }
+        });
+
+        AppController.getInstance().addToRequestQueue(request, "checkUserName");
+    }
+
+
     private void init(View view) {
         ((ImageButton) view.findViewById(R.id.btn_next)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_change_password)).setOnClickListener(this);
-        ((ImageButton)view.findViewById(R.id.btn_question)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_question)).setOnClickListener(this);
         txt_email = (EditText) view.findViewById(R.id.txt_email);
         if (mIsUpdate) {
             ((EditText) view.findViewById(R.id.txt_password)).setVisibility(View.GONE);
@@ -130,6 +176,7 @@ public class Signup extends BaseFragment implements View.OnClickListener {
             ((EditText) view.findViewById(R.id.txt_first_name)).setKeyListener(null);
             ((EditText) view.findViewById(R.id.txt_email)).setKeyListener(null);
             ((ImageButton) view.findViewById(R.id.btn_change_password)).setVisibility(View.VISIBLE);
+            ((ImageButton) view.findViewById(R.id.btn_question)).setVisibility(View.GONE);
 
         } else {
             LinearLayout mainLayout = (LinearLayout) view.findViewById(R.id.main_layout);
@@ -173,7 +220,7 @@ public class Signup extends BaseFragment implements View.OnClickListener {
             txt_alternate_email.setText("");
             return;
         }*/ else {
-            ProceedToRegistration();
+            checkUserName();
         }
 
 
@@ -221,13 +268,13 @@ public class Signup extends BaseFragment implements View.OnClickListener {
                     validate();
                 break;
             case R.id.btn_back:
-                ((BaseActionBarActivity ) getActivity()).popFragmentIfStackExist();
+                ((BaseActionBarActivity) getActivity()).popFragmentIfStackExist();
                 break;
             case R.id.btn_change_password:
                 changeFragment(ChangePassword.newInstance(), ChangePassword.TAG);
                 break;
             case R.id.btn_question:
-                showDialog("Please select username","OK","Cancel",new DialogClickListener() {
+                showDialog("Choose your preferred username", "OK", "Cancel", new DialogClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
 

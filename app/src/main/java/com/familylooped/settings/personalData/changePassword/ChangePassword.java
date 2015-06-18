@@ -214,6 +214,8 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
                         mNewPassword.setText("");
                         if (mIsForgotPassword) {
                             changeFragmentWithoutBackStack(Login.newInstance(), Login.TAG);
+                        } else {
+                            ((MainActivity) getActivity()).popFragmentIfStackExist();
                         }
                     } else {
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
