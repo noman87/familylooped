@@ -6,23 +6,18 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
-import android.os.Environment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 
 import com.android.volley.toolbox.ImageLoader;
-import com.android.volley.toolbox.NetworkImageView;
 import com.familylooped.R;
 import com.familylooped.common.AppController;
 import com.familylooped.common.fragments.DialogClickListener;
-import com.familylooped.common.logger.Log;
 import com.squareup.picasso.Picasso;
 
 import java.io.File;

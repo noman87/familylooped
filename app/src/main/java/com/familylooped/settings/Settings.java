@@ -8,7 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
 import com.familylooped.MainActivity;
@@ -96,6 +95,8 @@ public class Settings extends BaseFragment implements View.OnClickListener {
         ((ImageButton) view.findViewById(R.id.btn_photos)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.log_out)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_about)).setOnClickListener(this);
+        ((ImageButton) view.findViewById(R.id.btn_privacy)).setOnClickListener(this);
 
 
     }
@@ -109,7 +110,7 @@ public class Settings extends BaseFragment implements View.OnClickListener {
                 break;
 
             case R.id.btn_contacts:
-                changeFragment(InvitePeople.newInstance(true),InvitePeople.TAG);
+                changeFragment(InvitePeople.newInstance(true), InvitePeople.TAG);
                 break;
 
             case R.id.btn_play_settings:
@@ -117,7 +118,7 @@ public class Settings extends BaseFragment implements View.OnClickListener {
                 break;
 
             case R.id.btn_photos:
-                changeFragment(MyPhotos.newInstance(),MyPhotos.TAG);
+                changeFragment(MyPhotos.newInstance(), MyPhotos.TAG);
                 break;
 
             case R.id.btn_back:
@@ -127,6 +128,12 @@ public class Settings extends BaseFragment implements View.OnClickListener {
             case R.id.log_out:
                 Utilities.saveBoolean(getActivity(), Utilities.IS_REMEMBER, false);
                 changeActivity(AuthActivity.class);
+                break;
+            case R.id.btn_privacy:
+                changeFragment(Content.newInstance(getString(R.string.privicy),""),"");
+                break;
+            case R.id.btn_about:
+                changeFragment(Content.newInstance(getString(R.string.about),""),"");
                 break;
         }
     }

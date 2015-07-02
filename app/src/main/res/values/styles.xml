@@ -86,6 +86,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textColor">@color/common_text</item>
         <item name="android:button">@null</item>
+        <item name="android:padding">@dimen/small_margin</item>
         <item name="android:textSize">@dimen/domin_name</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:drawablePadding">@dimen/small_margin</item>

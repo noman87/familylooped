@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.familylooped" >
+    package="com.familylooped">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -11,6 +11,7 @@
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
     <uses-permission android:name="com.google.android.c2dm.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.VIBRATE" />
 
     <permission
         android:name="com.example.gcm.permission.C2D_MESSAGE"
@@ -24,17 +25,17 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:largeHeap="true"
-        android:theme="@style/AppTheme" >
+        android:theme="@style/AppTheme">
         <receiver
             android:name=".common.pushNotification.GcmBroadcastReceiver"
-            android:permission="com.google.android.c2dm.permission.SEND" >
+            android:permission="com.google.android.c2dm.permission.SEND">
             <intent-filter>
                 <action android:name="com.google.android.c2dm.intent.RECEIVE" />
 
                 <category android:name="com.example.gcm" />
             </intent-filter>
         </receiver>
-        <receiver android:name=".slideShow.ImagesReceiver" >
+        <receiver android:name=".slideShow.ImagesReceiver">
             <intent-filter>
                 <action android:name="com.familylooped.slideShow.ImagesReceiver" />
             </intent-filter>
@@ -46,8 +47,8 @@
         <activity
             android:name=".Splash"
             android:label="@string/app_name"
-            android:screenOrientation="portrait"
-            android:theme="@style/Theme.AppCompat.NoActionBar" >
+
+            android:theme="@style/Theme.AppCompat.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -56,11 +57,11 @@
         </activity>
         <activity
             android:name=".auth.AuthActivity"
-            android:screenOrientation="portrait"
+
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait" />
+             />
         <activity
             android:name=".slideShow.ActivitySlideShow"
             android:label="@string/title_activity_activity_slide_show"
@@ -74,9 +75,8 @@
         <activity
             android:name=".auth.invitePeople.ManuallyAddContactActivity"
             android:label="@string/title_activity_manually_add_contact"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustPan">
-        </activity>
+
+            android:windowSoftInputMode="stateHidden|adjustPan"></activity>
     </application>
 
 </manifest>

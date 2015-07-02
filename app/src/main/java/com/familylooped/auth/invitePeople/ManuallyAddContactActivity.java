@@ -1,10 +1,7 @@
 package com.familylooped.auth.invitePeople;
 
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.ImageButton;
@@ -12,8 +9,6 @@ import android.widget.ListView;
 
 import com.familylooped.MainActivity;
 import com.familylooped.R;
-import com.familylooped.auth.AuthActivity;
-import com.familylooped.auth.InvitePeople;
 import com.familylooped.auth.ModelInvitePeople;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.activities.BaseActionBarActivity;
@@ -37,16 +32,21 @@ public class ManuallyAddContactActivity extends BaseActionBarActivity implements
     private ArrayList<ModelInvitePeople> mList;
     private String mJsonString;
     private boolean mIsAuthActivity;
+    private boolean mIsContactShow;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.fragment_manually_add_contact);
-        Bundle bundle = getIntent().getBundleExtra("data");
 
-        if (bundle.getString("json") != null) {
-            mJsonString = bundle.getString("json");
-            mIsAuthActivity = getIntent().getExtras().getBoolean("activity");
+        Bundle bundle = getIntent().getBundleExtra("data");
+        if (bundle != null) {
+            if (bundle.getString("json") != null) {
+                mJsonString = bundle.getString("json");
+                mIsAuthActivity = getIntent().getExtras().getBoolean("activity");
+            }
+        } else if (getIntent().hasExtra("is_show")) {
+            mIsContactShow = getIntent().getExtras().getBoolean("is_show");
         }
         init();
 
@@ -60,6 +60,15 @@ public class ManuallyAddContactActivity extends BaseActionBarActivity implements
         mTxtFirstName = (EditText) findViewById(R.id.txt_first_name);
         mTxtLastName = (EditText) findViewById(R.id.txt_last_name);
         mTxtEmail = (EditText) findViewById(R.id.txt_email);
+        if (mIsContactShow) {
+            mTxtFirstName.setText(getIntent().getExtras().getString("name"));
+            mTxtLastName.setText(getIntent().getExtras().getString("last_name"));
+            mTxtEmail.setText(getIntent().getExtras().getString("email"));
+            mTxtFirstName.setKeyListener(null);
+            mTxtLastName.setKeyListener(null);
+            mTxtEmail.setKeyListener(null);
+            ((ImageButton) findViewById(R.id.btn_add)).setVisibility(View.GONE);
+        }
         if (mJsonString != null) {
             mList = Utilities.getArrayListFromGSON(mJsonString);
         }

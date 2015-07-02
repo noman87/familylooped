@@ -15,19 +15,16 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
+import android.widget.AdapterView;
 import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.familylooped.MainActivity;
 import com.familylooped.R;
-import com.familylooped.auth.invitePeople.FragmentManuallyAddContact;
 import com.familylooped.auth.invitePeople.ManuallyAddContactActivity;
-import com.familylooped.auth.invitePeople.ModelManuallyContact;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.activities.BaseActionBarActivity;
@@ -53,7 +50,7 @@ import java.util.Map;
  * Use the {@link InvitePeople#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class InvitePeople extends BaseFragment implements View.OnClickListener {
+public class InvitePeople extends BaseFragment implements View.OnClickListener, AdapterView.OnItemClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -62,6 +59,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     private static final String LAST_NAME = "last_name";
     private static final String EMAIL = "email";
     private static final String IS_UPDATE = "is_update";
+    private static final int REQUEST_SHOW_CONTACT_DETAIL = 102;
     public static String TAG = "invite_people";
     private static String IS_ADD_NEW = "is_add_new";
     private static String JSON_STRING = "json_string";
@@ -166,6 +164,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
 
     private void init(View view) {
         mListView = (ListView) view.findViewById(R.id.list_view);
+        mListView.setOnItemClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_submit)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_invite)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_save)).setOnClickListener(this);
@@ -442,5 +441,24 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener {
     private void setUpAdapter(ArrayList<ModelInvitePeople> contactList) {
         mAdapter = new AdapterInvitePeople(getActivity(), contactList, mIsUpdate);
         mListView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Intent intent = new Intent(getActivity(), ManuallyAddContactActivity.class);
+        intent.putExtra("is_show", true);
+        String name[] = mContactList.get(position).getName().split(" ");
+        if (name.length > 1) {
+            intent.putExtra("name", name[0]);
+            intent.putExtra("last_name", name[1]);
+
+        } else {
+            intent.putExtra("name", name[0]);
+            intent.putExtra("last_name", "");
+        }
+        intent.putExtra("email", mContactList.get(position).getEmail());
+        startActivityForResult(intent, REQUEST_SHOW_CONTACT_DETAIL);
+
+
     }
 }

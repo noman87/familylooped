@@ -57,6 +57,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
     private EditText txt_ans1, txt_ans2;
     private String mQuestionsId;
     private String mAns, mUsersSelectedQuestion1, mUsersSelectedQuestion2, mUsersSelectedAnswer1, mUsersSelectedAnswer2;
+    private String mAlternateEmailAddress;
 
 
     /**
@@ -285,7 +286,8 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
                 txt_alternate_email.setText("");
                 return;
             } else {
-                Signup.urlParams.put("alterNativeEmail", txt_alternate_email.getText().toString());
+                //Signup.urlParams.put("alterNativeEmail", txt_alternate_email.getText().toString());
+                mAlternateEmailAddress = txt_alternate_email.getText().toString();
             }
 
         }
@@ -298,7 +300,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
         params.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
         params.put("secretQuestions", mQuestionsId);
         params.put("secretAnswers", mAns);
-        if (txt_alternate_email.getText().toString() != null)
+        if (mAlternateEmailAddress != null)
             params.put("alterNativeEmail", txt_alternate_email.getText().toString());
 
 
@@ -343,9 +345,12 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
 
         Log.e("ID ", mQuestionsId);
         Log.e("ANS ", mAns);
+        Log.e("AlternateEmail", mAlternateEmailAddress);
         if (!isUpdate) {
             Signup.urlParams.put("secretQuestions", mQuestionsId);
             Signup.urlParams.put("secretAnswers", mAns);
+            if (mAlternateEmailAddress != null)
+                Signup.urlParams.put("alterNativeEmail", mAlternateEmailAddress);
             changeFragment(InvitePeople.newInstance(), InvitePeople.TAG);
         } else {
             update();

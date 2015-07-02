@@ -6,14 +6,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
-import android.widget.CheckedTextView;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
-import com.android.volley.toolbox.NetworkImageView;
 import com.familylooped.R;
-import com.familylooped.common.logger.Log;
 
 import java.util.ArrayList;
 
@@ -54,13 +51,14 @@ public class AdapterInvitePeople extends ArrayAdapter<ModelInvitePeople> {
         }
         viewHolder = (ViewHolder) convertView.getTag();
         final ViewHolder finalViewHolder = viewHolder;
-        String name[] = mList.get(position).getName().split(" ");
+        /*String name[] = mList.get(position).getName().split(" ");
         if (name.length > 1) {
             viewHolder.txt_name.setText(name[0]);
             viewHolder.txt_last_name.setText(name[1]);
         } else {
             viewHolder.txt_name.setText(mList.get(position).getName());
-        }
+        }*/
+        viewHolder.txt_name.setText(mList.get(position).getName());
         viewHolder.email.setText(mList.get(position).getEmail());
         if (mIsUpdate) {
             finalViewHolder.btn_delete.setVisibility(View.VISIBLE);

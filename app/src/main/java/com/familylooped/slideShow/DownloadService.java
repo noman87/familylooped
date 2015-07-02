@@ -97,20 +97,14 @@ public class DownloadService extends Service {
         Map<String, String> urlParams = new HashMap<>();
         urlParams.put("userId", Utilities.getSaveData(this, Utilities.USER_ID));
         String url = "getPictures?userId=" + Utilities.getSaveData(this, Utilities.USER_ID) + "&";
-        url = url + "currentTime=" + Utilities.getEncodedString(Utilities.getData(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss") + " +0500")+"&";
+        url = url + "currentTime=" + Utilities.getEncodedString(getTimeWithTimeZone(false)) + "&";
         if (Utilities.getSaveData(this, Utilities.PHOTO_TIME) != null) {
             urlParams.put("dateTime", Utilities.getEncodedString(Utilities.getSaveData(this, Utilities.PHOTO_TIME)));
             url = url + "dateTime=" + Utilities.getEncodedString(Utilities.getSaveData(this, Utilities.PHOTO_TIME));
         } else {
-            Calendar c = Calendar.getInstance();
-            SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ", Locale.ENGLISH);
-            String timeString = time.format(c.getTime());
-            StringBuffer currentTime = new StringBuffer(timeString);
-            currentTime.insert(timeString.indexOf("+"), " ");
-            Log.e("formatted string: ", "" + currentTime);
-            Utilities.saveData(this, Utilities.PHOTO_TIME, "" + currentTime);
+            Utilities.saveData(this, Utilities.PHOTO_TIME, "" + getTimeWithTimeZone(false));
             //urlParams.put("dateTime", Utilities.getEncodedString("2015-05-01 11:01:04 +0500"));
-            url = url + "dateTime=" + Utilities.getEncodedString("2015-05-01 11:01:04 +0500");
+            url = url + "dateTime=" + Utilities.getEncodedString(getTimeWithTimeZone(true));
             // urlParams.put("dateTime", "2015-06-01 11:01:04 +0500");
 
         }
@@ -150,6 +144,18 @@ public class DownloadService extends Service {
         });
 
         AppController.getInstance().addToRequestQueue(request);
+    }
+
+    private String getTimeWithTimeZone(boolean last_mont_date) {
+        Calendar c = Calendar.getInstance();
+        if(last_mont_date)
+        c.set(2015,05,01,11,01,04);
+        SimpleDateFormat time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ssZ", Locale.ENGLISH);
+        String timeString = time.format(c.getTime());
+        StringBuffer currentTime = new StringBuffer(timeString);
+        currentTime.insert(timeString.indexOf("+"), " ");
+        Log.e("formatted string: ", "" + currentTime);
+        return "" + currentTime;
     }
 
     private void updateDate() {

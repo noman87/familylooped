@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/logo"
             android:imeOptions="actionNext"
-            android:layout_marginTop="@dimen/large_margin" />
+            android:layout_marginTop="@dimen/small_margin" />
 
         <EditText
             android:id="@+id/txt_first_name"
@@ -51,16 +51,16 @@
                 style="@style/edit_text"
                 android:hint="Username"
                 android:layout_width="0dp"
-                android:layout_weight="60"
+                android:layout_weight="100"
                 android:inputType="text"
                 android:singleLine="true"
                 android:tag="userName"
                 android:drawableLeft="@drawable/userid" />
 
             <TextView
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="35"
+              android:paddingRight="4dp"
                 android:textSize="@dimen/domin_name"
                 android:gravity="center_vertical|"
                 android:layout_gravity="center"
@@ -68,10 +68,9 @@
 
             <ImageButton
                 android:id="@+id/btn_question"
-                android:layout_width="0dp"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:layout_weight="5"
                 android:background="@drawable/question_mark" />
         </LinearLayout>
 

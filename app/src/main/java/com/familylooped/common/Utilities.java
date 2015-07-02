@@ -1,6 +1,5 @@
 package com.familylooped.common;
 
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Build;
@@ -15,10 +14,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
 import com.familylooped.common.logger.Log;
-import com.google.android.gms.analytics.HitBuilders;
-import com.google.android.gms.analytics.Tracker;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -28,7 +24,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.nio.charset.StandardCharsets;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -150,6 +145,8 @@ public class Utilities {
     public static final int PHOTO_EVERY_THING = 3000000;
     public static String FOLDER = "folder";
     public static String USER_NAME = "user_name";
+    public static String HADEES_DOWNLOAD = "hadees_download";
+    public static String QURAN_DOWNLOAD = "quran_download";
 
     public static <T> void printJSON(String TAG, Object object, Class<T> classOfT) {
         Gson gson = new Gson();
@@ -324,7 +321,7 @@ public class Utilities {
         different = different % minutesInMilli;
 
         long elapsedSeconds = different / secondsInMilli;
-        Log.e("Days ", " is" + elapsedDays);
+        //Log.e("Days ", " is" + elapsedDays);
         return elapsedDays;
         /*if (elapsedDays > 0) {
             return true;
@@ -371,13 +368,13 @@ public class Utilities {
     }
 
     public static String getUsersPhotoJson(Context context) {
-        Log.e("PhotoJson", Utilities.getSaveData(context, Utilities.getSaveData(context, Utilities.USER_NAME) + "_" + Utilities.PHOTO_JSON));
-        Log.e("PhotoJsonKey", Utilities.getSaveData(context, Utilities.USER_NAME) + "_" + Utilities.PHOTO_JSON);
+        //Log.e("PhotoJson", Utilities.getSaveData(context, Utilities.getSaveData(context, Utilities.USER_NAME) + "_" + Utilities.PHOTO_JSON));
+        //Log.e("PhotoJsonKey", Utilities.getSaveData(context, Utilities.USER_NAME) + "_" + Utilities.PHOTO_JSON);
         return Utilities.getSaveData(context, Utilities.getSaveData(context, Utilities.USER_NAME) + "_" + Utilities.PHOTO_JSON);
     }
 
     public static void saveUsersPhotoJson(Context context, String json) {
-        Log.e("Saving_json",json);
+        //Log.e("Saving_json",json);
         Utilities.saveData(context, Utilities.getSaveData(context, Utilities.USER_NAME) + "_" + Utilities.PHOTO_JSON, json);
     }
 
