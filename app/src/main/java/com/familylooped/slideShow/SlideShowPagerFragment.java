@@ -2,19 +2,15 @@ package com.familylooped.slideShow;
 
 
 import android.app.AlertDialog;
+import android.app.Fragment;
 import android.content.DialogInterface;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
-import android.media.ExifInterface;
 import android.os.Bundle;
-import android.app.Fragment;
-import android.os.Environment;
 import android.os.Handler;
 import android.support.annotation.Nullable;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.view.ContextThemeWrapper;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -27,7 +23,6 @@ import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.familylooped.MainActivity;
 import com.familylooped.R;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
@@ -35,7 +30,6 @@ import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
 import com.familylooped.common.logger.Log;
-import com.familylooped.photos.AdapterMyPhoto;
 import com.familylooped.photos.ModelMyPhoto;
 import com.google.gson.Gson;
 
@@ -352,6 +346,11 @@ public class SlideShowPagerFragment extends BaseFragment implements View.OnClick
                         //boolean deleted = file.delete();
                         mAdapter.removeView(mViewPager, mViewPager.getCurrentItem());
                         reInitViewPager(true);
+
+                    }
+
+                    @Override
+                    public void onDismiss() {
 
                     }
                 });

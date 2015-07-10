@@ -10,15 +10,14 @@
         android:layout_height="match_parent"
 
         android:orientation="vertical"
-        android:padding="@dimen/medium_margin"
+        android:padding="@dimen/small_margin"
         tools:context="com.familylooped.auth.invitePeople.FragmentManuallyAddContact">
 
         <ImageView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="center_horizontal"
-            android:background="@drawable/logo"
-            android:layout_marginTop="@dimen/small_margin" />
+            android:background="@drawable/logo" />
 
 
         <LinearLayout
@@ -58,14 +57,13 @@
                 android:inputType="textEmailAddress"
                 android:singleLine="true"
                 android:imeOptions="actionDone"
-                android:layout_marginTop="@dimen/small_margin"
                 style="@style/common_edit_text" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/medium_margin"
+            android:layout_marginTop="@dimen/small_margin"
             android:gravity="center">
 
 

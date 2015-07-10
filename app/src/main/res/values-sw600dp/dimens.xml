@@ -5,7 +5,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="small_margin">18dp</dimen>
+    <dimen name="tine_margin">8dp</dimen>
+    <dimen name="small_margin">16dp</dimen>
     <dimen name="medium_margin">32dp</dimen>
     <dimen name="large_margin">64dp</dimen>
 
@@ -36,7 +37,10 @@
     <dimen name="remember_me_size">30sp</dimen>
     <dimen name="signup_textbox_size">36sp</dimen>
     <dimen name="domin_name">15sp</dimen>
+    <dimen name="and_or_text">36sp</dimen>
 
     <dimen name="common_text_size">36sp</dimen>
     <dimen name="grid_column_width">600dp</dimen>
+    <dimen name="slide_show_start_image_width">400dp</dimen>
+    <dimen name="slide_show_start_image_height">400dp</dimen>
 </resources>

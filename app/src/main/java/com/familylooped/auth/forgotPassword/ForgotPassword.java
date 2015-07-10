@@ -1,8 +1,8 @@
 package com.familylooped.auth.forgotPassword;
 
 
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -14,14 +14,12 @@ import android.widget.ImageButton;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.familylooped.R;
-import com.familylooped.auth.SecretQuestion;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
 import com.familylooped.common.activities.BaseActionBarActivity;
 import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
-import com.familylooped.settings.personalData.changePassword.ChangePassword;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -105,6 +103,11 @@ public class ForgotPassword extends BaseFragment implements View.OnClickListener
                                     public void onPositiveButtonClick() {
 
                                     }
+
+                                    @Override
+                                    public void onDismiss() {
+
+                                    }
                                 });
                             } else {
                                 JSONObject data = object.getJSONObject("data");
@@ -120,6 +123,11 @@ public class ForgotPassword extends BaseFragment implements View.OnClickListener
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
                             @Override
                             public void onPositiveButtonClick() {
+
+                            }
+
+                            @Override
+                            public void onDismiss() {
 
                             }
                         });
@@ -151,6 +159,11 @@ public class ForgotPassword extends BaseFragment implements View.OnClickListener
                     showDialog("Please enter username", "Ok", "Cancel", new DialogClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
+
+                        }
+
+                        @Override
+                        public void onDismiss() {
 
                         }
                     });

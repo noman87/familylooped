@@ -227,6 +227,11 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener, 
                             @Override
                             public void onPositiveButtonClick() {
                             }
+
+                            @Override
+                            public void onDismiss() {
+
+                            }
                         });
                     }
                 } catch (JSONException e) {
@@ -335,6 +340,11 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener, 
                             @Override
                             public void onPositiveButtonClick() {
                             }
+
+                            @Override
+                            public void onDismiss() {
+
+                            }
                         });
                     }
                 } catch (JSONException e) {
@@ -392,6 +402,11 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener, 
                         showDialog(object.getString("msg"), "OK", "Cancel", new DialogClickListener() {
                             @Override
                             public void onPositiveButtonClick() {
+
+                            }
+
+                            @Override
+                            public void onDismiss() {
 
                             }
                         });

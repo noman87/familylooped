@@ -275,6 +275,11 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
                 public void onPositiveButtonClick() {
 
                 }
+
+                @Override
+                public void onDismiss() {
+
+                }
             });
             return;
         }
@@ -317,6 +322,11 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
                             @Override
                             public void onPositiveButtonClick() {
+                            }
+
+                            @Override
+                            public void onDismiss() {
+
                             }
                         });
                     }

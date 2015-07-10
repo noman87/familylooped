@@ -143,12 +143,22 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
                 public void onPositiveButtonClick() {
 
                 }
+
+                @Override
+                public void onDismiss() {
+
+                }
             });
             return;
         } else if (!TextUtils.equals(mOldPassword.getText().toString(), mPassword)) {
             showDialog("You have entered wrong old password.Please try again", "OK", "Cancel", new DialogClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
+
+                }
+
+                @Override
+                public void onDismiss() {
 
                 }
             });
@@ -158,6 +168,11 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
             showDialog("New password and old password does not match! please try again", "OK", "Cancel", new DialogClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
+
+                }
+
+                @Override
+                public void onDismiss() {
 
                 }
             });
@@ -175,6 +190,11 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
                 public void onPositiveButtonClick() {
 
                 }
+
+                @Override
+                public void onDismiss() {
+
+                }
             });
             return;
         } else if (!TextUtils.equals(mNewPassword.getText().toString(), mConfirmPassword.getText().toString())) {
@@ -182,6 +202,11 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
             showDialog("New password and old password does not match! please try again", "OK", "Cancel", new DialogClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
+
+                }
+
+                @Override
+                public void onDismiss() {
 
                 }
             });
@@ -221,6 +246,11 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
                             @Override
                             public void onPositiveButtonClick() {
+
+                            }
+
+                            @Override
+                            public void onDismiss() {
 
                             }
                         });

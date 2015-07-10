@@ -11,11 +11,9 @@ import android.view.ViewGroup;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
-import android.widget.TextView;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
-import com.familylooped.MainActivity;
 import com.familylooped.R;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
@@ -135,6 +133,11 @@ public class Signup extends BaseFragment implements View.OnClickListener {
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
                             @Override
                             public void onPositiveButtonClick() {
+
+                            }
+
+                            @Override
+                            public void onDismiss() {
 
                             }
                         });
@@ -277,6 +280,11 @@ public class Signup extends BaseFragment implements View.OnClickListener {
                 showDialog("Choose your preferred username", "OK", "Cancel", new DialogClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
+
+                    }
+
+                    @Override
+                    public void onDismiss() {
 
                     }
                 });

@@ -113,6 +113,11 @@ public class ShowSecretQuestion extends BaseFragment implements View.OnClickList
                             public void onPositiveButtonClick() {
 
                             }
+
+                            @Override
+                            public void onDismiss() {
+
+                            }
                         });
                     }
                 } catch (JSONException e) {
@@ -157,6 +162,11 @@ public class ShowSecretQuestion extends BaseFragment implements View.OnClickList
                         public void onPositiveButtonClick() {
 
                         }
+
+                        @Override
+                        public void onDismiss() {
+
+                        }
                     });
                 break;
             case R.id.btn_back:
@@ -195,6 +205,11 @@ public class ShowSecretQuestion extends BaseFragment implements View.OnClickList
                                 public void onPositiveButtonClick() {
 
                                 }
+
+                                @Override
+                                public void onDismiss() {
+
+                                }
                             });
 
                         }
@@ -203,6 +218,11 @@ public class ShowSecretQuestion extends BaseFragment implements View.OnClickList
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
                             @Override
                             public void onPositiveButtonClick() {
+
+                            }
+
+                            @Override
+                            public void onDismiss() {
 
                             }
                         });

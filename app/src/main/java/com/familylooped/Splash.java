@@ -3,10 +3,8 @@ package com.familylooped;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
-import android.os.Environment;
-import android.os.Handler;
-import android.support.v7.app.ActionBarActivity;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -61,7 +59,7 @@ public class Splash extends SampleActivityBase {
         if (Utilities.getSavedInt(this, Utilities.SLIDER_TIME) < 0)
             Utilities.saveInt(this, Utilities.SLIDER_TIME, 3000);
         if (Utilities.getSavedInt(this, Utilities.PHOTO_PERIOD) < 0)
-            Utilities.saveInt(this, Utilities.PHOTO_PERIOD, Utilities.PHOTO_DAY);
+            Utilities.saveInt(this, Utilities.PHOTO_PERIOD, Utilities.PHOTO_EVERY_THING);
     }
 
 

@@ -168,6 +168,11 @@ public class AdapterMyPhoto extends ArrayAdapter<ModelMyPhoto> {
                                             notifyDataSetChanged();
 
                                         }
+
+                                        @Override
+                                        public void onDismiss() {
+
+                                        }
                                     });
 
                                 }

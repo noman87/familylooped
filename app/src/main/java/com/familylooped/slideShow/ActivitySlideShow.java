@@ -75,6 +75,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
     private int mSelectedPosition;
     private TextView mTxtSubject;
     private boolean mIsOnePhotoSelection;
+    private ViewPager.OnPageChangeListener pageChangeListener;
 
 
     @Override
@@ -102,10 +103,10 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
                 if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     int visibility = layoutButtons.getVisibility();
                     if (visibility == View.VISIBLE) {
-                        layoutButtons.setVisibility(View.INVISIBLE);
+                        layoutButtons.setVisibility(View.GONE);
                         mLayoutStopButon.setVisibility(View.INVISIBLE);
 
-                    } else if (visibility == View.INVISIBLE) {
+                    } else if (visibility == View.GONE) {
                         layoutButtons.setVisibility(View.VISIBLE);
                         mLayoutStopButon.setVisibility(View.VISIBLE);
                         stopSlideShow();
@@ -122,7 +123,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
 
         mViewPager.setPageTransformer(false, new ReaderViewPagerTransformer(ReaderViewPagerTransformer.TransformType.FLOW));
 
-        mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+        pageChangeListener = new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
                 mRotationValue = 0;
@@ -130,20 +131,21 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
 
             @Override
             public void onPageSelected(int position) {
+                Log.e("POsition", "" + position);
                 currentIndex = position;
                 //mCurrentPagerIndex = position;
-                mTxtName.setText("From: " + mList.get(position).getFrom());
-                if (!TextUtils.equals(mList.get(position).getSubject(), "null"))
-                    mTxtSubject.setText("Subject: " + mList.get(position).getSubject());
-                else
-                    mTxtSubject.setText("Subject: ");
+
+                updateNameAndSubject(position);
             }
 
             @Override
             public void onPageScrollStateChanged(int state) {
 
             }
-        });
+        };
+
+        mViewPager.setOnPageChangeListener(pageChangeListener);
+
         //getPhotos();
         showPhotos();
 
@@ -151,18 +153,35 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
         mUpdateResults = new Runnable() {
 
             public void run() {
-                layoutButtons.setVisibility(View.INVISIBLE);
+                layoutButtons.setVisibility(View.GONE);
                 mLayoutStopButon.setVisibility(View.INVISIBLE);
                 currentIndex++;
                 if (currentIndex >= mList.size()) {
                     currentIndex = 0;
                 }
-                if (currentIndex == 0)
-                    mViewPager.setAdapter(mAdapter);
-                else
+                if (currentIndex == 0) {
+                    //setUpPagerAdapter();
+                    startActivity(new Intent(ActivitySlideShow.this, SlideShowStarterActivity.class));
+                    finish();
+                } else {
                     mViewPager.setCurrentItem(currentIndex);
+                }
             }
         };
+    }
+
+    private void updateNameAndSubject(int position) {
+        mTxtName.setText("From: " + mList.get(position).getFrom());
+        if (!TextUtils.equals(mList.get(position).getSubject(), "null"))
+            mTxtSubject.setText("Subject: " + mList.get(position).getSubject());
+        else
+            mTxtSubject.setText("Subject: ");
+
+    }
+
+    private void setUpPagerAdapter() {
+        mViewPager.setAdapter(mAdapter);
+        pageChangeListener.onPageSelected(0);
     }
 
     private void timer(int delay) {
@@ -184,25 +203,18 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
         mList = new ArrayList<>();
         if (Utilities.getUsersPhotoJson(this) != null) {
             parseData(Utilities.getUsersPhotoJson(this));
-        }
-        mAdapter = new AdapterSlideShow(this, getSupportFragmentManager(), mList);
-        mViewPager.setAdapter(mAdapter);
-        if (getIntent().getExtras() != null) {
-            mIsOnePhotoSelection = true;
-            mSelectedPosition = getIntent().getExtras().getInt("position");
-            mViewPager.setCurrentItem(mSelectedPosition);
-        }
-        if (mList.size() > 0) {
-            mTxtName.setText("From: " + mList.get(0).getFrom());
-            if (!TextUtils.equals(mList.get(0).getSubject(), "null"))
-                mTxtSubject.setText("Subject " + mList.get(0).getSubject());
-            else
-                mTxtSubject.setText("Subject: ");
+        } else {
+            showDialog("You have no photos", "OK", "Cancel", new DialogClickListener() {
+                @Override
+                public void onPositiveButtonClick() {
+                    ;
+                }
 
-        }
-
-        if (getIntent().getExtras() == null) {
-            timer(period);
+                @Override
+                public void onDismiss() {
+                    finish();
+                }
+            });
         }
 
 
@@ -211,8 +223,8 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
     private void parseData(String json) {
         Gson gson = new Gson();
         int days_preference = Utilities.getSavedInt(this, Utilities.PHOTO_PERIOD);
-        if (days_preference < 0) {
-            days_preference = Utilities.PHOTO_DAY;
+        if (days_preference < 0 || getIntent().hasExtra("position")) {
+            days_preference = Utilities.PHOTO_EVERY_THING;
         }
 
         try {
@@ -228,45 +240,34 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
 
+        if (mList.size() > 0) {
+            //setUp adapter
+            mAdapter = new AdapterSlideShow(this, getSupportFragmentManager(), mList);
+            mViewPager.setAdapter(mAdapter);
+            if (getIntent().hasExtra("position")) {
+                mIsOnePhotoSelection = true;
+                mSelectedPosition = getIntent().getExtras().getInt("position");
+                mViewPager.setCurrentItem(mSelectedPosition);
+            } else {
+                pageChangeListener.onPageSelected(0);
+            }
+            if (getIntent().getExtras() == null) {
+                timer(period);
+            }
+        } else {
+            showDialog("You have no photos", "OK", "Cancel", new DialogClickListener() {
+                @Override
+                public void onPositiveButtonClick() {
 
-    private void getPhotos() {
-
-
-        Map<String, String> urlParams = new HashMap<>();
-        mList = new ArrayList<>();
-        urlParams.put("userId", Utilities.getSaveData(this, Utilities.USER_ID));
-
-        AsyncHttpRequest request = new AsyncHttpRequest(this, "get_images", Utilities.BASE_URL + "photos", urlParams, new AsyncHttpRequest.HttpResponseListener() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject object = new JSONObject(response);
-                    JSONArray data = object.getJSONArray("data");
-                    Gson gson = new Gson();
-                    for (int i = 0; i < data.length(); i++) {
-                        mList.add(gson.fromJson(data.getJSONObject(i).toString(), ModelMyPhoto.class));
-
-                    }
-
-                    //timer();
-
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
                 }
 
-
-            }
-        }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-
-            }
-        });
-
-        AppController.getInstance().addToRequestQueue(request, "get_photos");
+                @Override
+                public void onDismiss() {
+                    finish();
+                }
+            });
+        }
     }
 
     private void saveRotateImage(String fileName, String orientation) {
@@ -369,6 +370,11 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
                         }
 
                     }
+
+                    @Override
+                    public void onDismiss() {
+
+                    }
                 });
                 break;
 
@@ -381,6 +387,11 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
                     showDialog("This photo has no email address attached", "OK", "Cancel", new DialogClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
+
+                        }
+
+                        @Override
+                        public void onDismiss() {
 
                         }
                     });
@@ -440,6 +451,11 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
                         showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
                             @Override
                             public void onPositiveButtonClick() {
+
+                            }
+
+                            @Override
+                            public void onDismiss() {
 
                             }
                         });

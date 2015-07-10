@@ -46,7 +46,7 @@
         <item name="android:drawablePadding">@dimen/medium_margin</item>
         <item name="android:textColorHint">@color/common_text</item>
         <item name="android:background">@drawable/textbox</item>
-        <item name="android:layout_marginTop">@dimen/small_margin</item>
+        <item name="android:layout_marginTop">@dimen/tine_margin</item>
 
     </style>
 
@@ -59,7 +59,7 @@
         <item name="android:background">@drawable/textbox</item>
         <item name="android:textColor">@color/common_text</item>
 
-        <item name="android:layout_marginTop">@dimen/small_margin</item>
+        <item name="android:layout_marginTop">@dimen/tine_margin</item>
     </style>
 
     <style name="text_box">

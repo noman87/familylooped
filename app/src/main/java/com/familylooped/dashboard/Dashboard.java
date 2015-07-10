@@ -13,7 +13,7 @@ import android.widget.ImageButton;
 import com.familylooped.R;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.settings.Settings;
-import com.familylooped.slideShow.ActivitySlideShow;
+import com.familylooped.slideShow.SlideShowStarterActivity;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -90,7 +90,7 @@ public class Dashboard extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_play:
-                Intent intent = new Intent(getActivity(),ActivitySlideShow.class);
+                Intent intent = new Intent(getActivity(),SlideShowStarterActivity.class);
                 startActivity(intent);
                 //changeFragment(SlideShowPagerFragment.newInstance(), SlideShowPagerFragment.TAG);
                 break;
