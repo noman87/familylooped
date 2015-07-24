@@ -1,27 +1,29 @@
 package com.familylooped.common.fragments;
 
 import android.content.Intent;
+import android.content.res.Configuration;
+import android.content.res.Resources;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.ActionBarActivity;
-import android.text.TextUtils;
 import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.Animation;
 
 import com.familylooped.R;
 import com.familylooped.common.Utilities;
-import com.familylooped.common.logger.Log;
+
+import java.util.Locale;
 
 public abstract class BaseFragment extends Fragment {
 
     public static boolean sDisableFragmentAnimations = false;
 
     protected void setTitle(String title) {
-       // getActionBar().setTitle(title);
+        // getActionBar().setTitle(title);
 
     }
 
@@ -66,7 +68,8 @@ public abstract class BaseFragment extends Fragment {
 
 
     @Override
-    public void onPrepareOptionsMenu(Menu menu) {}
+    public void onPrepareOptionsMenu(Menu menu) {
+    }
 
     /**
      * Translate Animation between fragments.
@@ -79,6 +82,14 @@ public abstract class BaseFragment extends Fragment {
 
         getActivity().getSupportFragmentManager().beginTransaction()
                 .setCustomAnimations(R.anim.enter, R.anim.exit, R.anim.pop_enter, R.anim.pop_exit)
+                .replace(R.id.container, fragment, tag).commit();
+    }
+
+    protected void changeFragmentWithoutBackStack(Fragment fragment, String tag, boolean isAnimation) {
+
+
+        getActivity().getSupportFragmentManager().beginTransaction()
+
                 .replace(R.id.container, fragment, tag).commit();
     }
 
@@ -109,7 +120,7 @@ public abstract class BaseFragment extends Fragment {
         getActivity().finish();
     }
 
-    protected <T> void changeActivity(Class<T> cls,boolean isRemoveAll) {
+    protected <T> void changeActivity(Class<T> cls, boolean isRemoveAll) {
         Intent resultIntent = new Intent(getActivity(), cls);
         resultIntent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         startActivity(resultIntent);
@@ -151,6 +162,49 @@ public abstract class BaseFragment extends Fragment {
             getFragmentManager().popBackStack();
         }
         sDisableFragmentAnimations = false;
+    }
+
+    protected void reFrashFragment() {
+        Fragment currentFragment = getAttachFragment();
+        FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
+        fragTransaction.detach(currentFragment);
+        fragTransaction.attach(currentFragment);
+        fragTransaction.commit();
+    }
+
+    protected void restartInLocale(String strLocale) {
+
+        Locale locale = new Locale(strLocale);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+        getActivity().getBaseContext().getResources().updateConfiguration(config,
+                getActivity().getBaseContext().getResources().getDisplayMetrics());
+        Resources resources = getResources();
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+        reFrashFragment();
+    }
+
+    protected void restartInLocaleWithActivity(String strLocale) {
+
+        Locale locale = new Locale(strLocale);
+        Locale.setDefault(locale);
+        Configuration config = new Configuration();
+        config.locale = locale;
+
+        getActivity().getBaseContext().getResources().updateConfiguration(config,
+                getActivity().getBaseContext().getResources().getDisplayMetrics());
+        /*onConfigurationChanged(config);*/
+        Resources resources = getResources();
+        resources.updateConfiguration(config, resources.getDisplayMetrics());
+        //onConfigurationChanged(config);
+/*
+        Intent intent = new Intent(getActivity(), AuthActivity.class);
+        intent.putExtra("is_config", true);
+        startActivity(intent);
+        getActivity().finish();*/
+
+        getActivity().recreate();
     }
 
 }

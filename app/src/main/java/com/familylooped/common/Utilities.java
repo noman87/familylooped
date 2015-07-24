@@ -47,6 +47,8 @@ public class Utilities {
 
     public static final String TCP_PROTOCOL_NAME = "tcp";
     public static final String UDP_PROTOCOL_NAME = "udp";
+    public static final String LANGUAGE_ENG = "en_US";
+    public static final String LANGUAGE_NL = "nl";
 
     public static final String TCP_PROTOCOL_GET_FASTEST_SERVER = "80 tcp";
     public static final String UDP_PROTOCOL_GET_FASTEST_SERVER = "53 udp";
@@ -124,6 +126,7 @@ public class Utilities {
     public static final String USER_PASSWORD = "password";
     public static final String DIR_NAME = "/FamilyLooped";
     public static final String PHOTO_JSON = "photo_json";
+    public static final String USER_LANGUAGE = "user_language";
     public static String DATE_FORMAT = "dd/M/yyyy hh:mm:ss";
 
 

@@ -3,6 +3,7 @@ package com.familylooped.photos;
 
 import android.app.ProgressDialog;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.annotation.Nullable;
@@ -17,6 +18,7 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
 import android.widget.ImageButton;
+import android.widget.TextView;
 
 import com.familylooped.R;
 import com.familylooped.common.Utilities;
@@ -53,6 +55,7 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
     public static String TAG = "My Photos";
     private static String NOTIFICATION = "notification";
     private ProgressDialog mProgressDialog;
+    private TextView txtPhoto;
 
     Gson gson = new Gson();
 
@@ -131,6 +134,8 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
     }
 
     private void init(View view) {
+        txtPhoto = (TextView) view.findViewById(R.id.txt_photo);
+        setText();
         ((ImageButton) view.findViewById(R.id.btn_add_photo)).setOnClickListener(this);
         btn_select = (ImageButton) view.findViewById(R.id.btn_select);
         btn_select.setOnClickListener(this);
@@ -167,6 +172,10 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
 
         showPhotos();
 
+    }
+
+    private void setText() {
+        txtPhoto.setText(getResources().getString(R.string.photo));
     }
 
     @Override
@@ -440,6 +449,15 @@ public class MyPhotos extends BaseFragment implements View.OnClickListener, Adap
         intent.putExtra("position", position);
         startActivityForResult(intent, 111);
         ///changeActivity(ActivitySlideShow.class, bundle);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE) != null) {
+            restartInLocale(Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE));
+        }
+        setText();
     }
 
 

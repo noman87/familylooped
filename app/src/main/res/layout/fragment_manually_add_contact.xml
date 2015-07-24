@@ -33,7 +33,7 @@
                     android:inputType="textPersonName"
                     android:singleLine="true"
                     android:imeOptions="actionNext"
-                    android:hint="First Name"
+                    android:hint="@string/frist_name"
                     style="@style/common_edit_text" />
 
                 <EditText
@@ -44,7 +44,7 @@
                     android:inputType="textPersonName"
                     android:singleLine="true"
                     android:imeOptions="actionNext"
-                    android:hint="Last Name"
+                    android:hint="@string/last_name"
                     style="@style/common_edit_text"/>
 
 
@@ -52,7 +52,7 @@
                 android:id="@+id/txt_email"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Email"
+                android:hint="@string/email"
 
                 android:inputType="textEmailAddress"
                 android:singleLine="true"

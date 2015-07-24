@@ -1,6 +1,7 @@
 package com.familylooped.auth;
 
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -21,6 +22,7 @@ import com.familylooped.common.activities.BaseActionBarActivity;
 import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
+import com.familylooped.common.logger.Log;
 import com.familylooped.settings.personalData.changePassword.ChangePassword;
 
 import org.json.JSONException;
@@ -56,6 +58,7 @@ public class Signup extends BaseFragment implements View.OnClickListener {
     private HashMap<String, EditText> editTextMap = new HashMap<String, EditText>();
     private EditText txt_email/*txt_alternate_email*/;
     private boolean valid_email;
+    private View mView;
 
 
     /**
@@ -113,7 +116,8 @@ public class Signup extends BaseFragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        init(view);
+        mView = view;
+        init(mView);
 
 
     }
@@ -162,6 +166,7 @@ public class Signup extends BaseFragment implements View.OnClickListener {
 
 
     private void init(View view) {
+
         ((ImageButton) view.findViewById(R.id.btn_next)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_change_password)).setOnClickListener(this);
@@ -294,5 +299,23 @@ public class Signup extends BaseFragment implements View.OnClickListener {
         }
     }
 
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.e("onConfiguration", "Signup");
+        if (Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE) != null) {
+            restartInLocale(Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE));
+        }
+        setText();
 
+
+    }
+
+    private void setText() {
+        ((EditText) mView.findViewById(R.id.txt_first_name)).setHint(getResources().getString(R.string.frist_name));
+        ((EditText) mView.findViewById(R.id.txt_last_name)).setHint(getResources().getString(R.string.last_name));
+        ((EditText) mView.findViewById(R.id.txt_email)).setHint(getResources().getString(R.string.str_username));
+        ((EditText) mView.findViewById(R.id.txt_password)).setHint(getResources().getString(R.string.str_password));
+        ((EditText) mView.findViewById(R.id.txt_confirm_password)).setHint(getResources().getString(R.string.confirm_password));
+    }
 }

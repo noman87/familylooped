@@ -1,6 +1,7 @@
 package com.familylooped.settings;
 
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -130,12 +131,21 @@ public class Settings extends BaseFragment implements View.OnClickListener {
                 changeActivity(AuthActivity.class);
                 break;
             case R.id.btn_privacy:
-                changeFragment(Content.newInstance(getString(R.string.privicy),""),"");
+                changeFragment(Content.newInstance(getString(R.string.privicy), ""), "");
                 break;
             case R.id.btn_about:
-                changeFragment(Content.newInstance(getString(R.string.about),""),"");
+                changeFragment(Content.newInstance(getString(R.string.about), ""), "");
                 break;
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE) != null) {
+            restartInLocale(Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE));
+        }
+
     }
 
 

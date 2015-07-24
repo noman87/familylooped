@@ -1,17 +1,14 @@
 package com.familylooped;
 
-import android.app.Activity;
 import android.content.Intent;
-import android.support.v7.app.ActionBarActivity;
-import android.support.v7.app.ActionBar;
-import android.support.v4.app.Fragment;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.os.Build;
 
 import com.familylooped.auth.InvitePeople;
 import com.familylooped.common.activities.BaseActionBarActivity;
@@ -97,5 +94,11 @@ public class MainActivity extends BaseActionBarActivity {
         super.onActivityResult(requestCode, resultCode, data);
         getSupportFragmentManager().findFragmentById(R.id.container).onActivityResult(requestCode, resultCode, data);
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.e("Config", "MainActiviy");
     }
 }

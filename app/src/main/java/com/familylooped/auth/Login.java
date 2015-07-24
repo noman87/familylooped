@@ -1,6 +1,7 @@
 package com.familylooped.auth;
 
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,9 +9,12 @@ import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.android.volley.Response;
@@ -23,10 +27,12 @@ import com.familylooped.common.Utilities;
 import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.BaseFragment;
 import com.familylooped.common.fragments.DialogClickListener;
+import com.familylooped.common.logger.Log;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -49,6 +55,8 @@ public class Login extends BaseFragment implements View.OnClickListener {
     private EditText txtEmail, txtPassword;
     private String mEmail, mPassword;
     private CheckBox mRememberMe;
+    private Spinner mLanguageSpinner;
+    private View mView;
 
 
     /**
@@ -97,17 +105,49 @@ public class Login extends BaseFragment implements View.OnClickListener {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mView = view;
         init(view);
-        Utilities.hideKeyboard(getActivity(),view);
+        Utilities.hideKeyboard(getActivity(), view);
     }
 
     private void init(View view) {
         ((ImageButton) view.findViewById(R.id.btn_reg)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_login)).setOnClickListener(this);
-        ((TextView)view.findViewById(R.id.forgot_password)).setOnClickListener(this);
+        ((TextView) view.findViewById(R.id.forgot_password)).setOnClickListener(this);
         txtEmail = (EditText) view.findViewById(R.id.txt_email);
         txtPassword = (EditText) view.findViewById(R.id.txt_password);
         mRememberMe = (CheckBox) view.findViewById(R.id.remember_me);
+        mLanguageSpinner = (Spinner) view.findViewById(R.id.spinner_language);
+        ArrayList<String> language = new ArrayList<>();
+        language.add("Select Language");
+        language.add("English");
+        language.add("Dutch");
+
+        ArrayAdapter<String> spinnerAdapter = new ArrayAdapter<String>(getActivity(),
+                R.layout.spiner_view, language);
+        mLanguageSpinner.setPrompt(getResources().getString(R.string.select_language));
+        mLanguageSpinner.setAdapter(spinnerAdapter);
+        mLanguageSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+
+                switch (position) {
+                    case 1:
+                        Utilities.saveData(getActivity(), Utilities.USER_LANGUAGE, "en_US");
+                        restartInLocale("en_US");
+                        break;
+                    case 2:
+                        Utilities.saveData(getActivity(), Utilities.USER_LANGUAGE, "nl");
+                        restartInLocale("nl");
+                        break;
+                }
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
     }
 
     @Override
@@ -117,6 +157,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 changeFragment(Signup.newInstance(), Signup.TAG);
                 break;
             case R.id.forgot_password:
+
                 changeFragment(ForgotPassword.newInstance(), ForgotPassword.TAG);
                 break;
             case R.id.btn_login:
@@ -125,7 +166,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 if (!is_empty()) {
                     proceedToLogin();
                 } else {
-                    showDialog("Email and Password are required", "Ok", "Cancel", new DialogClickListener() {
+                    showDialog(getResources().getString(R.string.email_pass_req), "Ok", "Cancel", new DialogClickListener() {
                         @Override
                         public void onPositiveButtonClick() {
 
@@ -142,12 +183,44 @@ public class Login extends BaseFragment implements View.OnClickListener {
         }
     }
 
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.e("onConfiguration", "Call");
+
+        if (Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE) != null) {
+
+            restartInLocale(Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE));
+        }
+        /*String local = Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE);
+        if (TextUtils.equals(local, "en_US")) {
+
+        } else {
+
+        }*/
+        // reFrashFragment();
+        // changeFragmentWithoutBackStack(Signup.newInstance(), Signup.TAG, false);
+
+        setText();
+
+
+    }
+
+    private void setText() {
+        txtEmail.setHint(getResources().getString(R.string.str_username));
+        txtPassword.setHint(getResources().getString(R.string.str_password));
+        ((TextView) mView.findViewById(R.id.forgot_password)).setText(getResources().getString(R.string.str_forgot_password));
+        mRememberMe.setText(getResources().getString(R.string.remember_me));
+    }
+
     private void proceedToLogin() {
 
         Map<String, String> params = new HashMap();
         params.put("userName", mEmail);
         params.put("password", mPassword);
-        params.put("deviceToken",Utilities.getSaveData(getActivity(),Utilities.REG_ID));
+        params.put("deviceToken", Utilities.getSaveData(getActivity(), Utilities.REG_ID));
 
 
         AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "Login", Utilities.BASE_URL + "login", params, new AsyncHttpRequest.HttpResponseListener() {
@@ -164,7 +237,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
                         Utilities.saveData(getActivity(), Utilities.USER_PASSWORD, data.getString("password"));
                         Utilities.saveData(getActivity(), Utilities.USER_EMAIL, data.getString("email"));
                         Utilities.saveData(getActivity(), Utilities.USER_NAME, data.getString("userName"));
-
 
 
                         Utilities.saveBoolean(getActivity(), Utilities.IS_REMEMBER, mRememberMe.isChecked());

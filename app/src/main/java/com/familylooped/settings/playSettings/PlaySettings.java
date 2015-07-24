@@ -1,6 +1,7 @@
 package com.familylooped.settings.playSettings;
 
 
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.support.annotation.Nullable;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
+import android.widget.TextView;
 
 import com.familylooped.MainActivity;
 import com.familylooped.R;
@@ -32,8 +34,9 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
     private String mParam1;
     private String mParam2;
     private RadioGroup mRadionGroup, mPhotoRadioGroup;
-    private int mValue=0;
-    private int photo_period=0;
+    private int mValue = 0;
+    private int photo_period = 0;
+    private TextView mTxtHeadingOne, mTxtHeadingTwo;
 
 
     /**
@@ -83,6 +86,9 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mTxtHeadingOne = (TextView) view.findViewById(R.id.txt_heading_one);
+        mTxtHeadingTwo = (TextView) view.findViewById(R.id.txt_heading_two);
+        setText();
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_save)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_back)).setOnClickListener(this);
@@ -94,7 +100,7 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
 
         int sliderTime = Utilities.getSavedInt(getActivity(), Utilities.SLIDER_TIME);
         if (sliderTime < 0) {
-            sliderTime =3000;
+            sliderTime = 3000;
             Utilities.saveInt(getActivity(), Utilities.SLIDER_TIME, sliderTime);
         }
         switch (sliderTime) {
@@ -133,6 +139,11 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
                 ((RadioButton) view.findViewById(R.id.radio_evey_thing)).setChecked(true);
                 break;
         }
+    }
+
+    private void setText() {
+        mTxtHeadingOne.setText(getResources().getString(R.string.setting_photo_top));
+        mTxtHeadingTwo.setText(getResources().getString(R.string.setting_photo_bottom));
     }
 
     @Override
@@ -188,11 +199,20 @@ public class PlaySettings extends BaseFragment implements View.OnClickListener, 
                 ((MainActivity) getActivity()).popFragmentIfStackExist();
                 break;
             case R.id.btn_save:
-                    Utilities.saveInt(getActivity(), Utilities.SLIDER_TIME, mValue * 1000);
-                    Utilities.saveInt(getActivity(), Utilities.PHOTO_PERIOD, photo_period);
+                Utilities.saveInt(getActivity(), Utilities.SLIDER_TIME, mValue * 1000);
+                Utilities.saveInt(getActivity(), Utilities.PHOTO_PERIOD, photo_period);
                 Utilities.toast(getActivity(), "You settings has been saved");
                 ((MainActivity) getActivity()).popFragmentIfStackExist();
                 break;
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE) != null) {
+            restartInLocale(Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE));
+        }
+        setText();
     }
 }

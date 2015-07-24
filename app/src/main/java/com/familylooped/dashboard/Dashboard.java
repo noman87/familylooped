@@ -2,6 +2,7 @@ package com.familylooped.dashboard;
 
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,7 +12,9 @@ import android.view.ViewGroup;
 import android.widget.ImageButton;
 
 import com.familylooped.R;
+import com.familylooped.common.Utilities;
 import com.familylooped.common.fragments.BaseFragment;
+import com.familylooped.common.logger.Log;
 import com.familylooped.settings.Settings;
 import com.familylooped.slideShow.SlideShowStarterActivity;
 
@@ -90,13 +93,24 @@ public class Dashboard extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_play:
-                Intent intent = new Intent(getActivity(),SlideShowStarterActivity.class);
+                Intent intent = new Intent(getActivity(), SlideShowStarterActivity.class);
                 startActivity(intent);
                 //changeFragment(SlideShowPagerFragment.newInstance(), SlideShowPagerFragment.TAG);
                 break;
             case R.id.btn_settings:
-                changeFragment(Settings.newInstance(),Settings.TAG);
+                changeFragment(Settings.newInstance(), Settings.TAG);
                 break;
         }
+    }
+
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.e("onConfig call","Dashboard");
+        if (Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE) != null) {
+            restartInLocale(Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE));
+        }
+
     }
 }

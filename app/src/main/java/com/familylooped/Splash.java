@@ -35,7 +35,7 @@ public class Splash extends SampleActivityBase {
         setContentView(R.layout.activity_splash);
         createFolder();
         setUpUsersDefault();
-        Log.e("Current time ","is"+ Utilities.getEncodedString(Utilities.getData(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss") + "+0500"));
+        Log.e("Current time ", "is" + Utilities.getEncodedString(Utilities.getData(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss") + "+0500"));
 
 
         if (checkPlayServices()) {

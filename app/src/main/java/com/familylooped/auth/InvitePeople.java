@@ -6,6 +6,7 @@ import android.app.AlertDialog;
 import android.content.ContentResolver;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.provider.ContactsContract;
@@ -82,6 +83,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener, 
     private boolean mIsAddNew;
     private String mJsonString;
     private boolean isAuthActivity;
+    private TextView mTxtHeading;
 
 
     /**
@@ -165,6 +167,9 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener, 
     private void init(View view) {
         mListView = (ListView) view.findViewById(R.id.list_view);
         mListView.setOnItemClickListener(this);
+        mTxtHeading = (TextView)view.findViewById(R.id.txt_heading);
+        mTxtHeading.setText(getResources().getString(R.string.invite_people));
+
         ((ImageButton) view.findViewById(R.id.btn_submit)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_invite)).setOnClickListener(this);
         ((ImageButton) view.findViewById(R.id.btn_save)).setOnClickListener(this);
@@ -223,7 +228,7 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener, 
                         setUpAdapter(mContactList);
 
                     } else {
-                        showDialog(object.getString("msg"), "Ok", "cancel", new DialogClickListener() {
+                        showDialog(getResources().getString(R.string.no_contact_found), "Ok", "cancel", new DialogClickListener() {
                             @Override
                             public void onPositiveButtonClick() {
                             }
@@ -475,5 +480,20 @@ public class InvitePeople extends BaseFragment implements View.OnClickListener, 
         startActivityForResult(intent, REQUEST_SHOW_CONTACT_DETAIL);
 
 
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE) != null) {
+            restartInLocale(Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE));
+        }
+        setText();
+
+
+    }
+
+    private void setText() {
+        mTxtHeading.setText(getResources().getString(R.string.invite_people));
     }
 }

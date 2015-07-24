@@ -1,8 +1,8 @@
 package com.familylooped.settings.personalData.changePassword;
 
 
-import android.os.Bundle;
 import android.app.Fragment;
+import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
 import android.util.Base64;
@@ -225,6 +225,7 @@ public class ChangePassword extends BaseFragment implements View.OnClickListener
         else
             params.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
         params.put("password", mConfirmPassword.getText().toString());
+        params.put("oldPassword", Utilities.getSaveData(getActivity(),Utilities.USER_PASSWORD));
         AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "resetPassword", Utilities.BASE_URL + "resetPassword", params, new AsyncHttpRequest.HttpResponseListener() {
             @Override
             public void onResponse(String response) {

@@ -1,12 +1,13 @@
 package com.familylooped.auth;
 
-import android.support.v7.app.ActionBarActivity;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.familylooped.R;
 import com.familylooped.common.activities.BaseActionBarActivity;
+import com.familylooped.common.logger.Log;
 
 public class AuthActivity extends BaseActionBarActivity {
 
@@ -15,8 +16,12 @@ public class AuthActivity extends BaseActionBarActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         if (getIntent().getExtras() != null) {
-            String json = getIntent().getExtras().getString("json");
-            setFragment(InvitePeople.newInstance(json));
+            if (getIntent().hasExtra("json")) {
+                String json = getIntent().getExtras().getString("json");
+                setFragment(InvitePeople.newInstance(json));
+            } else if (getIntent().hasExtra("is_config")) {
+                setFragment(Signup.newInstance());
+            }
         } else {
             setFragment(Login.newInstance());
         }
@@ -44,5 +49,11 @@ public class AuthActivity extends BaseActionBarActivity {
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.e("Config", "Call");
     }
 }

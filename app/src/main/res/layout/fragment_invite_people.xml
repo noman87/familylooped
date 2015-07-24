@@ -15,9 +15,10 @@
         android:background="@drawable/logo" />
 
     <TextView
+        android:id="@+id/txt_heading"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Give contacts permission to send photos directly to your Familylooped app."
+        android:text="@string/invite_people"
         android:layout_marginTop="@dimen/small_margin"
         android:textAppearance="?android:textAppearanceLarge" />
 

@@ -136,8 +136,19 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
     }
 
     private void getSecretQuestions() {
+        HashMap<String, String> urlParams = new HashMap<>();
+        if (Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE) != null) {
+            String language = Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE);
 
-        AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "secretQuestion", Utilities.BASE_URL + "securityQuestions", null, new AsyncHttpRequest.HttpResponseListener() {
+
+            if (TextUtils.equals(language, Utilities.LANGUAGE_ENG)) {
+                urlParams.put("language", "English");
+            } else {
+                urlParams.put("language", "Dutch");
+            }
+        }
+
+        AsyncHttpRequest request = new AsyncHttpRequest(getActivity(), "secretQuestion", Utilities.BASE_URL + "securityQuestions", urlParams, new AsyncHttpRequest.HttpResponseListener() {
             @Override
             public void onResponse(String response) {
                 try {
@@ -303,6 +314,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
     private void update() {
         Map<String, String> params = new HashMap();
         params.put("userId", Utilities.getSaveData(getActivity(), Utilities.USER_ID));
+        params.put("password", Utilities.getSaveData(getActivity(), Utilities.USER_PASSWORD));
         params.put("secretQuestions", mQuestionsId);
         params.put("secretAnswers", mAns);
         if (mAlternateEmailAddress != null)
