@@ -35,7 +35,7 @@
 
 
     <dimen name="signup_textbox_size">15sp</dimen>
-    <dimen name="domin_name">8sp</dimen>
+    <dimen name="domin_name">14sp</dimen>
     <dimen name="common_text_size">20sp</dimen>
     <dimen name="grid_column_width">90dp</dimen>
     <dimen name="slide_show_start_image_width">300dp</dimen>

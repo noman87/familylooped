@@ -8,13 +8,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.text.TextUtils;
@@ -32,6 +32,7 @@ import com.android.volley.VolleyError;
 import com.familylooped.R;
 import com.familylooped.common.AppController;
 import com.familylooped.common.Utilities;
+import com.familylooped.common.activities.BaseActionBarActivity;
 import com.familylooped.common.async.AsyncHttpRequest;
 import com.familylooped.common.fragments.AlertDialogFragment;
 import com.familylooped.common.fragments.DialogClickListener;
@@ -51,7 +52,7 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class ActivitySlideShow extends FragmentActivity implements View.OnClickListener {
+public class ActivitySlideShow extends BaseActionBarActivity implements View.OnClickListener {
 
     private String mParam1;
     private String mParam2;
@@ -207,7 +208,7 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
             showDialog("You have no photos", "OK", "Cancel", new DialogClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
-                    ;
+
                 }
 
                 @Override
@@ -530,6 +531,15 @@ public class ActivitySlideShow extends FragmentActivity implements View.OnClickL
 
         }
     };
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (Utilities.getSaveData(this, Utilities.USER_LANGUAGE) != null) {
+            restartInLocale(Utilities.getSaveData(this, Utilities.USER_LANGUAGE));
+        }
+    }
+
 }
 
 

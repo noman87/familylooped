@@ -2,6 +2,7 @@ package com.familylooped.auth.forgotPassword;
 
 
 import android.app.Fragment;
+import android.content.res.Configuration;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.TextUtils;
@@ -174,5 +175,18 @@ public class ForgotPassword extends BaseFragment implements View.OnClickListener
 
 
         }
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        if (Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE) != null) {
+            restartInLocale(Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE));
+        }
+        setText();
+    }
+
+    private void setText() {
+        mTxtUsername.setHint(getResources().getString(R.string.enter_your_user_name));
     }
 }

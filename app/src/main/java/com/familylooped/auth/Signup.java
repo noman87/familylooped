@@ -213,7 +213,7 @@ public class Signup extends BaseFragment implements View.OnClickListener {
         for (int i = validateStrings.length - 1; i > -1; i--) {
             EditText editText = editTextMap.get(validateStrings[i]);
             if (TextUtils.isEmpty(editText.getText().toString().trim())) {
-                editText.setError("This is required field");
+                editText.setError(getResources().getString(R.string.this_is_required));
                 viewFocus = editText;
                 cancel = true;
             }
@@ -282,7 +282,7 @@ public class Signup extends BaseFragment implements View.OnClickListener {
                 changeFragment(ChangePassword.newInstance(), ChangePassword.TAG);
                 break;
             case R.id.btn_question:
-                showDialog("Choose your preferred username", "OK", "Cancel", new DialogClickListener() {
+                showDialog(getResources().getString(R.string.prefer_user_name), "OK", "Cancel", new DialogClickListener() {
                     @Override
                     public void onPositiveButtonClick() {
 

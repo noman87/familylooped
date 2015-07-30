@@ -281,7 +281,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
 
     private void validation() {
         if (TextUtils.isEmpty(txt_ans1.getText().toString()) || TextUtils.isEmpty(txt_ans2.getText().toString())) {
-            showDialog("Please provide all answers", "OK", "Cancel", new DialogClickListener() {
+            showDialog(getResources().getString(R.string.please_provide_ans), "OK", "Cancel", new DialogClickListener() {
                 @Override
                 public void onPositiveButtonClick() {
 
@@ -298,7 +298,7 @@ public class SecretQuestion extends BaseFragment implements View.OnClickListener
 
         if (!TextUtils.isEmpty(txt_alternate_email.getText().toString())) {
             if (!Utilities.isValidEmail(txt_alternate_email.getText().toString())) {
-                txt_alternate_email.setError("Please enter correct email address");
+                txt_alternate_email.setError(getResources().getString(R.string.correct_email));
                 txt_alternate_email.setText("");
                 return;
             } else {

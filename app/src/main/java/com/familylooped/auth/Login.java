@@ -134,11 +134,23 @@ public class Login extends BaseFragment implements View.OnClickListener {
                 switch (position) {
                     case 1:
                         Utilities.saveData(getActivity(), Utilities.USER_LANGUAGE, "en_US");
-                        restartInLocale("en_US");
+                        if (!TextUtils.isEmpty(txtEmail.getText().toString())) {
+                            Utilities.saveData(getActivity(), txtEmail.getText().toString(), Utilities.TXT_EMAIL);
+                        }
+                        if (!TextUtils.isEmpty(txtPassword.getText().toString())) {
+                            Utilities.saveData(getActivity(), txtPassword.getText().toString(), Utilities.TXT_PASSWORD);
+                        }
+                        restartInLocaleWithActivity("en_US");
                         break;
                     case 2:
                         Utilities.saveData(getActivity(), Utilities.USER_LANGUAGE, "nl");
-                        restartInLocale("nl");
+                        if (!TextUtils.isEmpty(txtEmail.getText().toString())) {
+                            Utilities.saveData(getActivity(),  Utilities.TXT_EMAIL,txtEmail.getText().toString());
+                        }
+                        if (!TextUtils.isEmpty(txtPassword.getText().toString())) {
+                            Utilities.saveData(getActivity(),  Utilities.TXT_PASSWORD,txtPassword.getText().toString());
+                        }
+                        restartInLocaleWithActivity("nl");
                         break;
                 }
             }
@@ -148,6 +160,12 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
             }
         });
+        if (Utilities.getSaveData(getActivity(), Utilities.TXT_EMAIL) != null) {
+            txtEmail.setText(Utilities.getSaveData(getActivity(), Utilities.TXT_EMAIL));
+        }
+        if (Utilities.getSaveData(getActivity(), Utilities.TXT_PASSWORD) != null) {
+            txtPassword.setText(Utilities.getSaveData(getActivity(), Utilities.TXT_PASSWORD));
+        }
     }
 
     @Override
@@ -184,7 +202,6 @@ public class Login extends BaseFragment implements View.OnClickListener {
     }
 
 
-
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
@@ -192,7 +209,7 @@ public class Login extends BaseFragment implements View.OnClickListener {
 
         if (Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE) != null) {
 
-            restartInLocale(Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE));
+            restartInLocaleWithActivity(Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE));
         }
         /*String local = Utilities.getSaveData(getActivity(), Utilities.USER_LANGUAGE);
         if (TextUtils.equals(local, "en_US")) {
@@ -213,6 +230,13 @@ public class Login extends BaseFragment implements View.OnClickListener {
         txtPassword.setHint(getResources().getString(R.string.str_password));
         ((TextView) mView.findViewById(R.id.forgot_password)).setText(getResources().getString(R.string.str_forgot_password));
         mRememberMe.setText(getResources().getString(R.string.remember_me));
+        ((TextView)mView.findViewById(R.id.txt_or)).setText(getResources().getString(R.string.or));
+        /*if (Utilities.getSaveData(getActivity(), Utilities.TXT_EMAIL) != null) {
+            txtEmail.setText(Utilities.getSaveData(getActivity(), Utilities.TXT_EMAIL));
+        }
+        if (Utilities.getSaveData(getActivity(), Utilities.TXT_PASSWORD) != null) {
+            txtPassword.setText(Utilities.getSaveData(getActivity(), Utilities.TXT_PASSWORD));
+        }*/
     }
 
     private void proceedToLogin() {
@@ -287,4 +311,5 @@ public class Login extends BaseFragment implements View.OnClickListener {
         }
 
     }
+
 }

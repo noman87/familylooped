@@ -78,6 +78,7 @@ public class ManuallyAddContactActivity extends BaseActionBarActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_add:
+                Utilities.hideKeyboard(this, v);
                 add();
                 break;
             case R.id.btn_back:

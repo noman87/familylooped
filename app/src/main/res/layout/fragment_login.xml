@@ -42,9 +42,22 @@
                 android:drawableLeft="@drawable/pw"
                 android:inputType="textPassword"
                 android:hint="@string/str_password"
-                android:drawablePadding="@dimen/small_margin"
+
 
                 android:imeOptions="actionDone" />
+
+            <CheckBox
+                android:id="@+id/remember_me"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/remember_me"
+
+                android:layout_marginTop="@dimen/small_margin"
+                android:layout_marginBottom="@dimen/small_margin"
+                android:button="@null"
+                android:drawableLeft="@drawable/selector_rem"
+                android:textAppearance="?android:textAppearanceLarge" />
+
 
             <TextView
                 android:id="@+id/forgot_password"
@@ -56,24 +69,14 @@
                 android:textAppearance="?android:textAppearanceLarge"
                 android:text="@string/str_forgot_password" />
 
+
             <Spinner
                 android:id="@+id/spinner_language"
-                style="@style/spiner"
+                style="@style/spiner_language"
                 android:prompt="@string/select_language"
+
                 android:spinnerMode="dropdown"
                 android:layout_marginTop="@dimen/small_margin" />
-
-            <CheckBox
-                android:id="@+id/remember_me"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/remember_me"
-                android:drawablePadding="@dimen/small_margin"
-                android:layout_marginTop="@dimen/small_margin"
-                android:layout_marginBottom="@dimen/small_margin"
-                android:button="@null"
-                android:drawableLeft="@drawable/selector_rem"
-                android:textAppearance="?android:textAppearanceLarge" />
 
             <LinearLayout
 
@@ -90,9 +93,10 @@
                     android:background="@drawable/login_botton" />
 
                 <TextView
+                    android:id="@+id/txt_or"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="OR"
+                    android:text="@string/or"
                     android:layout_gravity="center"
                     android:textColor="@android:color/black"
                     android:textSize="@dimen/txt_or_size" />

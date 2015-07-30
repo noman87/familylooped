@@ -165,11 +165,16 @@ public abstract class BaseFragment extends Fragment {
     }
 
     protected void reFrashFragment() {
-        Fragment currentFragment = getAttachFragment();
-        FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
-        fragTransaction.detach(currentFragment);
-        fragTransaction.attach(currentFragment);
-        fragTransaction.commit();
+        try {
+            Fragment currentFragment = getAttachFragment();
+            FragmentTransaction fragTransaction = getFragmentManager().beginTransaction();
+            fragTransaction.detach(currentFragment);
+            fragTransaction.attach(currentFragment);
+            fragTransaction.commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
     protected void restartInLocale(String strLocale) {

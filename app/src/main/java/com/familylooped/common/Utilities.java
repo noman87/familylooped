@@ -150,6 +150,7 @@ public class Utilities {
     public static String USER_NAME = "user_name";
     public static String HADEES_DOWNLOAD = "hadees_download";
     public static String QURAN_DOWNLOAD = "quran_download";
+    public static String TXT_EMAIL="txt_email",TXT_PASSWORD="txt_password";
 
     public static <T> void printJSON(String TAG, Object object, Class<T> classOfT) {
         Gson gson = new Gson();

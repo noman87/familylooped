@@ -81,7 +81,7 @@
             android:windowSoftInputMode="stateHidden|adjustPan" />
         <activity
             android:name=".slideShow.SlideShowStarterActivity"
-            android:configChanges="locale|orientation|keyboardHidden|screenSize"
+            android:configChanges="orientation|keyboardHidden"
             android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
             android:label="@string/title_activity_slide_show_starter" />
     </application>
